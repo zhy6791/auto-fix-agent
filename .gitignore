@@ -1,0 +1,9 @@
+# 忽略 PyCharm 配置
+.idea/
+
+# 忽略 Python 缓存
+__pycache__/
+*.pyc
+
+# 忽略运行报告 (如果你觉得不需要提交的话)
+agent_report_fix/*.json
