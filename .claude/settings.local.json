@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/workspace/mall-service/logs/**)",
+      "Read(//d/workspace/mall-service/**)",
+      "Bash(python -m main --config configs/config.yml --dry-run)",
+      "Bash(python -c ' *)",
+      "Bash(python -m main --config configs/config.yml --auto-apply)"
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+# Demo config – fill your local paths
+# Note: Use forward slashes or double backslashes in YAML paths
+logs_path: "D:/workspace/mall-service/logs/app.log"          # 你的 web 服务日志文件（请修改为真实路径）
+repo_path: "D:/workspace/mall-service"  # 你的 Maven 项目根目录（请修改为真实路径）
+java_build: "maven"
+branch_prefix: "fix/"
+llm:
+  base_url: "https://token-plan-cn.xiaomimimo.com/v1"
+  provider: "openai"
+  model: "mimo-v2.5-pro"
+  api_key_env: "tp-ccu9ew24g4nag88sb7r5tr74t1vkvxzyruvmwc5xc60chs85"
+  temperature: 0.2
+  timeout: 300
+max_patch_lines: 40
+max_tokens: 8192
+auto_apply: false
+run_tests_on_apply: false
+

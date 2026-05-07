@@ -1,0 +1,14 @@
+[
+  "tests/test_git_manager.py::TestGitManager::test_apply_patch_json_format",
+  "tests/test_git_manager.py::TestGitManager::test_apply_patch_json_invalid",
+  "tests/test_git_manager.py::TestGitManager::test_create_branch_duplicate",
+  "tests/test_git_manager.py::TestGitManager::test_create_branch_success",
+  "tests/test_git_manager.py::TestGitManager::test_detect_repo_root_failure",
+  "tests/test_git_manager.py::TestGitManager::test_detect_repo_root_from_root",
+  "tests/test_git_manager.py::TestGitManager::test_detect_repo_root_success",
+  "tests/test_patch_formats.py::TestPatchFormats::test_apply_patch_json_creates_new_file",
+  "tests/test_patch_formats.py::TestPatchFormats::test_apply_patch_json_format",
+  "tests/test_patch_formats.py::TestPatchFormats::test_apply_patch_json_invalid_format",
+  "tests/test_patch_formats.py::TestPatchFormats::test_apply_patch_unified_diff_format",
+  "tests/test_patch_formats.py::TestPatchFormats::test_detect_repo_root"
+]
