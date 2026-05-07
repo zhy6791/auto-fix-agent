@@ -113,6 +113,19 @@ class AutoFixAgent:
                 apply_result['dry_run'] = False
                 report['apply_result'] = apply_result
 
+                if apply_result.get('applied') and apply_result.get('files'):
+                    # Commit changes on the fix branch so they stay isolated
+                    commit_msg = 'fix: auto-fix %s in %s.%s' % (
+                        parsed_stack[0].get('exception_type', 'Exception'),
+                        best_frame.get('class_name', ''),
+                        best_frame.get('method', ''),
+                    )
+                    committed = self.tools['git_manager'].commit_changes(
+                        repo_path, commit_msg, files=apply_result['files']
+                    )
+                    report['apply_result']['committed'] = committed
+                    logger.info("Committed on branch %s: %s", branch_name, committed)
+
                 if self.config.get('run_tests_on_apply') and apply_result.get('applied'):
                     report['build_result'] = self._run_build(repo_path)
             else:

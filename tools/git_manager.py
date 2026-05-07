@@ -21,11 +21,44 @@ def detect_repo_root(path: str) -> str:
         p = parent
 
 
+def get_current_branch(repo_path: str) -> str:
+    """Return the current branch name, or empty string on failure."""
+    try:
+        out = subprocess.check_output(
+            ["git", "-C", repo_path, "rev-parse", "--abbrev-ref", "HEAD"],
+            universal_newlines=True
+        )
+        return out.strip()
+    except subprocess.CalledProcessError:
+        return ''
+
+
 def create_branch(repo_path: str, branch_name: str) -> bool:
     """Create and checkout a local branch. Returns True on success."""
     try:
-        # git checkout -b branch_name
         subprocess.check_call(["git", "-C", repo_path, "checkout", "-b", branch_name])
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
+
+def commit_changes(repo_path: str, message: str, files: list = None) -> bool:
+    """Stage and commit changes on the current branch. Returns True on success."""
+    try:
+        if files:
+            subprocess.check_call(["git", "-C", repo_path, "add"] + files)
+        else:
+            subprocess.check_call(["git", "-C", repo_path, "add", "-A"])
+        subprocess.check_call(["git", "-C", repo_path, "commit", "-m", message])
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
+
+def checkout_branch(repo_path: str, branch_name: str) -> bool:
+    """Checkout an existing branch. Returns True on success."""
+    try:
+        subprocess.check_call(["git", "-C", repo_path, "checkout", branch_name])
         return True
     except subprocess.CalledProcessError:
         return False
