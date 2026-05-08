@@ -127,7 +127,8 @@ class TestAutoFixAgent(unittest.TestCase):
 
         self.assertEqual(os.path.normpath(info['source_path']), os.path.normpath(self.source_abs))
         self.assertEqual(info['repo_relative_path'].replace('\\', '/'), self.source_rel.replace('\\', '/'))
-        self.assertIn('42:', info['context_snippet'])
+        # Check that context snippet contains the code (no line number prefix)
+        self.assertIn('sayHello', info['context_snippet'])
 
     def test_run_pipeline_dry_run(self):
         report = self.agent.run_pipeline(dry_run=True)
@@ -155,6 +156,211 @@ class TestAutoFixAgent(unittest.TestCase):
             universal_newlines=True,
         ).strip()
         self.assertTrue(current_branch.startswith('fix/'))
+
+    def test_validate_patch_rejects_non_local_java_changes(self):
+        suspicious_source = self.original_source.replace(
+            'package com.example.demo.controller;',
+            'package com.example.demo.service;'
+        ).replace(
+            '        return str.length();',
+            '        return str == null ? 0 : str.length();'
+        )
+        patch_text = json.dumps({
+            'files': [
+                {
+                    'path': self.source_rel.replace('\\', '/'),
+                    'patched_content': suspicious_source,
+                }
+            ]
+        })
+
+        result = self.agent.validate_patch(self.repo_path, patch_text, source_info={
+            'repo_relative_path': self.source_rel.replace('\\', '/'),
+            'line_no': 42,
+        })
+
+        self.assertFalse(result['valid'])
+        # New validation should catch package change
+        self.assertTrue(any('Package declaration was modified' in e or 'Package' in e for e in result['errors']))
+
+    def test_validate_patch_rejects_method_deletion_outside_window(self):
+        # create an extra file with two methods, then produce a patch that deletes one method far from the analyzed line
+        extra_rel = os.path.join('src', 'main', 'java', 'com', 'example', 'demo', 'controller', 'Helper.java')
+        extra_abs = os.path.join(self.repo_path, extra_rel)
+        os.makedirs(os.path.dirname(extra_abs), exist_ok=True)
+        old_content_lines = [
+            'package com.example.demo.controller;',
+            '',
+            'public class Helper {',
+            '    public void keep() {',
+            '        // keep method',
+            '    }',
+        ]
+        # add many filler lines so the other method is far away
+        for i in range(0, 60):
+            old_content_lines.append('    // filler %d' % i)
+        old_content_lines += [
+            '',
+            '    public void removeMe() {',
+            '        // dangerous code',
+            '    }',
+            '}',
+        ]
+        old_content = '\n'.join(old_content_lines)
+        file_io.write_file(extra_abs, old_content, overwrite=True)
+
+        # patched content removes removeMe method
+        new_lines = [
+            'package com.example.demo.controller;',
+            '',
+            'public class Helper {',
+            '    public void keep() {',
+            '        // keep method',
+            '    }',
+            '',
+            '}',
+        ]
+        new_content = '\n'.join(new_lines)
+
+        patch_text = json.dumps({
+            'files': [
+                {
+                    'path': extra_rel.replace('\\', '/'),
+                    'patched_content': new_content,
+                }
+            ]
+        })
+
+        # analyze near the 'keep' method (line 4) but deletion occurs at lines ~8-9
+        result = self.agent.validate_patch(self.repo_path, patch_text, source_info={'repo_relative_path': extra_rel.replace('\\', '/'), 'line_no': 4})
+
+        self.assertFalse(result['valid'])
+        # New validation should catch method deletion or massive line deletions
+        self.assertTrue(any('deleted' in e.lower() or 'Too many lines' in e for e in result['errors']))
+
+    def test_validate_patch_rejects_import_deletion(self):
+        """Test that patches deleting imports are rejected."""
+        # Create a Java file with multiple imports
+        test_rel = os.path.join('src', 'main', 'java', 'com', 'example', 'OrderService.java')
+        test_abs = os.path.join(self.repo_path, test_rel)
+        os.makedirs(os.path.dirname(test_abs), exist_ok=True)
+        
+        old_content = '''package com.example;
+
+import com.fixflow.mall.api.dto.CreateOrderRequest;
+import com.fixflow.mall.domain.MallOrder;
+import com.fixflow.mall.repo.OrderRepository;
+import java.math.BigDecimal;
+import org.springframework.stereotype.Service;
+
+@Service
+public class OrderService {
+    private final OrderRepository orderRepository;
+
+    public OrderService(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
+
+    public MallOrder createOrder(CreateOrderRequest req) {
+        if (req.getAmount() == null) {
+            throw new IllegalArgumentException("Amount required");
+        }
+        return orderRepository.save(new MallOrder());
+    }
+
+    public Long firstItemId(Long orderId) {
+        MallOrder order = orderRepository.findById(orderId).orElseThrow();
+        return order.getItemIds().get(0);
+    }
+}'''
+        
+        # Patch that removes imports and methods
+        patched_content = '''package com.example;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class OrderService {
+    private OrderRepository orderRepository;
+
+    public Long firstItemId(Long orderId) {
+        MallOrder order = orderRepository.findById(orderId).orElseThrow();
+        if (order.getItemIds() == null || order.getItemIds().isEmpty()) {
+            return null;
+        }
+        return order.getItemIds().get(0);
+    }
+}'''
+        
+        file_io.write_file(test_abs, old_content, overwrite=True)
+        
+        patch_text = json.dumps({
+            'files': [{
+                'path': test_rel.replace('\\', '/'),
+                'patched_content': patched_content,
+            }]
+        })
+        
+        result = self.agent.validate_patch(
+            self.repo_path,
+            patch_text,
+            source_info={
+                'repo_relative_path': test_rel.replace('\\', '/'),
+                'line_no': 26,  # in firstItemId method
+            }
+        )
+        
+        self.assertFalse(result['valid'], "Patch that deletes imports and methods should be rejected")
+        error_msgs = ' '.join(result['errors'])
+        self.assertTrue(
+            'Imports were deleted' in error_msgs or 'Too many lines' in error_msgs or 'deleted' in error_msgs.lower(),
+            f"Expected error about deletions, got: {error_msgs}"
+        )
+
+    def test_validate_patch_rejects_line_number_prefixes(self):
+        """Test that patches with line-number prefixes (LLM artifact) are rejected."""
+        test_rel = os.path.join('src', 'main', 'java', 'com', 'example', 'LineNumberTest.java')
+        test_abs = os.path.join(self.repo_path, test_rel)
+        os.makedirs(os.path.dirname(test_abs), exist_ok=True)
+        
+        old_content = '''package com.example;
+
+public class LineNumberTest {
+    public void test() {
+        System.out.println("hello");
+    }
+}'''
+        
+        # Patch that includes line-number prefixes (like what LLM does when it copies snippet)
+        patched_with_line_numbers = '''59: package com.example;
+60:
+61: public class LineNumberTest {
+62:     public void test() {
+63:         System.out.println("fixed");
+64:     }
+65: }'''
+        
+        file_io.write_file(test_abs, old_content, overwrite=True)
+        
+        patch_text = json.dumps({
+            'files': [{
+                'path': test_rel.replace('\\', '/'),
+                'patched_content': patched_with_line_numbers,
+            }]
+        })
+        
+        result = self.agent.validate_patch(
+            self.repo_path,
+            patch_text,
+            source_info={
+                'repo_relative_path': test_rel.replace('\\', '/'),
+                'line_no': 4,
+            }
+        )
+        
+        self.assertFalse(result['valid'], "Patch with line-number prefixes should be rejected")
+        error_msgs = ' '.join(result['errors'])
+        self.assertIn('line-number prefix', error_msgs.lower(), f"Expected line-number error, got: {error_msgs}")
 
 
 if __name__ == '__main__':

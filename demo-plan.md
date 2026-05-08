@@ -155,15 +155,5 @@ python -m main --config configs/config.yml --auto-apply
 - 运行前建议备份目标 repo（或在临时 clone 上运行 demo）。
 - LLM 可能生成不安全或不正确的补丁；agent 会做静态校验并在不满足安全规则时拒绝自动应用。
 
----
 
-## 下一步建议
-
-我可以继续：
-
-1. 在仓库中创建上述文件骨架（`tools/`, `agents/`, `integrations/`, `configs/` 的 stub 文件）并实现基础工具函数；
-2. 实现 `AutoFixAgent` 的核心流水线（不含 OpenAI 调用，先用 mock）；
-3. 集成 OpenAI 并完善 prompt 与校验。
-
-请回复你希望我立刻开始执行哪一步（例如：创建文件骨架并实现工具模块），我会马上开始并把修改写入仓库。
 

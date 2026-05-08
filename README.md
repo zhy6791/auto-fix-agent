@@ -185,35 +185,7 @@ auto-fix-agent/
 
 ---
 
-## 测试
 
-运行完整的单元测试：
-
-```powershell
-python -m pytest tests/ -v
-```
-
-运行特定测试：
-
-```powershell
-# 工具模块测试
-python -m pytest tests/test_file_io.py -v
-python -m pytest tests/test_git_manager.py -v
-
-# Agent 流水线测试
-python -m pytest tests/test_auto_fix_agent.py -v
-
-# 补丁格式测试
-python -m pytest tests/test_patch_formats.py -v
-```
-
-**测试覆盖：**
-- Phase 2 工具模块：22 个测试 ✅
-- Phase 3 Agent 流水线：4 个测试 ✅
-- Phase 4 LLM 集成：5 + 5 个测试 ✅
-- 合计：36+ 个单元测试
-
----
 
 ## 工作流示例
 
@@ -274,83 +246,6 @@ git add .
 git commit -m "fix(NullPointerException): Add null check in sayHello"
 git push origin fix/auto-20260507-150000
 ```
-
----
-
-## 安全说明
-
-⚠️ **重要注意事项：**
-
-1. **API Key 保护**：不要把 OpenAI API key 提交到代码仓库。使用环境变量存储。
-2. **Backup 建议**：在 `--auto-apply` 之前，建议备份或在临时 clone 上测试。
-3. **LLM 限制**：LLM 生成的补丁可能不完全正确，始终需要人工复审。
-4. **Dry-Run 优先**：始终先用 `--dry-run` 查看建议的修改。
-
----
-
-## 配置文件完整示例
-
-```yaml
-# 日志路径（绝对路径或相对路径）
-logs_path: "D:\\workspace\\mall-service\\logs\\app.log"
-
-# Maven 项目根路径（必须是 git repo）
-repo_path: "D:\\workspace\\mall-service"
-
-# 构建工具
-java_build: "maven"
-
-# 修复分支前缀
-branch_prefix: "fix/"
-
-# LLM 配置
-llm:
-  provider: "openai"
-  model: "gpt-4o-mini"             # 或 gpt-4 / gpt-3.5-turbo
-  api_key_env: "OPENAI_API_KEY"    # 环境变量名
-  base_url: "https://api.openai.com/v1"  # 可选：自定义 API 端点
-  temperature: 0.2                 # 0-1 越低越确定
-
-# 安全约束
-max_patch_lines: 40                # 单个补丁最多改动行数
-
-# 自动应用模式
-auto_apply: false
-
-# 应用补丁后是否运行测试
-run_tests_on_apply: false
-```
-
----
-
-## 常见问题（FAQ）
-
-**Q: 如何查看 LLM 调用的日志？**
-
-A: 启用 `--verbose` 标志：
-```powershell
-python -m main --config configs/config.yml --verbose
-```
-
-**Q: Agent 无法找到源文件怎么办？**
-
-A: 确保：
-1. 堆栈中的类名与实际文件名匹配
-2. repo_path 指向正确的 Maven 项目根目录
-3. 源文件在 `src/main/java/` 或 `src/test/java/` 下
-
-**Q: 补丁应用失败？**
-
-A: 检查：
-1. 文件是否存在
-2. 是否有权限修改文件
-3. 补丁格式是否正确（JSON 或 unified-diff）
-
-**Q: 可以修改 OpenAI 模型吗？**
-
-A: 可以。编辑 `configs/config.yml` 的 `llm.model` 字段，或使用环境变量。
-
----
 
 ## 后续开发建议
 

@@ -64,6 +64,10 @@ class LLMClient:
             resp.raise_for_status()
             data = resp.json()
             result = data['choices'][0]['message']['content']
+            logger.debug(f"Raw LLM response length: {len(result)}, content preview: {result[:200]}...")
+            if not result or not result.strip():
+                logger.warning('LLM returned empty or whitespace-only response')
+                return 'NO_SAFE_PATCH: LLM returned empty response'
             logger.info(f"LLM response: {len(result)} characters")
             return result
         except requests.exceptions.Timeout:

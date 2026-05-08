@@ -6,6 +6,7 @@ log reading -> stack trace parsing -> source locating -> LLM patch generation
 """
 
 import json
+import difflib
 import logging
 import os
 import re
@@ -97,7 +98,7 @@ class AutoFixAgent:
             if self._is_no_safe_patch(patch_text):
                 raise ValueError(patch_text)
 
-            validation = self.validate_patch(repo_path, patch_text)
+            validation = self.validate_patch(repo_path, patch_text, source_info=source_info)
             if not validation['valid']:
                 raise ValueError('Patch validation failed: %s' % '; '.join(validation['errors']))
 
@@ -292,7 +293,8 @@ class AutoFixAgent:
 
         snippet_lines = []
         for idx in range(start, end + 1):
-            snippet_lines.append('%d: %s' % (idx, source_lines[idx - 1]))
+            # Don't include line numbers in snippet - LLM may copy them as code!
+            snippet_lines.append(source_lines[idx - 1])
 
         return {
             'source_path': source_path,
@@ -301,6 +303,7 @@ class AutoFixAgent:
             'method': frame.get('method'),
             'line_no': line_no,
             'context_snippet': '\n'.join(snippet_lines),
+            'full_source': source_text,  # Include complete file for LLM to understand context
         }
 
     def build_prompt(self, raw_stack, source_info):
@@ -314,50 +317,69 @@ class AutoFixAgent:
         prompt.append('- 修改最少（最多 %d 行）' % max_patch_lines)
         prompt.append('- 保证代码编译通过')
         prompt.append('- 不修改方法签名或删除业务逻辑')
+        prompt.append('- 只修改上面给出的目标文件，且尽量只改问题行附近的局部代码')
+        prompt.append('- 不要修改 package 声明、import 语句、类名、方法签名或文件路径，除非修复绝对依赖它们')
+        prompt.append('- 不要猜测不存在的包名、类名或导入；如果不确定，返回 NO_SAFE_PATCH')
         prompt.append('- 优先使用 null check、边界检查等防御性编程')
+        prompt.append('- 【重要】返回的 patched_content 必须是 COMPLETE 修复后的完整源文件，从 package 到最后一行')
+        prompt.append('- 【重要】patched_content 必须可直接编译，不能包含任何代码片段、省略号(...)、行号前缀、或占位符')
+        prompt.append('- 【重要】返回时保持原文件的 package、imports、类声明、所有方法完整')
         prompt.append('')
         prompt.append('## 异常信息')
         prompt.append('```')
         prompt.append(raw_stack[:500])  # Limit stack size
         prompt.append('```')
         prompt.append('')
-        prompt.append('## 源码位置与上下文')
+        prompt.append('## 源码位置与问题上下文')
         prompt.append('文件: %s (repo 相对路径)' % source_info.get('repo_relative_path'))
         prompt.append('问题行: %s' % source_info.get('line_no'))
         prompt.append('方法: %s' % source_info.get('method'))
         prompt.append('')
+        prompt.append('### 问题行附近代码（7-8 行窗口）:')
         prompt.append('```java')
         prompt.append(source_info.get('context_snippet', ''))
         prompt.append('```')
         prompt.append('')
-        prompt.append('## 输出格式')
-        prompt.append('返回以下两种格式之一:')
+        
+        # Add complete file content
+        full_source = source_info.get('full_source', '')
+        if full_source:
+            prompt.append('### 原始完整文件内容（作为修改基础）:')
+            prompt.append('```java')
+            # Limit full source to avoid token explosion, but keep package+imports+class+methods
+            lines = full_source.splitlines()
+            if len(lines) > 150:
+                # Show first 100 lines and last 50 lines
+                prompt.append('\n'.join(lines[:100]))
+                prompt.append('... [中间部分省略] ...')
+                prompt.append('\n'.join(lines[-50:]))
+            else:
+                prompt.append(full_source)
+            prompt.append('```')
+            prompt.append('')
+        
+        prompt.append('## 输出格式说明')
+        prompt.append('你的任务是修改上面的完整文件内容，只改动需要修复的地方，然后返回修改后的完整文件。')
         prompt.append('')
-        prompt.append('### 选项 1: JSON 格式（推荐用于精确修改）')
+        prompt.append('返回以下格式之一:')
+        prompt.append('')
+        prompt.append('### 选项 1: JSON 格式（推荐）')
         prompt.append('```json')
         prompt.append('{')
         prompt.append('  "files": [')
         prompt.append('    {')
-        prompt.append('      "path": "src/main/java/...",')
-        prompt.append('      "patched_content": "完整的修复后文件内容"')
+        prompt.append('      "path": "src/main/java/com/fixflow/mall/service/OrderService.java",')
+        prompt.append('      "patched_content": "package com.fixflow.mall.service;\\n\\nimport ...;\\n\\npublic class OrderService {\\n  ...完整修改后的所有方法...\\n}"')
         prompt.append('    }')
         prompt.append('  ]')
         prompt.append('}')
         prompt.append('```')
         prompt.append('')
-        prompt.append('### 选项 2: Unified Diff 格式')
-        prompt.append('```')
-        prompt.append('--- a/src/main/java/...')
-        prompt.append('+++ b/src/main/java/...')
-        prompt.append('@@  ... @@')
-        prompt.append('修改内容')
-        prompt.append('```')
-        prompt.append('')
-        prompt.append('### 选项 3: 无安全补丁')
+        prompt.append('### 选项 2: 无法安全修复')
         prompt.append('如果无法生成安全补丁，返回: NO_SAFE_PATCH: 原因说明')
         return '\n'.join(prompt)
 
-    def validate_patch(self, repo_path, patch_text):
+    def validate_patch(self, repo_path, patch_text, source_info=None):
         """Validate patch text before applying."""
         max_patch_lines = int(self.config.get('max_patch_lines', 40))
         repo_root = os.path.abspath(repo_path)
@@ -387,6 +409,18 @@ class AutoFixAgent:
                     if os.path.exists(abs_path):
                         old_text = self.tools['file_io'].read_file(abs_path)
                     result['changed_lines'] += self._estimate_changed_lines(old_text, patched_content)
+
+                    if source_info and old_text:
+                        target_rel = os.path.normpath(str(source_info.get('repo_relative_path', '')))
+                        item_rel = os.path.normpath(str(rel_path))
+                        if target_rel and item_rel != target_rel:
+                            result['errors'].append('Patch touches files outside analyzed target: %s' % rel_path)
+                        else:
+                            line_no = source_info.get('line_no')
+                            # Run comprehensive structural checks
+                            struct_errors = self._validate_java_structure(old_text, patched_content, int(line_no) if line_no else None)
+                            if struct_errors:
+                                result['errors'].extend(struct_errors)
 
             else:
                 # Simple unified diff heuristics
@@ -421,6 +455,64 @@ class AutoFixAgent:
         changed += abs(len(old_lines) - len(new_lines))
         return changed
 
+    def _changes_are_localized(self, old_text, new_text, line_no, window=8):
+        """Return True when line changes stay close to the analyzed line.
+        
+        Checks:
+        1. package/import statements are not modified (critical Java structure)
+        2. All code changes fall within [line_no - window, line_no + window]
+        """
+        if not line_no:
+            return True
+
+        old_lines = old_text.splitlines()
+        new_lines = new_text.splitlines()
+
+        # 1) Reject any modification to package or import statements
+        def _top_section(lines):
+            pkg = None
+            imports = []
+            for ln in lines:
+                s = ln.strip()
+                if not s:
+                    continue
+                if s.startswith('package '):
+                    pkg = s
+                elif s.startswith('import '):
+                    imports.append(s)
+                else:
+                    break
+            return pkg, imports
+
+        old_pkg, old_imports = _top_section(old_lines)
+        new_pkg, new_imports = _top_section(new_lines)
+        if old_pkg != new_pkg or old_imports != new_imports:
+            return False
+
+        # 2) Ensure all non-header changes fall within window
+        matcher = difflib.SequenceMatcher(a=old_lines, b=new_lines)
+        lower = max(1, int(line_no) - int(window))
+        upper = int(line_no) + int(window)
+
+        for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+            if tag == 'equal':
+                continue
+            
+            # Skip opcode if it only touches the import/package section (lines 1-20)
+            # since we already validated those above
+            if i2 <= 20 and j2 <= 20:
+                continue
+            
+            # Check that changes in body fall within window
+            for line_index in range(i1 + 1, i2 + 1):
+                if line_index > 20 and (line_index < lower or line_index > upper):
+                    return False
+            for line_index in range(j1 + 1, j2 + 1):
+                if line_index > 20 and (line_index < lower or line_index > upper):
+                    return False
+
+        return True
+
     def _make_branch_name(self):
         prefix = self.config.get('branch_prefix', 'fix/')
         timestamp = datetime.now().strftime('%Y%m%d-%H%M%S')
@@ -436,4 +528,128 @@ class AutoFixAgent:
 
     def _is_no_safe_patch(self, patch_text):
         return isinstance(patch_text, str) and 'NO_SAFE_PATCH' in patch_text
+
+    def _validate_java_structure(self, old_text, new_text, line_no, window=8):
+        """Comprehensive validation for Java file patches.
+        
+        Ensures:
+        1. package declaration is unchanged
+        2. import list only grows (no deletions)
+        3. all original methods still exist (except those in window)
+        4. no massive line deletions outside window
+        
+        Returns list of error messages, or [] if valid.
+        """
+        errors = []
+        
+        old_lines = old_text.splitlines()
+        new_lines = new_text.splitlines()
+        
+        # Extract package and imports from both versions
+        def _extract_sections(lines):
+            pkg = None
+            imports = []
+            pkg_line = None
+            import_end = 0
+            
+            for idx, ln in enumerate(lines):
+                s = ln.strip()
+                if not s or s.startswith('//'):
+                    continue
+                if s.startswith('package '):
+                    pkg = s
+                    pkg_line = idx
+                elif s.startswith('import '):
+                    imports.append(s)
+                    import_end = idx
+                elif s.startswith('import ') or (pkg is not None and not s.startswith('import')):
+                    break
+            
+            return {'pkg': pkg, 'imports': sorted(imports), 'pkg_line': pkg_line, 'import_end': import_end}
+        
+        old_sec = _extract_sections(old_lines)
+        new_sec = _extract_sections(new_lines)
+        
+        # 1) Package must be identical
+        if old_sec['pkg'] != new_sec['pkg']:
+            errors.append('Package declaration was modified: "%s" -> "%s"' % (old_sec['pkg'], new_sec['pkg']))
+        
+        # 2) Imports must not be deleted or modified (only new imports allowed)
+        old_imports_set = set(old_sec['imports'])
+        new_imports_set = set(new_sec['imports'])
+        deleted_imports = old_imports_set - new_imports_set
+        modified_imports = []
+        for old_imp in old_sec['imports']:
+            for new_imp in new_sec['imports']:
+                if old_imp != new_imp and old_imp.split()[1] == new_imp.split()[1]:
+                    modified_imports.append('%s -> %s' % (old_imp, new_imp))
+        
+        if deleted_imports:
+            errors.append('Imports were deleted: %s' % ', '.join(deleted_imports))
+        if modified_imports:
+            errors.append('Imports were modified: %s' % '; '.join(modified_imports))
+        
+        # 3) Extract method signatures to ensure none are deleted outside window
+        method_sig_re = re.compile(r'^\s*(public|protected|private)\s+[\w<>,\s\[\]]+\s+([\w$]+)\s*\(')
+        
+        def _extract_methods(lines):
+            methods = {}
+            for idx, ln in enumerate(lines):
+                m = method_sig_re.match(ln)
+                if m:
+                    methods[m.group(2)] = idx + 1  # 1-based line number
+            return methods
+        
+        old_methods = _extract_methods(old_lines)
+        new_methods = _extract_methods(new_lines)
+        
+        if line_no:
+            lower = max(1, line_no - window)
+            upper = line_no + window
+            
+            # Check if any methods disappeared outside the window
+            deleted_methods = set(old_methods.keys()) - set(new_methods.keys())
+            for method_name in deleted_methods:
+                method_line = old_methods[method_name]
+                if method_line < lower or method_line > upper:
+                    errors.append('Method "%s" (line %d) was deleted outside the problem window' % (method_name, method_line))
+        
+        # 4) Detect massive line deletions outside window
+        if line_no and line_no > 0:
+            lower = max(1, line_no - window)
+            upper = line_no + window
+            
+            # Count deletions outside window
+            matcher = difflib.SequenceMatcher(a=old_lines, b=new_lines)
+            external_deletions = 0
+            for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+                if tag == 'delete' or tag == 'replace':
+                    for line_idx in range(i1 + 1, i2 + 1):
+                        if line_idx < lower or line_idx > upper:
+                            external_deletions += 1
+            
+            # If more than 20% of non-header lines deleted outside window, reject
+            non_header_lines = len(old_lines) - old_sec['import_end'] - 1
+            if non_header_lines > 0 and external_deletions > max(5, non_header_lines * 0.2):
+                errors.append('Too many lines deleted outside problem window: %d deletions detected' % external_deletions)
+        
+        # 5) Ensure new file is not drastically shorter (missing content)
+        old_non_empty = len([l for l in old_lines if l.strip()])
+        new_non_empty = len([l for l in new_lines if l.strip()])
+        if new_non_empty < old_non_empty * 0.5:
+            errors.append('New file has drastically fewer lines (%.0f%% of original size)' % (100 * new_non_empty / old_non_empty if old_non_empty else 0))
+        
+        # 6) Reject patches where code includes line-number prefixes (LLM artifact)
+        # Check for pattern like "123: code" or "59: //..." which indicates LLM copied snippet format
+        line_no_pattern = re.compile(r'^\s*\d+:\s+')
+        code_lines_with_prefix = 0
+        for ln in new_lines:
+            stripped = ln.strip()
+            if stripped and not stripped.startswith('//') and not stripped.startswith('*') and line_no_pattern.match(stripped):
+                code_lines_with_prefix += 1
+        
+        if code_lines_with_prefix > 0:
+            errors.append('CRITICAL: Patched code contains line-number prefixes (LLM copied snippet format). %d lines with prefix detected. This is NOT valid Java code.' % code_lines_with_prefix)
+        
+        return errors
 

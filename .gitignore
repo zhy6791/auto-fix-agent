@@ -1,9 +1,14 @@
-# 忽略 PyCharm 配置
-.idea/
-
-# 忽略 Python 缓存
-__pycache__/
+# Python 编译缓存
+**/__pycache__/
 *.pyc
 
-# 忽略运行报告 (如果你觉得不需要提交的话)
-agent_report_fix/*.json
+# 测试缓存
+.pytest_cache/
+
+# IDE & 编辑器
+.idea/
+.vscode/
+.claude/
+
+# 本地配置文件
+configs/*.local.yml
