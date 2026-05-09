@@ -6,6 +6,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from agents.auto_fix_agent import AutoFixAgent
 from tools import file_io, exec_cmd, git_manager
@@ -156,6 +157,43 @@ class TestAutoFixAgent(unittest.TestCase):
             universal_newlines=True,
         ).strip()
         self.assertTrue(current_branch.startswith('fix/'))
+
+    def test_build_llm_client_requires_env_key(self):
+        config = dict(self.config)
+        config['llm'] = dict(self.config['llm'])
+        config['llm']['api_key_env'] = 'MISSING_KEY_FOR_TEST'
+
+        with patch.dict(os.environ, {}, clear=True):
+            with self.assertRaises(ValueError) as ctx:
+                AutoFixAgent(
+                    config,
+                    tools={'file_io': file_io, 'exec_cmd': exec_cmd, 'git_manager': git_manager},
+                    llm_client=None,
+                )
+
+        self.assertIn('Missing LLM API key', str(ctx.exception))
+
+    def test_build_llm_client_reads_windows_registry_env(self):
+        config = dict(self.config)
+        config['llm'] = dict(self.config['llm'])
+        config['llm']['api_key_env'] = 'MIMO_API_KEY'
+
+        with patch.dict(os.environ, {}, clear=True), \
+             patch('agents.auto_fix_agent.os.name', 'nt'), \
+             patch('agents.auto_fix_agent.winreg') as mock_winreg:
+            mock_key = object()
+            mock_winreg.HKEY_CURRENT_USER = object()
+            mock_winreg.HKEY_LOCAL_MACHINE = object()
+            mock_winreg.OpenKey.return_value.__enter__.return_value = mock_key
+            mock_winreg.QueryValueEx.return_value = ('registry-secret', None)
+
+            agent = AutoFixAgent(
+                config,
+                tools={'file_io': file_io, 'exec_cmd': exec_cmd, 'git_manager': git_manager},
+                llm_client=None,
+            )
+
+        self.assertEqual(agent.llm_client.api_key, 'registry-secret')
 
     def test_validate_patch_rejects_non_local_java_changes(self):
         suspicious_source = self.original_source.replace(

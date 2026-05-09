@@ -77,6 +77,17 @@ class LLMClient:
             logger.error(f'LLM connection error: {e}')
             return f'NO_SAFE_PATCH: Connection error - {e}'
         except requests.exceptions.HTTPError as e:
+            response_text = ''
+            if e.response is not None:
+                try:
+                    response_text = e.response.text.strip()
+                except Exception:
+                    response_text = ''
+
+            if response_text:
+                logger.error(f'LLM HTTP error: {e}; response body: {response_text}')
+                return f'NO_SAFE_PATCH: HTTP error - {e.response.status_code}: {response_text}'
+
             logger.error(f'LLM HTTP error: {e}')
             return f'NO_SAFE_PATCH: HTTP error - {e.response.status_code}'
         except Exception as e:

@@ -12,6 +12,11 @@ import os
 import re
 from datetime import datetime
 
+try:
+    import winreg
+except ImportError:  # pragma: no cover - non-Windows platforms
+    winreg = None
+
 from tools import file_io, exec_cmd, git_manager
 from integrations.llm_client import LLMClient
 
@@ -37,12 +42,40 @@ class AutoFixAgent:
         temperature = llm_cfg.get('temperature', 0.2)
         timeout = int(llm_cfg.get('timeout', 300))
 
-        # Prefer actual environment variable, otherwise fall back to the configured value.
-        api_key = os.environ.get(api_key_ref)
+        api_key = self._resolve_env_var(api_key_ref)
         if not api_key:
-            api_key = api_key_ref
+            raise ValueError('Missing LLM API key in environment variable: %s' % api_key_ref)
 
         return LLMClient(api_key=api_key, model=model, temperature=temperature, base_url=base_url, timeout=timeout)
+
+    def _resolve_env_var(self, name):
+        if not name:
+            return ''
+
+        value = os.environ.get(name)
+        if value:
+            return value
+
+        if os.name != 'nt' or winreg is None:
+            return ''
+
+        registry_roots = [
+            (winreg.HKEY_CURRENT_USER, r'Environment'),
+            (winreg.HKEY_LOCAL_MACHINE, r'SYSTEM\CurrentControlSet\Control\Session Manager\Environment'),
+        ]
+
+        for root, subkey in registry_roots:
+            try:
+                with winreg.OpenKey(root, subkey) as key:
+                    value, _ = winreg.QueryValueEx(key, name)
+                    if value:
+                        return value
+            except FileNotFoundError:
+                continue
+            except OSError:
+                continue
+
+        return ''
 
     def run_pipeline(self, dry_run=True):
         """Run the full Phase 3 pipeline.
@@ -82,11 +115,19 @@ class AutoFixAgent:
 
             # Find the best frame to analyze: prioritize app code over framework
             best_frame = self._select_best_frame(repo_path, parsed_stack)
-            if not best_frame:
-                raise ValueError('Could not find analyzable frame in stack trace')
+            if best_frame:
+                # Traditional path: locate from stack trace
+                source_info = self.find_source_location(repo_path, best_frame)
+                detection_method = 'stack_trace'
+            else:
+                # New path: infer from exception message when no app frame found
+                source_info = self._infer_from_exception_message(repo_path, raw_stack, parsed_stack)
+                detection_method = 'exception_inference'
+                if not source_info:
+                    raise ValueError('Could not locate source from stack trace or exception message')
             
-            source_info = self.find_source_location(repo_path, best_frame)
             report['located_files'] = [source_info]
+            report['detection_method'] = detection_method
 
             prompt = self.build_prompt(raw_stack, source_info)
             report['prompt'] = prompt
@@ -118,8 +159,8 @@ class AutoFixAgent:
                     # Commit changes on the fix branch so they stay isolated
                     commit_msg = 'fix: auto-fix %s in %s.%s' % (
                         parsed_stack[0].get('exception_type', 'Exception'),
-                        best_frame.get('class_name', ''),
-                        best_frame.get('method', ''),
+                        source_info.get('class_name', ''),
+                        source_info.get('method', ''),
                     )
                     committed = self.tools['git_manager'].commit_changes(
                         repo_path, commit_msg, files=apply_result['files']
@@ -324,6 +365,15 @@ class AutoFixAgent:
         prompt.append('- 【重要】返回的 patched_content 必须是 COMPLETE 修复后的完整源文件，从 package 到最后一行')
         prompt.append('- 【重要】patched_content 必须可直接编译，不能包含任何代码片段、省略号(...)、行号前缀、或占位符')
         prompt.append('- 【重要】返回时保持原文件的 package、imports、类声明、所有方法完整')
+        prompt.append('')
+        
+        # If this is an inferred source (not from stack trace), add extra context
+        if source_info.get('inferred'):
+            prompt.append('## 重要提示')
+            prompt.append('本次异常是基于异常消息推断定位的源码位置，而不是从堆栈直接追踪。')
+            prompt.append('推断理由：%s' % source_info.get('reasoning', 'N/A'))
+            prompt.append('请特别注意：生成的补丁应该符合推断的问题描述，确保修复与异常消息一致。')
+            prompt.append('')
         prompt.append('')
         prompt.append('## 异常信息')
         prompt.append('```')
@@ -652,4 +702,204 @@ class AutoFixAgent:
             errors.append('CRITICAL: Patched code contains line-number prefixes (LLM copied snippet format). %d lines with prefix detected. This is NOT valid Java code.' % code_lines_with_prefix)
         
         return errors
+
+    def _infer_from_exception_message(self, repo_path, raw_stack, parsed_stack):
+        """When stack has no app frames, let LLM infer the source location.
+        
+        This handles framework-level exceptions (MissingPathVariableException,
+        BindingException, ValidationException, etc.) where the real bug is in
+        application code but the stack only shows framework code.
+        
+        Strategy:
+        1. Send raw exception to LLM with special "inference" prompt
+        2. LLM analyzes exception message and returns suspected source location
+        3. Verify the returned location exists before proceeding
+        
+        Returns source_info dict or None if inference fails.
+        """
+        try:
+            logger.info('Attempting to infer source location from exception message')
+            
+            # Build inference prompt
+            inference_prompt = self._build_inference_prompt(repo_path, raw_stack)
+            
+            max_tokens = int(self.config.get('max_tokens', 8192))
+            llm_response = self.llm_client.generate_patch(inference_prompt, max_tokens=max_tokens)
+            
+            logger.debug('LLM inference response: %s', llm_response[:500])
+            
+            # Parse LLM response for suspected file path and method
+            source_info = self._parse_inference_response(repo_path, llm_response)
+            
+            if source_info:
+                logger.info('Successfully inferred source location: %s', source_info.get('repo_relative_path'))
+            else:
+                logger.warning('Failed to parse or verify inferred source location')
+            
+            return source_info
+        except Exception as e:
+            logger.error('Exception during source inference: %s', e)
+            return None
+
+    def _build_inference_prompt(self, repo_path, raw_stack):
+        """Build a special prompt for LLM to infer source location from exception."""
+        
+        # Scan repo structure to help LLM understand codebase
+        app_packages = self._scan_app_packages(repo_path)
+        
+        prompt = []
+        prompt.append('## 任务：从异常消息反向定位源码位置')
+        prompt.append('')
+        prompt.append('你收到了一个 Java 异常，其堆栈主要是框架代码（Spring/Tomcat/Jakarta），')
+        prompt.append('但真正的 BUG 在应用代码中。请根据异常消息分析并推断：')
+        prompt.append('1. 最可能的源文件（完整路径或类名）')
+        prompt.append('2. 最可能的方法名')
+        prompt.append('3. 问题的简要说明')
+        prompt.append('')
+        prompt.append('## 项目结构')
+        if app_packages:
+            prompt.append('应用包名: %s' % ', '.join(app_packages[:5]))
+        else:
+            prompt.append('应用包名: (无法扫描，请自动推断)')
+        prompt.append('')
+        prompt.append('## 异常信息')
+        prompt.append('```')
+        prompt.append(raw_stack[:1200])
+        prompt.append('```')
+        prompt.append('')
+        prompt.append('## 输出格式')
+        prompt.append('返回 JSON:')
+        prompt.append('```json')
+        prompt.append('{')
+        prompt.append('  "suspected_file": "src/main/java/com/fixflow/mall/api/MallController.java",')
+        prompt.append('  "suspected_class": "com.fixflow.mall.api.MallController",')
+        prompt.append('  "suspected_method": "getOrder",')
+        prompt.append('  "reasoning": "MissingPathVariableException 说缺少 id 参数，likely @PathVariable 绑定错误"')
+        prompt.append('}')
+        prompt.append('```')
+        prompt.append('')
+        prompt.append('只返回 JSON，不要返回其他内容。')
+        
+        return '\n'.join(prompt)
+
+    def _scan_app_packages(self, repo_path):
+        """Scan repo to identify main application packages."""
+        packages = set()
+        repo_root = os.path.abspath(repo_path)
+        src_paths = [
+            os.path.join(repo_root, 'src', 'main', 'java'),
+            os.path.join(repo_root, 'src', 'main', 'kotlin'),
+        ]
+        
+        for src_path in src_paths:
+            if os.path.isdir(src_path):
+                for root, dirs, files in os.walk(src_path):
+                    # Get package path
+                    rel = os.path.relpath(root, src_path)
+                    if rel != '.' and not rel.startswith('.'):
+                        pkg = rel.replace(os.sep, '.').strip('.')
+                        if pkg:
+                            packages.add(pkg)
+        
+        return sorted(list(packages))[:10]
+
+    def _parse_inference_response(self, repo_path, llm_response):
+        """Parse LLM's inference response and verify source location."""
+        try:
+            # Extract JSON from response
+            if '```json' in llm_response:
+                start = llm_response.find('{')
+                end = llm_response.rfind('}') + 1
+                if start >= 0 and end > start:
+                    json_str = llm_response[start:end]
+                else:
+                    json_str = llm_response
+            else:
+                json_str = llm_response
+            
+            inferred = json.loads(json_str)
+        except (json.JSONDecodeError, ValueError) as e:
+            logger.warning('Could not parse LLM inference response: %s', llm_response[:200])
+            return None
+        
+        suspected_file = inferred.get('suspected_file', '')
+        suspected_class = inferred.get('suspected_class', '')
+        suspected_method = inferred.get('suspected_method', '')
+        reasoning = inferred.get('reasoning', '')
+        
+        # Try to locate the file
+        source_path = self._locate_file_by_class_or_path(repo_path, suspected_class, suspected_file)
+        
+        if not source_path or not os.path.exists(source_path):
+            logger.warning('Could not verify inferred file: %s / %s', suspected_file, suspected_class)
+            return None
+        
+        # Read file and extract context
+        try:
+            content = self.tools['file_io'].read_file(str(source_path))
+            lines = content.splitlines()
+            
+            # Find method if possible
+            method_line = self._find_method_line(lines, suspected_method) if suspected_method else None
+            if method_line is None:
+                method_line = max(1, len(lines) // 2)  # Fallback to middle
+            
+            # Extract context around suspected line
+            start = max(0, method_line - 4)
+            end = min(len(lines), method_line + 10)
+            snippet = '\n'.join(lines[start:end])
+            
+            repo_root = os.path.abspath(repo_path)
+            rel_path = os.path.relpath(str(source_path), repo_root)
+            
+            return {
+                'source_path': source_path,
+                'repo_relative_path': rel_path,
+                'class_name': suspected_class.split('.')[-1],
+                'method': suspected_method,
+                'line_no': method_line,
+                'context_snippet': snippet,
+                'full_source': content,
+                'inferred': True,  # Mark as inferred, not from stack
+                'reasoning': reasoning,
+            }
+        except Exception as e:
+            logger.error('Error reading inferred file: %s', e)
+            return None
+
+    def _locate_file_by_class_or_path(self, repo_path, class_name, file_path):
+        """Locate file by class name or file path."""
+        repo_root = os.path.abspath(repo_path)
+        
+        # Try file path first
+        if file_path:
+            candidate = os.path.join(repo_root, file_path.lstrip('/').lstrip('\\'))
+            if os.path.exists(candidate):
+                return candidate
+        
+        # Try class name
+        if class_name:
+            rel_candidate = class_name.replace('.', os.sep) + '.java'
+            candidates = [
+                os.path.join(repo_root, 'src', 'main', 'java', rel_candidate),
+                os.path.join(repo_root, 'src', 'test', 'java', rel_candidate),
+            ]
+            for cand in candidates:
+                if os.path.exists(cand):
+                    return cand
+        
+        return None
+
+    def _find_method_line(self, lines, method_name):
+        """Find the line number of a method definition."""
+        if not method_name:
+            return None
+        
+        # Match: public/private/protected ... methodName(
+        pattern = re.compile(r'(?:public|private|protected)?\s+\w+\s+' + re.escape(method_name) + r'\s*\(')
+        for idx, line in enumerate(lines):
+            if pattern.search(line):
+                return idx + 1  # 1-based line number
+        
+        return None
 
