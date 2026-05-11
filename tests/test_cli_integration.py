@@ -129,6 +129,55 @@ class TestCLIIntegration(unittest.TestCase):
         self.assertIn('not found', result.stderr)
 
 
+    def test_cli_help_includes_new_flags(self):
+        """Test that CLI --help shows new flags."""
+        result = subprocess.run(
+            [sys.executable, 'main.py', '--help'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=True
+        )
+        self.assertEqual(result.returncode, 0)
+        self.assertIn('--no-compile', result.stdout)
+        self.assertIn('--no-tests', result.stdout)
+        self.assertIn('--create-pr', result.stdout)
+        self.assertIn('--max-retries', result.stdout)
+
+    def test_cli_no_compile_flag(self):
+        """Test that --no-compile overrides config."""
+        os.environ['DUMMY_KEY'] = 'test-key'
+        try:
+            # Run dry-run with --no-compile to verify flag is accepted
+            result = subprocess.run(
+                [sys.executable, 'main.py', '--config', self.config_path,
+                 '--dry-run', '--no-compile'],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                universal_newlines=True,
+                timeout=10,
+            )
+            # Should complete (or fail for other reasons) without flag-related error
+            self.assertNotIn('unrecognized arguments', result.stderr)
+        finally:
+            del os.environ['DUMMY_KEY']
+
+    def test_cli_max_retries_flag(self):
+        """Test that --max-retries flag is accepted."""
+        os.environ['DUMMY_KEY'] = 'test-key'
+        try:
+            result = subprocess.run(
+                [sys.executable, 'main.py', '--config', self.config_path,
+                 '--dry-run', '--max-retries', '5'],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                universal_newlines=True,
+                timeout=10,
+            )
+            self.assertNotIn('unrecognized arguments', result.stderr)
+        finally:
+            del os.environ['DUMMY_KEY']
+
+
 if __name__ == '__main__':
     unittest.main()
 

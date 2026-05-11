@@ -3,10 +3,13 @@
 These stubs use GitPython if available; otherwise they fall back to subprocess.
 """
 
+import logging
 import os
 import re
 import subprocess
-from typing import Dict, Any
+from typing import Dict, Any, Optional, Tuple
+
+_git_logger = logging.getLogger(__name__)
 
 
 def detect_repo_root(path: str) -> str:
@@ -223,3 +226,47 @@ def _apply_diff_fallback(repo_path, patch_text, logger):
             logger.warning("Failed to patch file %s: %s", file_path, e)
 
     return applied_files
+
+
+def push_branch(repo_path, branch_name, remote='origin'):
+    """Push branch to remote. Returns True on success."""
+    try:
+        subprocess.check_call(
+            ["git", "-C", repo_path, "push", "-u", remote, branch_name],
+            timeout=60
+        )
+        return True
+    except subprocess.CalledProcessError as e:
+        _git_logger.error("Failed to push branch %s: %s", branch_name, e)
+        return False
+
+
+def get_remote_url(repo_path, remote='origin'):
+    """Get the remote URL. Returns empty string on failure."""
+    try:
+        out = subprocess.check_output(
+            ["git", "-C", repo_path, "remote", "get-url", remote],
+            universal_newlines=True
+        )
+        return out.strip()
+    except subprocess.CalledProcessError:
+        return ''
+
+
+def parse_gitee_owner_repo(remote_url):
+    """Parse owner and repo name from Gitee remote URL.
+
+    Handles formats:
+      - https://gitee.com/owner/repo.git
+      - git@gitee.com:owner/repo.git
+    Returns (owner, repo) or (None, None).
+    """
+    # HTTPS format
+    m = re.match(r'https?://gitee\.com/([^/]+)/([^/]+?)(?:\.git)?$', remote_url)
+    if m:
+        return m.group(1), m.group(2)
+    # SSH format
+    m = re.match(r'git@gitee\.com:([^/]+)/([^/]+?)(?:\.git)?$', remote_url)
+    if m:
+        return m.group(1), m.group(2)
+    return None, None

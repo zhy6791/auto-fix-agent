@@ -104,6 +104,23 @@ def print_report(report, output_file=None):
         else:
             print(f"   [FAIL] Build failed")
 
+    ci_result = report.get('ci_result', {})
+    if ci_result:
+        print(f"\nCI Pipeline:")
+        for stage in ci_result.get('stages_passed', []):
+            print(f"   [OK] {stage}")
+        for stage in ci_result.get('stages_failed', []):
+            print(f"   [FAIL] {stage}")
+        if ci_result.get('retries_used', 0) > 0:
+            print(f"   Retries used: {ci_result['retries_used']}")
+
+    pr_result = report.get('pr_result', {})
+    if pr_result:
+        if pr_result.get('pr_created'):
+            print(f"\n[OK] Pull Request created: {pr_result['pr_url']}")
+        elif pr_result.get('error'):
+            print(f"\n[WARN] PR creation failed: {pr_result['error']}")
+
     print("\n" + "="*70)
 
     if output_file:
@@ -147,7 +164,28 @@ Examples:
         action='store_true',
         help='Enable verbose logging'
     )
-    
+    parser.add_argument(
+        '--no-compile',
+        action='store_true',
+        help='Skip compile check even if run_compile_on_apply is set in config'
+    )
+    parser.add_argument(
+        '--no-tests',
+        action='store_true',
+        help='Skip test run even if run_tests_on_apply is set in config'
+    )
+    parser.add_argument(
+        '--create-pr',
+        action='store_true',
+        help='Enable Gitee PR creation (overrides gitee.enabled in config)'
+    )
+    parser.add_argument(
+        '--max-retries',
+        type=int,
+        default=None,
+        help='Maximum retry attempts on compile/test failure (default: from config)'
+    )
+
     args = parser.parse_args()
     
     if args.verbose:
@@ -159,7 +197,17 @@ Examples:
         
         logger.info("Validating configuration...")
         validate_config(config)
-        
+
+        if args.no_compile:
+            config['run_compile_on_apply'] = False
+        if args.no_tests:
+            config['run_tests_on_apply'] = False
+        if args.create_pr:
+            config.setdefault('gitee', {})
+            config['gitee']['enabled'] = True
+        if args.max_retries is not None:
+            config['max_retries'] = args.max_retries
+
         dry_run = not args.auto_apply
         logger.info(f"Starting agent pipeline (dry_run={dry_run})...")
         

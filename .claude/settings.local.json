@@ -5,7 +5,13 @@
       "Read(//d/workspace/mall-service/**)",
       "Bash(python -m main --config configs/config.yml --dry-run)",
       "Bash(python -c ' *)",
-      "Bash(python -m main --config configs/config.yml --auto-apply)"
+      "Bash(python -m main --config configs/config.yml --auto-apply)",
+      "Bash(python -m pytest tests/ -v)",
+      "Bash(npx *)"
     ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "input=$(cat); dir=$(basename \"$(echo \"$input\" | jq -r '.workspace.current_dir')\"); branch=$(cd \"$(echo \"$input\" | jq -r '.workspace.current_dir')\" && git branch --show-current 2>/dev/null); model=$(echo \"$input\" | jq -r '.model.display_name'); remaining=$(echo \"$input\" | jq -r '.context_window.remaining_percentage // \"?\"'); thinking_enabled=$(echo \"$input\" | jq -r '.thinking.enabled // false'); effort_level=$(echo \"$input\" | jq -r '.effort.level // \"\"'); thinking_str=\"\"; [ \"$thinking_enabled\" = \"true\" ] && { label=\"T\"; [ -n \"$effort_level\" ] && label=\"T:$effort_level\"; thinking_str=\" [$label]\"; }; branch_str=\"\"; [ -n \"$branch\" ] && branch_str=\" ($branch)\"; printf \"%s%s | %s%s | %s%% free\" \"$dir\" \"$branch_str\" \"$model\" \"$thinking_str\" \"$remaining\""
   }
 }

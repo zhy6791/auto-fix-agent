@@ -401,6 +401,200 @@ public class LineNumberTest {
         self.assertIn('line-number prefix', error_msgs.lower(), f"Expected line-number error, got: {error_msgs}")
 
 
+    def test_run_compile_maven(self):
+        """Test that _run_compile builds mvn compile command correctly."""
+        with patch.object(self.agent.tools['exec_cmd'], 'run') as mock_run:
+            mock_run.return_value = {'code': 0, 'stdout': '', 'stderr': ''}
+            self.agent._run_compile(self.repo_path)
+            mock_run.assert_called_once()
+            cmd = mock_run.call_args[0][0]
+            self.assertIn('compile', cmd)
+            self.assertIn('-q', cmd)
+            self.assertTrue(cmd[0] in ('mvn', 'mvn.cmd', 'mvn.bat'))
+            self.assertEqual(mock_run.call_args[1]['timeout'], 600)
+
+    def test_run_compile_gradle(self):
+        """Test that _run_compile builds gradle command correctly."""
+        config = dict(self.config)
+        config['java_build'] = 'gradle'
+        agent = AutoFixAgent(
+            config,
+            tools={'file_io': file_io, 'exec_cmd': exec_cmd, 'git_manager': git_manager},
+            llm_client=self.mock_llm,
+        )
+        with patch.object(agent.tools['exec_cmd'], 'run') as mock_run:
+            mock_run.return_value = {'code': 0, 'stdout': '', 'stderr': ''}
+            agent._run_compile(self.repo_path)
+            mock_run.assert_called_once()
+            cmd = mock_run.call_args[0][0]
+            self.assertIn('compileJava', cmd)
+            self.assertTrue(cmd[0] in ('gradle', 'gradle.bat', 'gradle.cmd'))
+
+    def test_run_tests_maven(self):
+        """Test that _run_tests builds mvn test command correctly."""
+        with patch.object(self.agent.tools['exec_cmd'], 'run') as mock_run:
+            mock_run.return_value = {'code': 0, 'stdout': '', 'stderr': ''}
+            self.agent._run_tests(self.repo_path)
+            mock_run.assert_called_once()
+            cmd = mock_run.call_args[0][0]
+            self.assertIn('test', cmd)
+            self.assertIn('-q', cmd)
+            self.assertTrue(cmd[0] in ('mvn', 'mvn.cmd', 'mvn.bat'))
+            self.assertEqual(mock_run.call_args[1]['timeout'], 1200)
+
+    def test_run_tests_gradle(self):
+        """Test that _run_tests builds gradle command correctly."""
+        config = dict(self.config)
+        config['java_build'] = 'gradle'
+        agent = AutoFixAgent(
+            config,
+            tools={'file_io': file_io, 'exec_cmd': exec_cmd, 'git_manager': git_manager},
+            llm_client=self.mock_llm,
+        )
+        with patch.object(agent.tools['exec_cmd'], 'run') as mock_run:
+            mock_run.return_value = {'code': 0, 'stdout': '', 'stderr': ''}
+            agent._run_tests(self.repo_path)
+            mock_run.assert_called_once()
+            cmd = mock_run.call_args[0][0]
+            self.assertIn('test', cmd)
+            self.assertTrue(cmd[0] in ('gradle', 'gradle.bat', 'gradle.cmd'))
+
+    def test_retry_on_compile_failure(self):
+        """Test that compile failure triggers retry with LLM feedback."""
+        config = dict(self.config)
+        config['run_compile_on_apply'] = True
+        config['max_retries'] = 1
+        agent = AutoFixAgent(
+            config,
+            tools={'file_io': file_io, 'exec_cmd': exec_cmd, 'git_manager': git_manager},
+            llm_client=self.mock_llm,
+        )
+
+        # First compile fails, second succeeds
+        with patch.object(agent, '_run_compile', side_effect=[
+            {'code': 1, 'stdout': '', 'stderr': 'compilation error: cannot find symbol'},
+            {'code': 0, 'stdout': 'BUILD SUCCESS', 'stderr': ''},
+        ]), patch.object(agent, '_retry_with_feedback', wraps=agent._retry_with_feedback) as mock_retry:
+            ci_result = agent._run_ci_pipeline(
+                self.repo_path,
+                source_info={'repo_relative_path': self.source_rel.replace('\\', '/'), 'line_no': 42},
+                raw_stack='test', parsed_stack=[{'exception_type': 'NullPointerException'}],
+                original_patch_text='dummy patch', original_prompt='dummy prompt'
+            )
+
+        self.assertIn('compile', ci_result['stages_passed'])
+        self.assertEqual(ci_result['retries_used'], 1)
+
+    def test_retry_exhausted(self):
+        """Test that exhausting all retries records failure."""
+        config = dict(self.config)
+        config['run_compile_on_apply'] = True
+        config['max_retries'] = 0
+        agent = AutoFixAgent(
+            config,
+            tools={'file_io': file_io, 'exec_cmd': exec_cmd, 'git_manager': git_manager},
+            llm_client=self.mock_llm,
+        )
+
+        with patch.object(agent, '_run_compile', return_value=
+            {'code': 1, 'stdout': '', 'stderr': 'error'}
+        ):
+            ci_result = agent._run_ci_pipeline(
+                self.repo_path,
+                source_info={'repo_relative_path': self.source_rel.replace('\\', '/'), 'line_no': 42},
+                raw_stack='test', parsed_stack=[{'exception_type': 'NullPointerException'}],
+                original_patch_text='dummy', original_prompt='dummy'
+            )
+
+        self.assertIn('compile', ci_result['stages_failed'])
+        self.assertNotIn('compile', ci_result['stages_passed'])
+
+    def test_no_retry_when_compile_passes(self):
+        """Test that passing compile does not trigger retry."""
+        config = dict(self.config)
+        config['run_compile_on_apply'] = True
+        agent = AutoFixAgent(
+            config,
+            tools={'file_io': file_io, 'exec_cmd': exec_cmd, 'git_manager': git_manager},
+            llm_client=self.mock_llm,
+        )
+
+        with patch.object(agent, '_run_compile', return_value=
+            {'code': 0, 'stdout': 'BUILD SUCCESS', 'stderr': ''}
+        ):
+            ci_result = agent._run_ci_pipeline(
+                self.repo_path,
+                source_info={'repo_relative_path': self.source_rel.replace('\\', '/'), 'line_no': 42},
+                raw_stack='test', parsed_stack=[{'exception_type': 'NullPointerException'}],
+                original_patch_text='dummy', original_prompt='dummy'
+            )
+
+        self.assertIn('compile', ci_result['stages_passed'])
+        self.assertEqual(ci_result['retries_used'], 0)
+
+    def test_retry_stops_on_no_safe_patch(self):
+        """Test that retry stops when LLM returns NO_SAFE_PATCH."""
+        config = dict(self.config)
+        config['run_compile_on_apply'] = True
+        config['max_retries'] = 2
+        agent = AutoFixAgent(
+            config,
+            tools={'file_io': file_io, 'exec_cmd': exec_cmd, 'git_manager': git_manager},
+            llm_client=self.mock_llm,
+        )
+
+        # LLM returns NO_SAFE_PATCH on retry
+        with patch.object(agent.llm_client, 'generate_patch',
+                          return_value='NO_SAFE_PATCH: Cannot fix'):
+            with patch.object(agent, '_run_compile', side_effect=[
+                {'code': 1, 'stdout': '', 'stderr': 'error'},
+                {'code': 0, 'stdout': '', 'stderr': ''},
+            ]):
+                ci_result = agent._run_ci_pipeline(
+                    self.repo_path,
+                    source_info={'repo_relative_path': self.source_rel.replace('\\', '/'), 'line_no': 42},
+                    raw_stack='test', parsed_stack=[{'exception_type': 'NullPointerException'}],
+                    original_patch_text='dummy', original_prompt='dummy'
+                )
+
+        self.assertIn('compile', ci_result['stages_failed'])
+        self.assertEqual(ci_result['retries_used'], 1)  # 1 LLM retry attempted
+
+    def test_compile_aborts_when_tool_missing(self):
+        """Test that CI aborts immediately when mvn/gradle is not installed."""
+        config = dict(self.config)
+        config['run_compile_on_apply'] = True
+        config['max_retries'] = 3
+        agent = AutoFixAgent(
+            config,
+            tools={'file_io': file_io, 'exec_cmd': exec_cmd, 'git_manager': git_manager},
+            llm_client=self.mock_llm,
+        )
+
+        with patch.object(agent, '_run_compile', return_value=
+            {'code': -1, 'stdout': '', 'stderr': 'Command not found: mvn'}
+        ):
+            ci_result = agent._run_ci_pipeline(
+                self.repo_path,
+                source_info={'repo_relative_path': self.source_rel.replace('\\', '/'), 'line_no': 42},
+                raw_stack='test', parsed_stack=[{'exception_type': 'NullPointerException'}],
+                original_patch_text='dummy', original_prompt='dummy'
+            )
+
+        self.assertIn('compile', ci_result['stages_failed'])
+        self.assertEqual(ci_result['retries_used'], 0)
+        self.assertIn('Build tool not installed', ci_result['patch_history'][0]['error'])
+
+    def test_is_tool_missing(self):
+        """Test _is_tool_missing static method."""
+        self.assertTrue(AutoFixAgent._is_tool_missing(
+            {'stderr': 'Command not found: mvn', 'stdout': ''}
+        ))
+        self.assertFalse(AutoFixAgent._is_tool_missing(
+            {'stderr': 'compilation error: cannot find symbol', 'stdout': ''}
+        ))
+
+
 if __name__ == '__main__':
     unittest.main()
 

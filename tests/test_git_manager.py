@@ -6,7 +6,7 @@ import tempfile
 import subprocess
 import unittest
 import time
-from tools.git_manager import detect_repo_root, create_branch, apply_patch
+from tools.git_manager import detect_repo_root, create_branch, apply_patch, parse_gitee_owner_repo
 
 
 class TestGitManager(unittest.TestCase):
@@ -129,9 +129,29 @@ class TestGitManager(unittest.TestCase):
         """Test applying invalid JSON patch."""
         patch_text = "{ invalid json }"
         result = apply_patch(self.repo_path, patch_text)
-        
+
         self.assertFalse(result["applied"])
         self.assertTrue(len(result["errors"]) > 0)
+
+    def test_parse_gitee_owner_repo_https(self):
+        owner, repo = parse_gitee_owner_repo('https://gitee.com/owner/repo.git')
+        self.assertEqual(owner, 'owner')
+        self.assertEqual(repo, 'repo')
+
+    def test_parse_gitee_owner_repo_https_without_git(self):
+        owner, repo = parse_gitee_owner_repo('https://gitee.com/owner/repo')
+        self.assertEqual(owner, 'owner')
+        self.assertEqual(repo, 'repo')
+
+    def test_parse_gitee_owner_repo_ssh(self):
+        owner, repo = parse_gitee_owner_repo('git@gitee.com:owner/repo.git')
+        self.assertEqual(owner, 'owner')
+        self.assertEqual(repo, 'repo')
+
+    def test_parse_gitee_owner_repo_non_gitee(self):
+        owner, repo = parse_gitee_owner_repo('https://github.com/owner/repo.git')
+        self.assertIsNone(owner)
+        self.assertIsNone(repo)
 
 
 if __name__ == '__main__':

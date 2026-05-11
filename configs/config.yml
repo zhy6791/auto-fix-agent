@@ -18,5 +18,17 @@ llm:
 max_patch_lines: 40
 max_tokens: 8192
 auto_apply: false
+run_compile_on_apply: true
 run_tests_on_apply: false
+max_retries: 3
+
+# Gitee integration (for PR creation)
+gitee:
+  enabled: true // 控制是否启用 Gitee 集成，默认为 false
+  owner: "ch6enle"                     # auto-detected from git remote if empty
+  repo: "mall-service"                      # auto-detected from git remote if empty
+  access_token_env: "089c2d475d16140472cce6629deaa2d7"
+  api_base_url: "https://gitee.com/api/v5"
+  target_branch: "zhy"
+  pr_title_template: "fix: auto-fix {exception_type} in {class_name}"
 

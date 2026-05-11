@@ -19,6 +19,7 @@ except ImportError:  # pragma: no cover - non-Windows platforms
 
 from tools import file_io, exec_cmd, git_manager
 from integrations.llm_client import LLMClient
+from integrations.gitee_client import GiteeClient
 
 
 logger = logging.getLogger(__name__)
@@ -93,6 +94,8 @@ class AutoFixAgent:
             'branch_name': '',
             'apply_result': {'applied': False, 'files': [], 'errors': [], 'dry_run': dry_run},
             'build_result': None,
+            'ci_result': None,
+            'pr_result': None,
             'error': None,
         }
 
@@ -168,8 +171,18 @@ class AutoFixAgent:
                     report['apply_result']['committed'] = committed
                     logger.info("Committed on branch %s: %s", branch_name, committed)
 
-                if self.config.get('run_tests_on_apply') and apply_result.get('applied'):
-                    report['build_result'] = self._run_build(repo_path)
+                if apply_result.get('applied'):
+                    ci_result = self._run_ci_pipeline(
+                        repo_path, source_info, raw_stack, parsed_stack,
+                        report['patch_text'], report['prompt']
+                    )
+                    report['ci_result'] = ci_result
+
+                    if self.config.get('gitee', {}).get('enabled', False) and \
+                            'compile' in ci_result.get('stages_passed', []):
+                        report['pr_result'] = self._push_and_create_pr(
+                            repo_path, branch_name, parsed_stack, source_info, ci_result
+                        )
             else:
                 report['apply_result'] = {
                     'applied': False,
@@ -568,13 +581,311 @@ class AutoFixAgent:
         timestamp = datetime.now().strftime('%Y%m%d-%H%M%S')
         return '%sauto-%s' % (prefix, timestamp)
 
-    def _run_build(self, repo_path):
-        build_tool = self.config.get('java_build', 'maven')
-        if build_tool == 'maven':
-            cmd = ['mvn', 'test']
+    @staticmethod
+    def _resolve_build_cmd(repo_path, build_tool, *args):
+        """Return [executable, ...args] preferring project wrapper scripts.
+
+        Checks for mvnw/mvnw.cmd (Maven) or gradlew/gradlew.bat (Gradle) in
+        repo_path first, then tries the system command with .cmd/.bat
+        extensions on Windows before falling back to the bare name.
+        """
+        import shutil
+
+        if build_tool == 'gradle':
+            wrapper_candidates = ['gradlew.bat', 'gradlew']
+            system_candidates = ['gradle.bat', 'gradle.cmd', 'gradle']
         else:
-            cmd = ['gradle', 'test']
+            wrapper_candidates = ['mvnw.cmd', 'mvnw']
+            system_candidates = ['mvn.cmd', 'mvn.bat', 'mvn']
+
+        for name in wrapper_candidates:
+            p = os.path.join(repo_path, name)
+            if os.path.isfile(p):
+                return [p] + list(args)
+
+        for name in system_candidates:
+            if shutil.which(name):
+                return [name] + list(args)
+
+        return [system_candidates[-1]] + list(args)
+
+    def _run_compile(self, repo_path):
+        """Run compile-only check (no tests)."""
+        build_tool = self.config.get('java_build', 'maven')
+        if build_tool == 'gradle':
+            cmd = self._resolve_build_cmd(repo_path, 'gradle', 'compileJava')
+        else:
+            cmd = self._resolve_build_cmd(repo_path, 'maven', 'compile', '-q')
+        return self.tools['exec_cmd'].run(cmd, cwd=repo_path, timeout=600)
+
+    def _run_tests(self, repo_path):
+        """Run unit tests."""
+        build_tool = self.config.get('java_build', 'maven')
+        if build_tool == 'gradle':
+            cmd = self._resolve_build_cmd(repo_path, 'gradle', 'test')
+        else:
+            cmd = self._resolve_build_cmd(repo_path, 'maven', 'test', '-q')
         return self.tools['exec_cmd'].run(cmd, cwd=repo_path, timeout=1200)
+
+    @staticmethod
+    def _is_tool_missing(build_result):
+        """Return True if the build failed because the tool itself is missing."""
+        stderr = (build_result.get('stderr', '') or '').lower()
+        return 'command not found' in stderr or 'filenotfounderror' in stderr.replace(' ', '')
+
+    def _run_ci_pipeline(self, repo_path, source_info, raw_stack, parsed_stack,
+                         original_patch_text, original_prompt):
+        """Run compile then tests, with LLM retry on failure.
+
+        Returns dict: {compile_result, test_result, retries_used, patch_history,
+                       stages_passed, stages_failed}
+        """
+        max_retries = int(self.config.get('max_retries', 3))
+        run_compile = self.config.get('run_compile_on_apply', False)
+        run_tests = self.config.get('run_tests_on_apply', False)
+
+        ci_result = {
+            'compile_result': None,
+            'test_result': None,
+            'retries_used': 0,
+            'patch_history': [],
+            'stages_passed': [],
+            'stages_failed': [],
+        }
+
+        if not run_compile and not run_tests:
+            return ci_result
+
+        current_patch = original_patch_text
+        current_prompt = original_prompt
+        retry_files = []
+
+        # Stage 1: Compile with retry
+        if run_compile:
+            for attempt in range(max_retries + 1):
+                compile_result = self._run_compile(repo_path)
+                if compile_result['code'] == 0:
+                    ci_result['compile_result'] = compile_result
+                    ci_result['stages_passed'].append('compile')
+                    break
+
+                # System-level failures cannot be fixed by LLM
+                if self._is_tool_missing(compile_result):
+                    ci_result['compile_result'] = compile_result
+                    ci_result['stages_failed'].append('compile')
+                    ci_result['patch_history'].append({
+                        'stage': 'compile',
+                        'attempt': attempt + 1,
+                        'error': 'Build tool not installed: %s'
+                                 % (compile_result.get('stderr', '') or '').strip(),
+                    })
+                    break
+
+                ci_result['patch_history'].append({
+                    'stage': 'compile',
+                    'attempt': attempt + 1,
+                    'error': (compile_result.get('stderr', '') or '')[:2000],
+                })
+                if attempt >= max_retries:
+                    ci_result['compile_result'] = compile_result
+                    ci_result['stages_failed'].append('compile')
+                    break
+
+                # Only count actual LLM retries (not the first failed attempt)
+                ci_result['retries_used'] += 1
+                new_patch = self._retry_with_feedback(
+                    current_prompt, source_info, 'compile',
+                    compile_result, repo_path
+                )
+                if new_patch is None:
+                    ci_result['stages_failed'].append('compile')
+                    break
+                apply_result = self.tools['git_manager'].apply_patch(repo_path, new_patch)
+                retry_files.extend(apply_result.get('files', []))
+                current_patch = new_patch
+
+        # Stage 2: Tests (only if compile passed)
+        if run_tests and 'compile' not in ci_result['stages_failed']:
+            for attempt in range(max_retries + 1):
+                test_result = self._run_tests(repo_path)
+                if test_result['code'] == 0:
+                    ci_result['test_result'] = test_result
+                    ci_result['stages_passed'].append('tests')
+                    break
+
+                if self._is_tool_missing(test_result):
+                    ci_result['test_result'] = test_result
+                    ci_result['stages_failed'].append('tests')
+                    ci_result['patch_history'].append({
+                        'stage': 'tests',
+                        'attempt': attempt + 1,
+                        'error': 'Test tool not installed: %s'
+                                 % (test_result.get('stderr', '') or '').strip(),
+                    })
+                    break
+
+                ci_result['patch_history'].append({
+                    'stage': 'tests',
+                    'attempt': attempt + 1,
+                    'error': (test_result.get('stderr', '') or '')[:2000],
+                })
+                if attempt >= max_retries:
+                    ci_result['test_result'] = test_result
+                    ci_result['stages_failed'].append('tests')
+                    break
+
+                ci_result['retries_used'] += 1
+                new_patch = self._retry_with_feedback(
+                    current_prompt, source_info, 'tests',
+                    test_result, repo_path
+                )
+                if new_patch is None:
+                    ci_result['stages_failed'].append('tests')
+                    break
+                apply_result = self.tools['git_manager'].apply_patch(repo_path, new_patch)
+                retry_files.extend(apply_result.get('files', []))
+                current_patch = new_patch
+
+        if ci_result['retries_used'] > 0 and current_patch != original_patch_text and retry_files:
+            self.tools['git_manager'].commit_changes(
+                repo_path,
+                'fix: retry patch (%d LLM retries)' % ci_result['retries_used'],
+                files=list(set(retry_files))
+            )
+
+        return ci_result
+
+    def _retry_with_feedback(self, original_prompt, source_info, failed_stage,
+                             build_result, repo_path):
+        """Feed build/test failure back to LLM for a corrected patch.
+
+        Returns new patch text, or None if LLM cannot fix.
+        """
+        error_output = (build_result.get('stderr', '') or '')[:3000]
+        if not error_output:
+            error_output = (build_result.get('stdout', '') or '')[:3000]
+
+        retry_prompt = self._build_retry_prompt(
+            original_prompt, source_info, failed_stage, error_output
+        )
+
+        max_tokens = int(self.config.get('max_tokens', 8192))
+        new_patch_text = self.llm_client.generate_patch(retry_prompt, max_tokens=max_tokens)
+
+        if self._is_no_safe_patch(new_patch_text):
+            return None
+
+        validation = self.validate_patch(repo_path, new_patch_text, source_info=source_info)
+        if not validation['valid']:
+            logger.warning('Retry patch failed validation: %s', '; '.join(validation['errors']))
+            return None
+
+        return new_patch_text
+
+    def _build_retry_prompt(self, original_prompt, source_info, failed_stage, error_output):
+        """Build a prompt asking the LLM to fix compile/test failures."""
+        stage_cn = '编译' if failed_stage == 'compile' else '单元测试'
+
+        lines = []
+        lines.append('## 修复任务：你的上一个补丁导致了%s失败' % stage_cn)
+        lines.append('')
+        lines.append('请分析下面的错误输出，并生成一个新的修复补丁。')
+        lines.append('')
+        lines.append('## 原始修复任务（上下文）')
+        lines.append(original_prompt)
+        lines.append('')
+        lines.append('## %s 错误输出' % stage_cn)
+        lines.append('```')
+        lines.append(error_output)
+        lines.append('```')
+        lines.append('')
+        lines.append('## 要求')
+        lines.append('- 修复导致 %s 失败的问题' % stage_cn)
+        lines.append('- 保持原来针对异常的正确修复不丢失')
+        lines.append('- 返回格式与之前相同：JSON 格式的补丁')
+        lines.append('- 如果无法同时满足编译和修复异常，优先保证编译通过')
+
+        return '\n'.join(lines)
+
+    def _push_and_create_pr(self, repo_path, branch_name, parsed_stack, source_info,
+                             ci_result):
+        """Push branch to remote and create a Gitee PR.
+
+        Returns dict: {pr_created: bool, pr_url: str, pr_number: int, error: str}
+        """
+        result = {'pr_created': False, 'pr_url': '', 'pr_number': None, 'error': None}
+
+        gitee_cfg = self.config.get('gitee', {}) or {}
+        if not gitee_cfg.get('enabled', False):
+            result['error'] = 'Gitee integration not enabled'
+            return result
+
+        owner = gitee_cfg.get('owner', '')
+        repo = gitee_cfg.get('repo', '')
+        if not owner or not repo:
+            remote_url = self.tools['git_manager'].get_remote_url(repo_path)
+            parsed_owner, parsed_repo = self.tools['git_manager'].parse_gitee_owner_repo(remote_url)
+            owner = owner or parsed_owner
+            repo = repo or parsed_repo
+
+        if not owner or not repo:
+            result['error'] = 'Could not determine Gitee owner/repo. Configure gitee.owner and gitee.repo in config.yml'
+            return result
+
+        pushed = self.tools['git_manager'].push_branch(repo_path, branch_name)
+        if not pushed:
+            result['error'] = 'Failed to push branch to remote'
+            return result
+
+        token_env = gitee_cfg.get('access_token_env', 'GITEE_TOKEN')
+        access_token = self._resolve_env_var(token_env)
+        if not access_token and token_env:
+            access_token = token_env
+        if not access_token:
+            result['error'] = 'Gitee access token not configured (set access_token_env)'
+            return result
+
+        gitee_client = GiteeClient(
+            access_token=access_token,
+            base_url=gitee_cfg.get('api_base_url', 'https://gitee.com/api/v5')
+        )
+
+        exception_type = parsed_stack[0].get('exception_type', 'Exception') if parsed_stack else 'Exception'
+        class_name = source_info.get('class_name', 'unknown') if source_info else 'unknown'
+        title_template = gitee_cfg.get('pr_title_template', 'fix: auto-fix {exception_type} in {class_name}')
+        title = title_template.format(exception_type=exception_type, class_name=class_name)
+
+        body_lines = [
+            '## Auto-Fix PR',
+            '',
+            'This PR was automatically generated by auto-fix-agent.',
+            '',
+            '### Exception',
+            '```',
+            parsed_stack[0].get('exception_type', 'Unknown') if parsed_stack else 'Unknown',
+            '```',
+            '',
+            '### CI Pipeline',
+        ]
+        for stage in ci_result.get('stages_passed', []):
+            body_lines.append('- [OK] %s' % stage)
+        for stage in ci_result.get('stages_failed', []):
+            body_lines.append('- [FAIL] %s' % stage)
+        body = '\n'.join(body_lines)
+
+        target_branch = gitee_cfg.get('target_branch', 'main')
+
+        pr_result = gitee_client.create_pull_request(
+            owner=owner, repo=repo, title=title,
+            head=branch_name, base=target_branch, body=body
+        )
+
+        result['pr_created'] = pr_result['success']
+        result['pr_url'] = pr_result.get('url', '')
+        result['pr_number'] = pr_result.get('number')
+        result['error'] = pr_result.get('error')
+
+        return result
 
     def _is_no_safe_patch(self, patch_text):
         return isinstance(patch_text, str) and 'NO_SAFE_PATCH' in patch_text
