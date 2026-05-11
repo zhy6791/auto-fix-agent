@@ -171,6 +171,34 @@ class AutoFixAgent:
                     report['apply_result']['committed'] = committed
                     logger.info("Committed on branch %s: %s", branch_name, committed)
 
+                # Generate and apply test patch if enabled
+                if apply_result.get('applied'):
+                    test_gen_cfg = self.config.get('test_generation', {})
+                    if test_gen_cfg.get('enabled', False) and test_gen_cfg.get('framework') == 'junit5':
+                        try:
+                            test_patch = self.generate_test_patch(source_info, report['patch_text'])
+                            if not self._is_no_safe_patch(test_patch):
+                                test_validation = self.validate_patch(repo_path, test_patch, source_info=source_info)
+                                if test_validation['valid']:
+                                    test_apply = self.tools['git_manager'].apply_patch(repo_path, test_patch)
+                                    if test_apply.get('applied'):
+                                        test_committed = self.tools['git_manager'].commit_changes(
+                                            repo_path, 'test: auto-generate unit tests for %s' % source_info.get('method', 'test'),
+                                            files=test_apply.get('files', [])
+                                        )
+                                        report['test_patch_applied'] = True
+                                        report['test_generation_result'] = {'generated': True, 'files': test_apply.get('files', [])}
+                                        logger.info("Generated and applied test patch: %s", test_apply.get('files', []))
+                                    else:
+                                        report['test_generation_result'] = {'generated': False, 'error': 'Failed to apply test patch'}
+                                else:
+                                    report['test_generation_result'] = {'generated': False, 'error': '; '.join(test_validation['errors'])}
+                            else:
+                                report['test_generation_result'] = {'generated': False, 'error': 'LLM cannot generate safe tests'}
+                        except Exception as e:
+                            logger.warning('Test generation failed: %s', str(e))
+                            report['test_generation_result'] = {'generated': False, 'error': str(e)}
+
                 if apply_result.get('applied'):
                     ci_result = self._run_ci_pipeline(
                         repo_path, source_info, raw_stack, parsed_stack,
@@ -442,6 +470,67 @@ class AutoFixAgent:
         prompt.append('如果无法生成安全补丁，返回: NO_SAFE_PATCH: 原因说明')
         return '\n'.join(prompt)
 
+    def build_test_prompt(self, source_info, fix_patch_text):
+        """Build LLM prompt for generating JUnit5 unit tests (Strategy B: target + boundaries + regression).
+        
+        Returns a prompt asking LLM to generate a test class with:
+        - Exception reproduction test
+        - Boundary value tests  
+        - Regression tests for the method
+        """
+        lines = []
+        lines.append('## 任务')
+        lines.append('基于以下修复内容，生成一个 JUnit5 单元测试类来验证修复的正确性。')
+        lines.append('')
+        lines.append('## 要求')
+        lines.append('- 测试框架：JUnit5（org.junit.jupiter.api）')
+        lines.append('- 测试类名：以 "Test" 结尾（如 HelloControllerTest）')
+        lines.append('- 生成 3-5 个测试用例，包括：')
+        lines.append('  1. 异常复现：触发原异常的输入场景')
+        lines.append('  2. 修复验证：验证修复后该场景不再报错')
+        lines.append('  3. 边界值：null、空字符串、边界数值等')
+        lines.append('  4. 回归测试：正常路径的功能验证')
+        lines.append('- 使用 @Test、@DisplayName、@ParameterizedTest 等 JUnit5 注解')
+        lines.append('- 必须使用 assertEquals、assertTrue、assertThrows 等断言')
+        lines.append('- 完整的 package、imports、类声明、所有方法')
+        lines.append('- 返回时保持原 package 和所有 imports 完整')
+        lines.append('')
+        lines.append('## 被修复的方法')
+        lines.append('类名：%s' % source_info.get('class_name', 'Unknown'))
+        lines.append('方法：%s' % source_info.get('method', 'unknown'))
+        lines.append('文件：%s' % source_info.get('repo_relative_path', 'unknown'))
+        lines.append('')
+        lines.append('## 修复补丁内容（参考）')
+        lines.append('```')
+        lines.append(fix_patch_text[:1000])
+        if len(fix_patch_text) > 1000:
+            lines.append('... [补丁内容较长，摘要] ...')
+        lines.append('```')
+        lines.append('')
+        lines.append('## 输出格式')
+        lines.append('返回 JSON 格式：')
+        lines.append('```json')
+        lines.append('{')
+        lines.append('  "files": [')
+        lines.append('    {')
+        lines.append('      "path": "src/test/java/com/example/demo/controller/HelloControllerTest.java",')
+        lines.append('      "patched_content": "package com.example.demo.controller;\\n\\nimport org.junit.jupiter.api.*;\\n\\npublic class HelloControllerTest {\\n  @Test\\n  void testSayHelloWithNull() {\\n    ...\\n  }\\n}"')
+        lines.append('    }')
+        lines.append('  ]')
+        lines.append('}')
+        lines.append('```')
+        lines.append('')
+        lines.append('若无法生成安全测试，返回: NO_SAFE_PATCH: 原因说明')
+        
+        return '\n'.join(lines)
+
+    def generate_test_patch(self, source_info, fix_patch_text):
+        """Generate JUnit5 test patch via LLM."""
+        test_prompt = self.build_test_prompt(source_info, fix_patch_text)
+        max_tokens = int(self.config.get('max_tokens', 8192))
+        test_patch_text = self.llm_client.generate_patch(test_prompt, max_tokens=max_tokens)
+        return test_patch_text
+
     def validate_patch(self, repo_path, patch_text, source_info=None):
         """Validate patch text before applying."""
         max_patch_lines = int(self.config.get('max_patch_lines', 40))
@@ -476,7 +565,9 @@ class AutoFixAgent:
                     if source_info and old_text:
                         target_rel = os.path.normpath(str(source_info.get('repo_relative_path', '')))
                         item_rel = os.path.normpath(str(rel_path))
-                        if target_rel and item_rel != target_rel:
+                        # Allow test patches in src/test/java/ even if they differ from target
+                        is_test_file = 'src/test/java' in str(rel_path).replace('\\', '/')
+                        if target_rel and item_rel != target_rel and not is_test_file:
                             result['errors'].append('Patch touches files outside analyzed target: %s' % rel_path)
                         else:
                             line_no = source_info.get('line_no')
@@ -820,7 +911,15 @@ class AutoFixAgent:
             result['error'] = 'Gitee integration not enabled'
             return result
 
+        # Check if tests are required and if they passed
+        test_gen_cfg = self.config.get('test_generation', {})
+        if test_gen_cfg.get('enabled', False) and gitee_cfg.get('require_tests_to_pass_for_pr', True):
+            if 'tests' not in ci_result.get('stages_passed', []):
+                result['error'] = 'Tests must pass before PR can be created (tests failed or skipped)'
+                return result
+
         owner = gitee_cfg.get('owner', '')
+
         repo = gitee_cfg.get('repo', '')
         if not owner or not repo:
             remote_url = self.tools['git_manager'].get_remote_url(repo_path)

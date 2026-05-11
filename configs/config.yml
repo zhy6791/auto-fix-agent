@@ -19,16 +19,27 @@ max_patch_lines: 40
 max_tokens: 8192
 auto_apply: false
 run_compile_on_apply: true
-run_tests_on_apply: false
+run_tests_on_apply: true
 max_retries: 3
+
+# Test generation configuration (Strategy B: target + boundaries + regression)
+test_generation:
+  enabled: true
+  strategy: "B"  # Option A: only target method / Option B: target + boundaries + regression
+  framework: "junit5"  # Only Maven + JUnit5 supported for now
+  max_test_cases: 5
+  max_test_files: 1
+  test_class_suffix: "Test"
 
 # Gitee integration (for PR creation)
 gitee:
-  enabled: true // 控制是否启用 Gitee 集成，默认为 false
+  enabled: true
   owner: "ch6enle"                     # auto-detected from git remote if empty
   repo: "mall-service"                      # auto-detected from git remote if empty
   access_token_env: "089c2d475d16140472cce6629deaa2d7"
   api_base_url: "https://gitee.com/api/v5"
   target_branch: "zhy"
   pr_title_template: "fix: auto-fix {exception_type} in {class_name}"
+  # When tests are enabled, require both compile + tests to pass before PR
+  require_tests_to_pass_for_pr: true
 

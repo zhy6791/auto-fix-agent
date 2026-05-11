@@ -594,6 +594,79 @@ public class LineNumberTest {
             {'stderr': 'compilation error: cannot find symbol', 'stdout': ''}
         ))
 
+    def test_build_test_prompt(self):
+        """Test that build_test_prompt generates a valid JUnit5 test prompt."""
+        source_info = {
+            'class_name': 'com.example.demo.controller.HelloController',
+            'method': 'sayHello',
+            'repo_relative_path': 'src/main/java/com/example/demo/controller/HelloController.java',
+        }
+        patch_text = '''{"files": [{"path": "...", "patched_content": "..."}]}'''
+        
+        prompt = self.agent.build_test_prompt(source_info, patch_text)
+        
+        self.assertIn('JUnit5', prompt)
+        self.assertIn('HelloController', prompt)
+        self.assertIn('sayHello', prompt)
+        self.assertIn('@Test', prompt)
+        self.assertIn('src/test/java', prompt)
+
+    def test_generate_test_patch(self):
+        """Test that generate_test_patch calls LLM and returns test patch."""
+        source_info = {
+            'class_name': 'com.example.demo.controller.HelloController',
+            'method': 'sayHello',
+            'repo_relative_path': 'src/main/java/com/example/demo/controller/HelloController.java',
+        }
+        patch_text = '''{"files": [{"path": "...", "patched_content": "..."}]}'''
+        
+        # Mock LLM returns a test patch
+        test_patch_json = json.dumps({
+            'files': [{
+                'path': 'src/test/java/com/example/demo/controller/HelloControllerTest.java',
+                'patched_content': '''package com.example.demo.controller;
+import org.junit.jupiter.api.Test;
+public class HelloControllerTest {
+    @Test
+    void testSayHelloWithNull() {
+        HelloController controller = new HelloController();
+        String result = controller.sayHello(null);
+        assert result != null;
+    }
+}'''
+            }]
+        })
+        self.mock_llm.patch_text = test_patch_json
+        
+        result = self.agent.generate_test_patch(source_info, patch_text)
+        
+        self.assertIn('files', result)
+        self.assertIn('HelloControllerTest', result)
+
+    def test_validate_patch_allows_test_files(self):
+        """Test that validate_patch allows src/test/java files."""
+        test_patch = json.dumps({
+            'files': [{
+                'path': 'src/test/java/com/example/demo/controller/HelloControllerTest.java',
+                'patched_content': '''package com.example.demo.controller;
+import org.junit.jupiter.api.Test;
+public class HelloControllerTest {
+    @Test
+    void test() {}
+}'''
+            }]
+        })
+        
+        source_info = {
+            'repo_relative_path': 'src/main/java/com/example/demo/controller/HelloController.java',
+            'line_no': 42,
+        }
+        
+        result = self.agent.validate_patch(self.repo_path, test_patch, source_info=source_info)
+        
+        # Should be valid (test files are allowed even if different from target)
+        self.assertTrue(result['valid'], f"Errors: {result['errors']}")
+
 
 if __name__ == '__main__':
     unittest.main()

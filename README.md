@@ -4,11 +4,15 @@
 
 **核心特性：**
 - 📋 自动提取日志中的异常堆栈信息
-- 🔍 智能定位 Java 源码文件和问题行号
+- 🔍 智能定位 Java 源码文件和问题行号（双路径：堆栈定位 + LLM 推断）
 - 🤖 使用 OpenAI LLM 生成最小化补丁
-- 🔀 在本地仓库创建修复分支（但不提交）
+- 🔀 在本地仓库创建修复分支并提交
+- 🔨 自动编译检查 + 单元测试（`mvn compile` / `mvn test`）
+- 🆕 **自动生成 JUnit5 单元测试**（异常复现 + 边界值 + 回归测试）
+- 🔄 编译/测试失败时自动反馈 LLM 重试修复
+- 🚀 通过后自动推送并创建 Gitee Pull Request
 - ✅ 支持 dry-run 模式（仅分析不修改）
-- 🧪 完整的单元测试覆盖（36+ 测试通过）
+- 🧪 完整的单元测试覆盖（79+ 测试通过）
 
 ---
 
@@ -43,50 +47,7 @@ uv install
 pip install pyyaml requests openai gitpython
 ```
 
-### 3. 配置 OpenAI API
 
-#### 选项 A: 使用官方 OpenAI API
-
-在 Windows 环境变量中设置 API key：
-
-```powershell
-# PowerShell 临时设置（仅当前 session）
-$env:OPENAI_API_KEY = "sk-xxxxxxxxxxxx"
-
-# 或永久设置系统环境变量
-[System.Environment]::SetEnvironmentVariable('OPENAI_API_KEY', 'sk-xxxxxxxxxxxx', 'User')
-```
-
-#### 选项 B: 使用自定义 OpenAI 兼容 API
-
-编辑 `configs/config.yml`，修改 `llm.base_url`：
-
-```yaml
-llm:
-  base_url: "https://your-custom-api.com/v1"
-  api_key_env: "YOUR_API_KEY_ENV_VAR"
-```
-
-### 4. 配置项目路径
-
-编辑 `configs/config.yml`，填入你的本地项目的路径：
-
-```yaml
-logs_path: "D:\\workspace\\mall-service\\logs\\app.log"
-repo_path: "D:\\workspace\\mall-service"
-java_build: "maven"
-branch_prefix: "fix/"
-max_patch_lines: 40
-```
-
-**字段说明：**
-- `logs_path`: 你的 Java Web 服务日志文件路径
-- `repo_path`: 你的 Maven 项目根目录路径（必须是 git repo）
-- `java_build`: 构建工具（`maven` 或 `gradle`）
-- `max_patch_lines`: 补丁最大改动行数（安全限制）
-- `auto_apply`: 是否自动应用补丁（默认 false）
-
----
 
 ## 使用方式
 
@@ -96,28 +57,8 @@ max_patch_lines: 40
 python -m main --config configs/config.yml --dry-run
 ```
 
-输出示例：
-```
-======================================================================
-AUTOFIX AGENT REPORT
-======================================================================
 
-Status: completed
-Dry Run: True
-
-📋 Parsed Frames: 1
-  [0] com.example.demo.controller.HelloController.sayHello() @ line 42
-
-📁 Located Files:
-  - src/main/java/com/example/demo/controller/HelloController.java (line 42)
-
-🔀 Branch Name: fix/auto-20260507-150000
-
-📝 Patch Preview:
-{"files": [{"path": "src/main/java/com/example/demo/controller/HelloController.java"...
-```
-
-### 方式 2: 自动应用模式（创建分支并修改文件）
+### 方式 2: 自动应用模式（完整 CI 管道）
 
 ```powershell
 python -m main --config configs/config.yml --auto-apply
@@ -126,28 +67,38 @@ python -m main --config configs/config.yml --auto-apply
 这将：
 1. 创建一个 `fix/auto-<timestamp>` 分支
 2. 应用 LLM 生成的补丁到工作区
-3. 修改相关文件（但不执行 git commit）
-4. 输出修改详情
+3. 提交修改到修复分支
+4. 执行编译检查（`mvn compile` 或 `gradle compileJava`）
+5. 若编译失败，将错误反馈给 LLM 重试修复（最多 `max_retries` 次）
+6. 编译通过后，推送分支到远程并创建 Gitee PR
 
-### 方式 3: 启用详细日志
+### 方式 3: 跳过编译/测试
+
+```powershell
+# 跳过编译检查
+python -m main --config configs/config.yml --auto-apply --no-compile
+
+# 跳过单元测试
+python -m main --config configs/config.yml --auto-apply --no-tests
+```
+
+### 方式 4: 启用详细日志
 
 ```powershell
 python -m main --config configs/config.yml --auto-apply --verbose
 ```
 
----
-
-## 演示脚本
-
-提供了一个 PowerShell 演示脚本 `scripts/demo.ps1`，可一键运行完整演示：
+### 方式 5: CLI 参数覆盖配置
 
 ```powershell
-# 以 dry-run 模式运行
-.\\scripts\\demo.ps1 -DryRun
+# 强制启用 PR 创建
+python -m main --config configs/config.yml --auto-apply --create-pr
 
-# 以自动应用模式运行（需谨慎）
-.\\scripts\\demo.ps1 -AutoApply
+# 设置最大重试 5 次
+python -m main --config configs/config.yml --auto-apply --max-retries 5
 ```
+
+---
 
 ---
 
@@ -162,10 +113,11 @@ auto-fix-agent/
 │   ├── __init__.py
 │   ├── file_io.py                 # 文件操作
 │   ├── exec_cmd.py                # 命令执行
-│   └── git_manager.py             # Git 操作
+│   └── git_manager.py             # Git 操作（分支、提交、推送）
 ├── integrations/
 │   ├── __init__.py
-│   └── llm_client.py              # OpenAI LLM 客户端
+│   ├── llm_client.py              # OpenAI LLM 客户端
+│   └── gitee_client.py            # Gitee API 客户端（PR 创建）
 ├── configs/
 │   └── config.yml                 # 用户配置文件（需填写）
 ├── tests/
@@ -174,7 +126,9 @@ auto-fix-agent/
 │   ├── test_git_manager.py
 │   ├── test_auto_fix_agent.py
 │   ├── test_llm_client.py
-│   └── test_patch_formats.py
+│   ├── test_gitee_client.py
+│   ├── test_patch_formats.py
+│   └── test_cli_integration.py
 ├── scripts/
 │   └── demo.ps1                   # PowerShell 演示脚本
 ├── main.py                        # CLI 入口
@@ -184,7 +138,6 @@ auto-fix-agent/
 ```
 
 ---
-
 
 
 ## 工作流示例
@@ -226,25 +179,21 @@ python -m main --config configs/config.yml --auto-apply
 
 Agent 将：
 1. 创建本地分支 `fix/auto-<timestamp>`
-2. 应用补丁到工作区文件
-3. 输出修改详情
+2. 应用补丁到工作区文件并提交
+3. 执行编译检查（`mvn compile`）
+4. 若配置了 `run_tests_on_apply: true`，执行单元测试
+5. 若编译/测试失败，自动反馈 LLM 重试修复
+6. 通过后推送分支并创建 Gitee PR
 
-**步骤 5: 人工复审和提交**
+**步骤 5: 人工复审 PR**
 
 ```powershell
-# 进入 repo
+# PR 已自动创建，访问 Gitee 查看
+# 例如: https://gitee.com/owner/repo/pulls/108
+
+# 或进入 repo 手动查看
 cd D:\workspace\mall-service
-
-# 查看修改
-git diff fix/auto-20260507-150000
-
-# 可选：运行测试
-mvn test
-
-# 如果通过，可提交 PR 或 merge
-git add .
-git commit -m "fix(NullPointerException): Add null check in sayHello"
-git push origin fix/auto-20260507-150000
+git log fix/auto-20260507-150000
 ```
 
 ## 修复逻辑详解
@@ -292,6 +241,17 @@ LLM 生成补丁（JSON 格式）
   ├─ 应用 JSON 补丁
   └─ 提交修改（commit message 含异常类型）
   ↓
+【CI 管道】
+  ├─ 编译检查（mvn compile / gradle compileJava）
+  │   └─ 失败 → LLM 反馈重试（最多 max_retries 次）
+  │       └─ 仍失败 → 记录失败，终止
+  └─ 单元测试（mvn test / gradle test）[可选]
+      └─ 失败 → LLM 反馈重试（同编译流程）
+  ↓
+【推送 & PR】
+  ├─ git push 修复分支到远程
+  └─ Gitee API 创建 Pull Request
+  ↓
 ✓ 修复完成
 ```
 
@@ -307,6 +267,48 @@ LLM 生成补丁（JSON 格式）
 
 ---
 
+## 自动测试生成
+
+Agent 支持在修复后自动生成 **Maven + JUnit5** 测试，并将其纳入 PR 门禁。
+
+### 开启配置
+
+```yaml
+test_generation:
+  enabled: true
+  strategy: "B"      # A: 仅目标方法 / B: 目标+边界+回归
+  framework: "junit5"
+  max_test_cases: 5
+  max_test_files: 1
+
+run_compile_on_apply: true
+run_tests_on_apply: true
+
+gitee:
+  require_tests_to_pass_for_pr: true
+```
+
+### Strategy B 覆盖范围
+
+- 异常复现
+- 修复验证
+- 边界值
+- 回归测试
+
+### 规则
+
+启用测试生成后，必须 **编译通过 + 测试通过** 才会创建 PR。
+
+### 使用
+
+直接运行：
+
+```bash
+python -m main --config configs/config.yml --auto-apply
+```
+
+---
+
 ## 可修复的 Bug 类型
 
 ### 1. 业务逻辑异常（传统路径）✅
@@ -315,60 +317,14 @@ LLM 生成补丁（JSON 格式）
 
 #### 示例 1: 空指针异常 (NullPointerException)
 
-```java
-// ❌ 原始代码
-public Long firstItemId(Long orderId) {
-    MallOrder order = orderRepository.findById(orderId).orElseThrow();
-    return order.getItemIds().get(0);  // itemIds 可能为空
-}
-
-// ✓ 修复后
-public Long firstItemId(Long orderId) {
-    MallOrder order = orderRepository.findById(orderId).orElseThrow();
-    if (order.getItemIds() == null || order.getItemIds().isEmpty()) {
-        return null;
-    }
-    return order.getItemIds().get(0);
-}
-```
-
 **异常堆栈特征**：包含 `java.lang.NullPointerException` 和业务方法帧
 
 #### 示例 2: 数组越界异常 (IndexOutOfBoundsException)
-
-```java
-// ❌ 原始代码
-public Item getFirstItem(List<Item> items) {
-    return items.get(0);  // 列表可能为空
-}
-
-// ✓ 修复后
-public Item getFirstItem(List<Item> items) {
-    if (items == null || items.isEmpty()) {
-        return null;
-    }
-    return items.get(0);
-}
-```
 
 **异常堆栈特征**：包含 `java.lang.IndexOutOfBoundsException` 和业务方法帧
 
 #### 示例 3: 类型转换异常 (ClassCastException)
 
-```java
-// ❌ 原始代码
-public String processData(Object data) {
-    return ((String) data).toUpperCase();  // data 可能不是 String
-}
-
-// ✓ 修复后
-public String processData(Object data) {
-    if (!(data instanceof String)) {
-        return "";
-    }
-    return ((String) data).toUpperCase();
-}
-```
 
 ---
 
@@ -378,37 +334,10 @@ public String processData(Object data) {
 
 #### 示例 1: @PathVariable 绑定错误
 
-```java
-// ❌ 原始代码
-@GetMapping("/orders/{orderId}")
-public MallOrder getOrder(@PathVariable("id") Long orderId) {  // 参数名不匹配
-    return orderService.findOrder(orderId);
-}
-
-// ✓ 修复后
-@GetMapping("/orders/{id}")
-public MallOrder getOrder(@PathVariable Long id) {  // 匹配路径变量
-    return orderService.findOrder(id);
-}
-```
 
 **异常堆栈特征**：`org.springframework.web.bind.MissingPathVariableException` + "Required URI template variable 'xxx' ... is not present"
 
 #### 示例 2: @RequestParam 缺失
-
-```java
-// ❌ 原始代码
-@GetMapping("/search")
-public List<Product> search(@RequestParam String query) {  // 参数必需但请求未提供
-    return productService.search(query);
-}
-
-// ✓ 修复后
-@GetMapping("/search")
-public List<Product> search(@RequestParam(required = false) String query) {
-    return productService.search(query != null ? query : "");
-}
-```
 
 **异常堆栈特征**：`org.springframework.web.bind.MissingServletRequestParameterException`
 
@@ -454,18 +383,60 @@ Agent 包含多层安全保障，确保生成的补丁不会损坏源码：
 
 ### 4. Git 层面
 - 所有改动在独立分支 `fix/auto-*` 中进行
-- 不自动提交（需人工复审）
+- 提交信息包含异常类型，方便追溯
 - 支持 dry-run 模式先查看再应用
+- 重试补丁有独立 commit，避免污染初始修复
+
+---
+
+## CI 管道与自动 PR
+
+补丁应用后，agent 可自动执行编译检查、单元测试，通过后推送并创建 PR。
+
+### 编译检查
+
+优先使用项目自带的 wrapper 脚本（`mvnw`/`gradlew`），找不到才用系统命令：
+
+```
+mvnw.cmd → mvnw → mvn.cmd → mvn.bat → mvn    (Maven)
+gradlew.bat → gradlew → gradle.bat → gradle   (Gradle)
+```
+
+### LLM 重试反馈
+
+若编译或测试失败，agent 不会直接放弃，而是：
+
+1. 提取错误输出（stderr/stdout，截断至 3000 字符）
+2. 构建重试提示词（含原始任务上下文 + 错误信息）
+3. 调用 LLM 生成修正补丁
+4. 校验新补丁（6 层验证）
+5. 应用新补丁，重新编译/测试
+6. 重复直至通过或耗尽 `max_retries`（默认 3）
+
+若 LLM 返回 `NO_SAFE_PATCH`，或构建工具未安装（`Command not found`），则立即停止重试。
+
+### Gitee PR 创建
+
+编译通过后，agent 自动：
+
+1. 推送修复分支到远程仓库
+2. 调用 Gitee API v5 创建 PR
+3. PR 描述中包含异常信息和 CI 管道状态
 
 ---
 
 ## 后续开发建议
 
-- [ ] 支持更多 LLM provider（LLaMA、Claude、etc）
+- [ ] 支持更多 LLM provider（LLaMA、Claude、etc)
 - [ ] 添加 GUI 界面
 - [ ] 支持多语言堆栈格式（Python、Node.js、etc）
 - [ ] 集成 IDE 插件（VS Code、IntelliJ）
-- [ ] 自动测试与验证
+- [x] ~~自动编译检查与单元测试~~ — 已实现
+- [x] ~~CI 失败时自动重试修复~~ — 已实现
+- [x] ~~自动创建 Gitee Pull Request~~ — 已实现
+- [x] ~~自动生成 JUnit5 单元测试（Strategy B）~~ — 已实现 ✨
+- [ ] 支持 Option A（仅目标方法单测）
+- [ ] 支持 Gradle 和 TestNG
 - [ ] 修复质量评分
 - [ ] 支持更多框架异常（Quarkus、Micronaut、etc）
 - [ ] 历史修复记录和学习反馈
@@ -481,4 +452,3 @@ MIT License
 ## 贡献
 
 欢迎提交 Issue 和 PR！
-
