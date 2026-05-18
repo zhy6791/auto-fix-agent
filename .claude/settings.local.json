@@ -7,7 +7,8 @@
       "Bash(python -c ' *)",
       "Bash(python -m main --config configs/config.yml --auto-apply)",
       "Bash(python -m pytest tests/ -v)",
-      "Bash(npx *)"
+      "Bash(npx *)",
+      "Bash(python -m pytest tests/ -q)"
     ]
   },
   "statusLine": {

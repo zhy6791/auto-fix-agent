@@ -275,3 +275,25 @@ def parse_gitee_owner_repo(remote_url):
     if m:
         return m.group(1), m.group(2)
     return None, None
+
+
+def revert_files(repo_path: str, files: list, ref: str = 'HEAD') -> bool:
+    """Revert specified files to a given git ref via git checkout."""
+    if not files:
+        return True
+    try:
+        rel_files = []
+        for f in files:
+            if os.path.isabs(f):
+                rel_files.append(os.path.relpath(f, repo_path))
+            else:
+                rel_files.append(f)
+        subprocess.check_call(
+            ['git', '-C', repo_path, 'checkout', ref, '--'] + rel_files,
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
+        _git_logger.info("Reverted %d files to %s", len(rel_files), ref)
+        return True
+    except subprocess.CalledProcessError as e:
+        _git_logger.warning("Failed to revert files to %s: %s", ref, e)
+        return False
