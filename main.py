@@ -151,7 +151,7 @@ Examples:
     parser.add_argument(
         '--dry-run',
         action='store_true',
-        default=True,
+        default=False,
         help='Run in dry-run mode (analyze only, no changes to repo)'
     )
     parser.add_argument(
@@ -208,7 +208,7 @@ Examples:
         if args.max_retries is not None:
             config['max_retries'] = args.max_retries
 
-        dry_run = not args.auto_apply
+        dry_run = args.dry_run or not args.auto_apply
         logger.info(f"Starting agent pipeline (dry_run={dry_run})...")
         
         agent = AutoFixAgent(

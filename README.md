@@ -312,47 +312,27 @@ python -m main --config configs/config.yml --auto-apply
 ## 可修复的 Bug 类型
 
 ### 1. 业务逻辑异常（传统路径）✅
-
 **条件**：堆栈中有业务代码帧（如 `com.fixflow.mall.service.OrderService`）
-
 #### 示例 1: 空指针异常 (NullPointerException)
-
 **异常堆栈特征**：包含 `java.lang.NullPointerException` 和业务方法帧
-
 #### 示例 2: 数组越界异常 (IndexOutOfBoundsException)
-
 **异常堆栈特征**：包含 `java.lang.IndexOutOfBoundsException` 和业务方法帧
-
 #### 示例 3: 类型转换异常 (ClassCastException)
 
-
----
-
-### 2. 框架配置异常（推断路径）✅ 
-
+### 2. 框架配置异常（推断路径）✅
 **条件**：堆栈全是框架代码（Spring/Tomcat/Jakarta），无业务帧
-
 #### 示例 1: @PathVariable 绑定错误
-
-
 **异常堆栈特征**：`org.springframework.web.bind.MissingPathVariableException` + "Required URI template variable 'xxx' ... is not present"
-
 #### 示例 2: @RequestParam 缺失
-
 **异常堆栈特征**：`org.springframework.web.bind.MissingServletRequestParameterException`
 
----
-
 ### 3. 当前不支持的 Bug 类型 ❌
-
 以下类型的异常因需要外部资源/配置变更，暂不自动修复：
-
 - **数据库连接异常** - 需要修改配置文件/环境变量
 - **依赖包缺失** - 需要修改 pom.xml/build.gradle
 - **权限异常** - 需要改变系统配置
 - **业务逻辑错误**（无堆栈指向） - 需要深度业务分析
 - **分布式系统异常** - 涉及多个服务交互
-
 ---
 
 ## 安全保障机制

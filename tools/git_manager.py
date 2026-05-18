@@ -174,9 +174,9 @@ def _apply_diff_fallback(repo_path, patch_text, logger):
             if m and current_file:
                 current_hunk = {
                     'old_start': int(m.group(1)),
-                    'old_count': int(m.group(2)) if m.group(2) else 1,
+                    'old_count': int(m.group(2)) if m.group(2) else 0,
                     'new_start': int(m.group(3)),
-                    'new_count': int(m.group(4)) if m.group(4) else 1,
+                    'new_count': int(m.group(4)) if m.group(4) else 0,
                     'lines': []
                 }
                 files[current_file].append(current_hunk)

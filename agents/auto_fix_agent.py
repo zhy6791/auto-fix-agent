@@ -202,7 +202,8 @@ class AutoFixAgent:
                 if apply_result.get('applied'):
                     ci_result = self._run_ci_pipeline(
                         repo_path, source_info, raw_stack, parsed_stack,
-                        report['patch_text'], report['prompt']
+                        report['patch_text'], report['prompt'],
+                        initial_files=apply_result.get('files', [])
                     )
                     report['ci_result'] = ci_result
 
@@ -261,10 +262,16 @@ class AutoFixAgent:
             return text.strip()
 
         collected = []
+        blank_count = 0
         for line in lines[start_idx:]:
-            if collected and not line.strip():
-                break
-            collected.append(line)
+            if not line.strip():
+                blank_count += 1
+                if blank_count >= 2:
+                    break
+                collected.append(line)
+            else:
+                blank_count = 0
+                collected.append(line)
 
         return '\n'.join(collected).strip()
 
@@ -725,7 +732,7 @@ class AutoFixAgent:
         return 'command not found' in stderr or 'filenotfounderror' in stderr.replace(' ', '')
 
     def _run_ci_pipeline(self, repo_path, source_info, raw_stack, parsed_stack,
-                         original_patch_text, original_prompt):
+                         original_patch_text, original_prompt, initial_files=None):
         """Run compile then tests, with LLM retry on failure.
 
         Returns dict: {compile_result, test_result, retries_used, patch_history,
@@ -750,6 +757,7 @@ class AutoFixAgent:
         current_patch = original_patch_text
         current_prompt = original_prompt
         retry_files = []
+        first_retry = True
 
         # Stage 1: Compile with retry
         if run_compile:
@@ -791,8 +799,13 @@ class AutoFixAgent:
                 if new_patch is None:
                     ci_result['stages_failed'].append('compile')
                     break
+                # Revert previously patched files before applying retry
+                revert_files = initial_files if first_retry else retry_files
+                if revert_files:
+                    self._revert_files(repo_path, revert_files, ref='HEAD~1')
+                first_retry = False
                 apply_result = self.tools['git_manager'].apply_patch(repo_path, new_patch)
-                retry_files.extend(apply_result.get('files', []))
+                retry_files = apply_result.get('files', [])
                 current_patch = new_patch
 
         # Stage 2: Tests (only if compile passed)
@@ -833,8 +846,11 @@ class AutoFixAgent:
                 if new_patch is None:
                     ci_result['stages_failed'].append('tests')
                     break
+                # Revert previously patched files before applying retry
+                if retry_files:
+                    self._revert_files(repo_path, retry_files, ref='HEAD~1')
                 apply_result = self.tools['git_manager'].apply_patch(repo_path, new_patch)
-                retry_files.extend(apply_result.get('files', []))
+                retry_files = apply_result.get('files', [])
                 current_patch = new_patch
 
         if ci_result['retries_used'] > 0 and current_patch != original_patch_text and retry_files:
@@ -845,6 +861,25 @@ class AutoFixAgent:
             )
 
         return ci_result
+
+    def _revert_files(self, repo_path, files, ref='HEAD'):
+        """Revert specified files to a given git ref via git checkout."""
+        if not files:
+            return
+        try:
+            rel_files = []
+            for f in files:
+                if os.path.isabs(f):
+                    rel_files.append(os.path.relpath(f, repo_path))
+                else:
+                    rel_files.append(f)
+            subprocess.check_call(
+                ['git', '-C', repo_path, 'checkout', ref, '--'] + rel_files,
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
+            logger.info("Reverted %d files to %s", len(rel_files), ref)
+        except subprocess.CalledProcessError as e:
+            logger.warning("Failed to revert files to %s: %s", ref, e)
 
     def _retry_with_feedback(self, original_prompt, source_info, failed_stage,
                              build_result, repo_path):
@@ -938,8 +973,6 @@ class AutoFixAgent:
 
         token_env = gitee_cfg.get('access_token_env', 'GITEE_TOKEN')
         access_token = self._resolve_env_var(token_env)
-        if not access_token and token_env:
-            access_token = token_env
         if not access_token:
             result['error'] = 'Gitee access token not configured (set access_token_env)'
             return result

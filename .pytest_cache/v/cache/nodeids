@@ -1,8 +1,10 @@
 [
   "tests/test_auto_fix_agent.py::TestAutoFixAgent::test_build_llm_client_reads_windows_registry_env",
   "tests/test_auto_fix_agent.py::TestAutoFixAgent::test_build_llm_client_requires_env_key",
+  "tests/test_auto_fix_agent.py::TestAutoFixAgent::test_build_test_prompt",
   "tests/test_auto_fix_agent.py::TestAutoFixAgent::test_compile_aborts_when_tool_missing",
   "tests/test_auto_fix_agent.py::TestAutoFixAgent::test_find_source_location",
+  "tests/test_auto_fix_agent.py::TestAutoFixAgent::test_generate_test_patch",
   "tests/test_auto_fix_agent.py::TestAutoFixAgent::test_is_tool_missing",
   "tests/test_auto_fix_agent.py::TestAutoFixAgent::test_no_retry_when_compile_passes",
   "tests/test_auto_fix_agent.py::TestAutoFixAgent::test_parse_stacktrace",
@@ -15,6 +17,7 @@
   "tests/test_auto_fix_agent.py::TestAutoFixAgent::test_run_pipeline_dry_run",
   "tests/test_auto_fix_agent.py::TestAutoFixAgent::test_run_tests_gradle",
   "tests/test_auto_fix_agent.py::TestAutoFixAgent::test_run_tests_maven",
+  "tests/test_auto_fix_agent.py::TestAutoFixAgent::test_validate_patch_allows_test_files",
   "tests/test_auto_fix_agent.py::TestAutoFixAgent::test_validate_patch_rejects_import_deletion",
   "tests/test_auto_fix_agent.py::TestAutoFixAgent::test_validate_patch_rejects_line_number_prefixes",
   "tests/test_auto_fix_agent.py::TestAutoFixAgent::test_validate_patch_rejects_method_deletion_outside_window",

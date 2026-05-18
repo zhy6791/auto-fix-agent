@@ -41,7 +41,7 @@ class TestGiteeClient(unittest.TestCase):
 
         mock_post.assert_called_once()
         call_args = mock_post.call_args
-        self.assertEqual(call_args[1]['params'], {'access_token': 'test-token'})
+        self.assertEqual(call_args[1]['headers'], {'Authorization': 'Bearer test-token'})
 
     @patch('requests.post')
     def test_create_pr_http_error(self, mock_post):

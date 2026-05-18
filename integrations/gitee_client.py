@@ -28,10 +28,10 @@ class GiteeClient:
             "body": body,
             "prune_source_branch": prune_source_branch,
         }
-        params = {"access_token": self.access_token}
+        headers = {"Authorization": f"Bearer {self.access_token}"}
 
         try:
-            resp = requests.post(url, json=payload, params=params,
+            resp = requests.post(url, json=payload, headers=headers,
                                 timeout=self.timeout)
             if resp.status_code == 201:
                 data = resp.json()
@@ -64,9 +64,9 @@ class GiteeClient:
         Returns dict: {success: bool, default_branch: str, error: str}
         """
         url = f"{self.base_url}/repos/{owner}/{repo}"
-        params = {"access_token": self.access_token}
+        headers = {"Authorization": f"Bearer {self.access_token}"}
         try:
-            resp = requests.get(url, params=params, timeout=self.timeout)
+            resp = requests.get(url, headers=headers, timeout=self.timeout)
             if resp.status_code == 200:
                 data = resp.json()
                 return {

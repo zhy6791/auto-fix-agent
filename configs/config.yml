@@ -36,7 +36,7 @@ gitee:
   enabled: true
   owner: "ch6enle"                     # auto-detected from git remote if empty
   repo: "mall-service"                      # auto-detected from git remote if empty
-  access_token_env: "089c2d475d16140472cce6629deaa2d7"
+  access_token_env: "GITEE_ACCESS_TOKEN"  # Set this environment variable to your Gitee personal access token
   api_base_url: "https://gitee.com/api/v5"
   target_branch: "zhy"
   pr_title_template: "fix: auto-fix {exception_type} in {class_name}"
