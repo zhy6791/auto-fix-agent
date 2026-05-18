@@ -10,6 +10,7 @@ import difflib
 import logging
 import os
 import re
+import subprocess
 from datetime import datetime
 
 try:
@@ -1044,10 +1045,11 @@ class AutoFixAgent:
             imports = []
             pkg_line = None
             import_end = 0
-            
+            in_header = True
+
             for idx, ln in enumerate(lines):
                 s = ln.strip()
-                if not s or s.startswith('//'):
+                if not s or s.startswith('//') or s.startswith('/*') or s.startswith('*') or s.startswith('*/'):
                     continue
                 if s.startswith('package '):
                     pkg = s
@@ -1055,9 +1057,13 @@ class AutoFixAgent:
                 elif s.startswith('import '):
                     imports.append(s)
                     import_end = idx
-                elif s.startswith('import ') or (pkg is not None and not s.startswith('import')):
+                elif s.startswith('@'):
+                    # Annotation — still in header region, skip
+                    continue
+                elif in_header and pkg is not None:
+                    # First non-import, non-annotation line after package — end of header
                     break
-            
+
             return {'pkg': pkg, 'imports': sorted(imports), 'pkg_line': pkg_line, 'import_end': import_end}
         
         old_sec = _extract_sections(old_lines)
@@ -1083,14 +1089,14 @@ class AutoFixAgent:
             errors.append('Imports were modified: %s' % '; '.join(modified_imports))
         
         # 3) Extract method signatures to ensure none are deleted outside window
-        method_sig_re = re.compile(r'^\s*(public|protected|private)\s+[\w<>,\s\[\]]+\s+([\w$]+)\s*\(')
+        method_sig_re = re.compile(r'^\s*(?:(?:public|protected|private|static|final|abstract|synchronized)\s+)*[\w<>,\s\[\]]+\s+([\w$]+)\s*\(')
         
         def _extract_methods(lines):
             methods = {}
             for idx, ln in enumerate(lines):
                 m = method_sig_re.match(ln)
                 if m:
-                    methods[m.group(2)] = idx + 1  # 1-based line number
+                    methods[m.group(1)] = idx + 1  # 1-based line number
             return methods
         
         old_methods = _extract_methods(old_lines)

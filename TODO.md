@@ -33,29 +33,29 @@
 
 ---
 
-## P1 - 应该修复（正确性 & 健壮性）
+## ~~P1 - 应该修复（正确性 & 健壮性）~~ ✅ 全部完成
 
-### 6. `_validate_java_structure` 的 `_extract_sections` 逻辑错误
+### ~~6. `_validate_java_structure` 的 `_extract_sections` 逻辑错误~~ ✅
 - **文件**: `agents/auto_fix_agent.py:1025`
 - **问题**: `elif` 条件在遇到 package 声明后的注解或注释时就会 break，导致后面的 import 语句全部被忽略，验证结果不可靠
 - **修复**: 重写 `_extract_sections` 逻辑，正确处理 package → imports → code 的分段
 
-### 7. 方法签名正则不识别 package-private 方法
+### ~~7. 方法签名正则不识别 package-private 方法~~ ✅
 - **文件**: `agents/auto_fix_agent.py:1053`
 - **问题**: 正则要求 `public|protected|private`，无修饰符的方法（Java 中合法的 package-private）不会被检测到，删了也不会被拦截
 - **修复**: 正则改为可选匹配访问修饰符
 
-### 8. `commit_changes(files=None)` 执行 `git add -A`
+### ~~8. `commit_changes(files=None)` 执行 `git add -A`~~ ✅
 - **文件**: `tools/git_manager.py:54`
 - **问题**: 会把工作区所有变更都提交进去，包括无关文件
 - **修复**: 改为只 add 指定文件，或在 `apply_patch` 后显式传入修改的文件列表
 
-### 9. `apply_patch` JSON 格式无路径穿越保护
+### ~~9. `apply_patch` JSON 格式无路径穿越保护~~ ✅
 - **文件**: `tools/git_manager.py:104`
 - **问题**: 直接 `os.path.join(repo_path, rel)`，LLM 返回 `../../etc/passwd` 可写到仓库外。虽然 `validate_patch` 有检查，但 `apply_patch` 自身无防御
 - **修复**: 在 `apply_patch` 中加入 `os.path.realpath` 路径校验，确保结果在 repo_path 内
 
-### 10. LLM API 调用无重试机制
+### ~~10. LLM API 调用无重试机制~~ ✅
 - **文件**: `integrations/llm_client.py`
 - **问题**: 遇到 429/500 直接返回 `NO_SAFE_PATCH`，LLM API 不稳定是常态
 - **修复**: 加入指数退避重试（3 次），区分可重试错误（429/500/502/503）和不可重试错误（401/403/404）

@@ -51,7 +51,8 @@ def commit_changes(repo_path: str, message: str, files: list = None) -> bool:
         if files:
             subprocess.check_call(["git", "-C", repo_path, "add"] + files)
         else:
-            subprocess.check_call(["git", "-C", repo_path, "add", "-A"])
+            # No files specified — only stage tracked-file changes, not untracked
+            subprocess.check_call(["git", "-C", repo_path, "add", "-u"])
         subprocess.check_call(["git", "-C", repo_path, "commit", "-m", message])
         return True
     except subprocess.CalledProcessError:
@@ -101,7 +102,11 @@ def apply_patch(repo_path: str, patch_text: str) -> Dict[str, Any]:
             for ent in files:
                 rel = ent['path']
                 content = ent['patched_content']
-                abs_path = os.path.join(repo_path, str(rel))
+                abs_path = os.path.normpath(os.path.join(repo_path, str(rel)))
+                # Path traversal protection: ensure resolved path stays within repo
+                if not abs_path.startswith(os.path.normpath(repo_path) + os.sep) and abs_path != os.path.normpath(repo_path):
+                    result['errors'].append('Path traversal rejected: %s' % rel)
+                    continue
                 d = os.path.dirname(abs_path)
                 if d and not os.path.exists(d):
                     os.makedirs(d, exist_ok=True)
