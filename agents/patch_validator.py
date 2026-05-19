@@ -1,6 +1,5 @@
 """Patch validation utilities for Java file patches."""
 
-import json
 import difflib
 import os
 import re
@@ -22,6 +21,147 @@ def estimate_changed_lines(old_text, new_text):
             changed += 1
     changed += abs(len(old_lines) - len(new_lines))
     return changed
+
+
+def _strip_markdown_fences(text):
+    lines = text.splitlines()
+    if lines and lines[0].strip().startswith('```'):
+        lines = lines[1:]
+    if lines and lines[-1].strip().startswith('```'):
+        lines = lines[:-1]
+    return '\n'.join(lines)
+
+
+def _is_unified_diff(patch_text):
+    text = _strip_markdown_fences(patch_text or '')
+    lines = [ln.rstrip('\r') for ln in text.splitlines()]
+    has_file_header = False
+    has_hunk = False
+    for ln in lines:
+        if ln.startswith('--- ') or ln.startswith('+++ '):
+            has_file_header = True
+        elif ln.startswith('@@ '):
+            has_hunk = True
+    return bool(text.strip()) and has_file_header and has_hunk
+
+
+def _parse_unified_diff(patch_text):
+    """Parse unified diff into file-level structures.
+
+    Returns a list of dicts: {old_path, new_path, hunks, removed_lines, added_lines}
+    """
+    text = _strip_markdown_fences(patch_text or '')
+    files = []
+    current = None
+    current_hunk = None
+
+    def finish_hunk():
+        nonlocal current_hunk
+        if current is not None and current_hunk is not None:
+            current['hunks'].append(current_hunk)
+        current_hunk = None
+
+    def finish_file():
+        nonlocal current
+        if current is not None:
+            finish_hunk()
+            files.append(current)
+        current = None
+
+    for raw_line in text.splitlines():
+        line = raw_line.rstrip('\n')
+        if line.startswith('diff --git '):
+            finish_file()
+            current = {'old_path': None, 'new_path': None, 'hunks': [], 'removed_lines': [], 'added_lines': []}
+            continue
+        if line.startswith('--- '):
+            if current is None:
+                current = {'old_path': None, 'new_path': None, 'hunks': [], 'removed_lines': [], 'added_lines': []}
+            current['old_path'] = line[4:].strip()  # type: ignore[assignment]
+            continue
+        if line.startswith('+++ '):
+            if current is None:
+                current = {'old_path': None, 'new_path': None, 'hunks': [], 'removed_lines': [], 'added_lines': []}
+            current['new_path'] = line[4:].strip()  # type: ignore[assignment]
+            continue
+        if line.startswith('@@ '):
+            if current is None:
+                continue
+            finish_hunk()
+            m = re.match(r'^@@\s+-(\d+)(?:,(\d+))?\s+\+(\d+)(?:,(\d+))?\s+@@', line)
+            if not m:
+                current_hunk = None
+                continue
+            current_hunk = {
+                'old_start': int(m.group(1)),
+                'old_count': int(m.group(2)) if m.group(2) else 1,
+                'new_start': int(m.group(3)),
+                'new_count': int(m.group(4)) if m.group(4) else 1,
+                'lines': [],
+            }
+            continue
+        if current_hunk is not None:
+            current_hunk['lines'].append(line)
+            if line.startswith('-') and not line.startswith('---'):
+                current['removed_lines'].append(line[1:])
+            elif line.startswith('+') and not line.startswith('+++'):
+                current['added_lines'].append(line[1:])
+
+    finish_file()
+    return files
+
+
+def _normalize_comment_line(line):
+    return re.sub(r'\s+', ' ', (line or '').strip()).lower()
+
+
+def _extract_protected_comment_lines(text):
+    """Return normalized comment lines that should not disappear from patches."""
+    lines = (text or '').splitlines()
+    protected = set()
+
+    # 1) Leading file header comment block
+    idx = 0
+    while idx < len(lines) and not lines[idx].strip():
+        idx += 1
+    if idx < len(lines) and lines[idx].lstrip().startswith(('//', '/*', '/**')):
+        while idx < len(lines):
+            s = lines[idx].strip()
+            if not s:
+                protected.add(_normalize_comment_line(lines[idx]))
+                idx += 1
+                continue
+            if s.startswith(('//', '/*', '*', '*/')):
+                protected.add(_normalize_comment_line(lines[idx]))
+                if '*/' in s:
+                    idx += 1
+                    break
+                idx += 1
+                continue
+            break
+
+    # 2) Any Javadoc / block comment content and key keyword comments anywhere in file
+    in_block = False
+    for line in lines:
+        s = line.strip()
+        lower = s.lower()
+        if s.startswith('/**'):
+            in_block = True
+        if in_block:
+            protected.add(_normalize_comment_line(line))
+            if '*/' in s:
+                in_block = False
+            continue
+        if s.startswith('/*'):
+            in_block = True
+            protected.add(_normalize_comment_line(line))
+            if '*/' in s:
+                in_block = False
+            continue
+        if s.startswith('//') and any(token in lower for token in ('copyright', 'license', 'todo', 'fixme')):
+            protected.add(_normalize_comment_line(line))
+
+    return protected
 
 
 def validate_java_structure(old_text, new_text, line_no, window=8):
@@ -156,60 +296,125 @@ def validate_java_structure(old_text, new_text, line_no, window=8):
 def validate_patch(config, repo_path, patch_text, source_info, file_io):
     """Validate patch text before applying."""
     max_patch_lines = int(config.get('max_patch_lines', 40))
+    max_patch_hunks = int(config.get('max_patch_hunks', 3))
+    max_hunk_lines = int(config.get('max_hunk_lines', 24))
+    max_hunk_span = int(config.get('max_hunk_span', 40))
+    max_file_change_ratio = float(config.get('max_file_change_ratio', 0.35))
     repo_root = os.path.abspath(repo_path)
+    repo_root_real = os.path.realpath(repo_root)
     result = {'valid': False, 'errors': [], 'changed_lines': 0, 'files': []}
 
     try:
+        patch_text = _strip_markdown_fences(patch_text or '')
+
         if not patch_text or is_no_safe_patch(patch_text):
             result['errors'].append('LLM did not produce a safe patch')
             return result
 
         if patch_text.lstrip().startswith('{'):
-            patch_obj = json.loads(patch_text)
-            files = patch_obj.get('files', [])
-            for item in files:
-                rel_path = item.get('path', '')
-                patched_content = item.get('patched_content', '')
-                if not rel_path:
-                    result['errors'].append('Patch item missing path')
-                    continue
-                abs_path = os.path.abspath(os.path.join(str(repo_root), str(rel_path)))
-                if not abs_path.startswith(repo_root):
+            result['errors'].append('Only unified diff patches are allowed; JSON patched_content is rejected')
+            return result
+
+        if not _is_unified_diff(patch_text):
+            result['errors'].append('Patch must be unified diff (--- / +++ / @@ / +/- lines)')
+            return result
+
+        files = _parse_unified_diff(patch_text)
+        if not files:
+            result['errors'].append('Patch does not contain any unified diff file hunks')
+            return result
+
+        for item in files:
+            old_path = item.get('old_path')
+            new_path = item.get('new_path')
+            rel_path = new_path if new_path and new_path != '/dev/null' else old_path
+            if not rel_path:
+                result['errors'].append('Patch file header missing path')
+                continue
+
+            rel_path = rel_path[2:] if rel_path.startswith(('a/', 'b/')) else rel_path
+            rel_path = os.path.normpath(str(rel_path))
+            abs_path = os.path.realpath(os.path.join(repo_root_real, rel_path))
+            try:
+                if os.path.commonpath([repo_root_real, abs_path]) != repo_root_real:
                     result['errors'].append('Patch path escapes repository: %s' % rel_path)
                     continue
-                result['files'].append(rel_path)
+            except ValueError:
+                result['errors'].append('Patch path escapes repository: %s' % rel_path)
+                continue
 
-                old_text = ''
-                if os.path.exists(abs_path):
-                    old_text = file_io.read_file(abs_path)
-                result['changed_lines'] += estimate_changed_lines(old_text, patched_content)
+            result['files'].append(rel_path)
 
-                if source_info and old_text:
+            old_text = ''
+            if os.path.exists(abs_path):
+                old_text = file_io.read_file(abs_path)
+
+            changed_lines = len(item.get('removed_lines', [])) + len(item.get('added_lines', []))
+            result['changed_lines'] += changed_lines
+
+            hunks = item.get('hunks', [])
+            if len(hunks) > max_patch_hunks:
+                result['errors'].append('Patch for %s has too many hunks: %d > %d' % (rel_path, len(hunks), max_patch_hunks))
+
+            for hunk in hunks:
+                hunk_changed = sum(1 for ln in hunk.get('lines', []) if ln.startswith(('+', '-')) and not ln.startswith(('+++', '---')))
+                hunk_span = max(int(hunk.get('old_count', 0)), int(hunk.get('new_count', 0)))
+                if hunk_changed > max_hunk_lines:
+                    result['errors'].append('Hunk in %s changes too many lines: %d > %d' % (rel_path, hunk_changed, max_hunk_lines))
+                if hunk_span > max_hunk_span:
+                    result['errors'].append('Hunk in %s spans too many lines: %d > %d' % (rel_path, hunk_span, max_hunk_span))
+
+            if old_text:
+                old_non_empty = len([l for l in old_text.splitlines() if l.strip()])
+                if old_non_empty > 0 and changed_lines > old_non_empty * max_file_change_ratio:
+                    result['errors'].append('Patch changes too much of %s: %d changed lines over %d non-empty lines' % (rel_path, changed_lines, old_non_empty))
+
+                if source_info:
                     target_rel = os.path.normpath(str(source_info.get('repo_relative_path', '')))
                     item_rel = os.path.normpath(str(rel_path))
-                    # Allow test patches in src/test/java/ even if they differ from target
                     is_test_file = 'src/test/java' in str(rel_path).replace('\\', '/')
                     if target_rel and item_rel != target_rel and not is_test_file:
                         result['errors'].append('Patch touches files outside analyzed target: %s' % rel_path)
-                    else:
-                        line_no = source_info.get('line_no')
-                        # Run comprehensive structural checks
-                        struct_errors = validate_java_structure(old_text, patched_content, int(line_no) if line_no else None)
-                        if struct_errors:
-                            result['errors'].extend(struct_errors)
 
-        else:
-            # Simple unified diff heuristics
-            added = 0
-            removed = 0
-            for line in patch_text.splitlines():
-                if line.startswith('+++') or line.startswith('---') or line.startswith('@@'):
-                    continue
-                if line.startswith('+'):
-                    added += 1
-                elif line.startswith('-'):
-                    removed += 1
-            result['changed_lines'] = max(added, removed)
+                protected_lines = _extract_protected_comment_lines(old_text)
+                if protected_lines:
+                    removed_lines = {_normalize_comment_line(ln) for ln in item.get('removed_lines', [])}
+                    added_lines = {_normalize_comment_line(ln) for ln in item.get('added_lines', [])}
+                    for protected_line in protected_lines:
+                        if not protected_line:
+                            continue
+                        if protected_line in removed_lines and protected_line not in added_lines:
+                            result['errors'].append('Protected comment line was removed from %s: %s' % (rel_path, protected_line))
+                            break
+
+                if source_info and old_text:
+                    line_no = source_info.get('line_no')
+                    # Reuse Java structure validation against reconstructed file only for stronger checks.
+                    # For unified diff patches we validate the diff itself first, then apply structural checks
+                    # on the original/new text pair by reconstructing the target region with SequenceMatcher.
+                    # If the patch is malformed, the diff validation above will already reject it.
+                    new_text_guess = old_text
+                    for hunk in reversed(hunks):
+                        old_start = int(hunk.get('old_start', 1)) - 1
+                        old_count = int(hunk.get('old_count', 0))
+                        replacement = []
+                        for hunk_line in hunk.get('lines', []):
+                            if hunk_line.startswith('+') and not hunk_line.startswith('+++'):
+                                replacement.append(hunk_line[1:])
+                            elif hunk_line.startswith('-') and not hunk_line.startswith('---'):
+                                continue
+                            elif hunk_line.startswith(' '):
+                                replacement.append(hunk_line[1:])
+                            else:
+                                replacement.append(hunk_line)
+                        new_lines = new_text_guess.splitlines()
+                        new_lines[old_start:old_start + old_count] = replacement
+                        new_text_guess = '\n'.join(new_lines)
+
+                    struct_errors = validate_java_structure(old_text, new_text_guess, int(line_no) if line_no else None)
+                    if struct_errors:
+                        result['errors'].extend(struct_errors)
+
 
         if result['changed_lines'] > max_patch_lines:
             result['errors'].append('Patch too large: %s > %s' % (result['changed_lines'], max_patch_lines))

@@ -1,7 +1,7 @@
 """Unit tests for AutoFixAgent Phase 3 pipeline."""
 
 import os
-import json
+import difflib
 import shutil
 import subprocess
 import tempfile
@@ -90,14 +90,13 @@ class TestAutoFixAgent(unittest.TestCase):
         self.original_source = file_io.read_file(self.source_abs)
         patched_source = self.original_source.replace('        return str.length();', '        return str == null ? 0 : str.length();')
         self.patched_source = patched_source
-        self.mock_llm = MockLLMClient(json.dumps({
-            'files': [
-                {
-                    'path': self.source_rel.replace('\\', '/'),
-                    'patched_content': self.patched_source,
-                }
-            ]
-        }))
+        self.mock_llm = MockLLMClient('\n'.join(difflib.unified_diff(
+            self.original_source.splitlines(),
+            self.patched_source.splitlines(),
+            fromfile='a/' + self.source_rel.replace('\\', '/'),
+            tofile='b/' + self.source_rel.replace('\\', '/'),
+            lineterm=''
+        )))
 
         self.agent = AutoFixAgent(
             self.config,
@@ -203,14 +202,13 @@ class TestAutoFixAgent(unittest.TestCase):
             '        return str.length();',
             '        return str == null ? 0 : str.length();'
         )
-        patch_text = json.dumps({
-            'files': [
-                {
-                    'path': self.source_rel.replace('\\', '/'),
-                    'patched_content': suspicious_source,
-                }
-            ]
-        })
+        patch_text = '\n'.join(difflib.unified_diff(
+            self.original_source.splitlines(),
+            suspicious_source.splitlines(),
+            fromfile='a/' + self.source_rel.replace('\\', '/'),
+            tofile='b/' + self.source_rel.replace('\\', '/'),
+            lineterm=''
+        ))
 
         result = self.agent.validate_patch(self.repo_path, patch_text, source_info={
             'repo_relative_path': self.source_rel.replace('\\', '/'),
@@ -260,14 +258,13 @@ class TestAutoFixAgent(unittest.TestCase):
         ]
         new_content = '\n'.join(new_lines)
 
-        patch_text = json.dumps({
-            'files': [
-                {
-                    'path': extra_rel.replace('\\', '/'),
-                    'patched_content': new_content,
-                }
-            ]
-        })
+        patch_text = '\n'.join(difflib.unified_diff(
+            old_content.splitlines(),
+            new_content.splitlines(),
+            fromfile='a/' + extra_rel.replace('\\', '/'),
+            tofile='b/' + extra_rel.replace('\\', '/'),
+            lineterm=''
+        ))
 
         # analyze near the 'keep' method (line 4) but deletion occurs at lines ~8-9
         result = self.agent.validate_patch(self.repo_path, patch_text, source_info={'repo_relative_path': extra_rel.replace('\\', '/'), 'line_no': 4})
@@ -332,12 +329,13 @@ public class OrderService {
         
         file_io.write_file(test_abs, old_content, overwrite=True)
         
-        patch_text = json.dumps({
-            'files': [{
-                'path': test_rel.replace('\\', '/'),
-                'patched_content': patched_content,
-            }]
-        })
+        patch_text = '\n'.join(difflib.unified_diff(
+            old_content.splitlines(),
+            patched_content.splitlines(),
+            fromfile='a/' + test_rel.replace('\\', '/'),
+            tofile='b/' + test_rel.replace('\\', '/'),
+            lineterm=''
+        ))
         
         result = self.agent.validate_patch(
             self.repo_path,
@@ -380,12 +378,13 @@ public class LineNumberTest {
         
         file_io.write_file(test_abs, old_content, overwrite=True)
         
-        patch_text = json.dumps({
-            'files': [{
-                'path': test_rel.replace('\\', '/'),
-                'patched_content': patched_with_line_numbers,
-            }]
-        })
+        patch_text = '\n'.join(difflib.unified_diff(
+            old_content.splitlines(),
+            patched_with_line_numbers.splitlines(),
+            fromfile='a/' + test_rel.replace('\\', '/'),
+            tofile='b/' + test_rel.replace('\\', '/'),
+            lineterm=''
+        ))
         
         result = self.agent.validate_patch(
             self.repo_path,
@@ -601,7 +600,13 @@ public class LineNumberTest {
             'method': 'sayHello',
             'repo_relative_path': 'src/main/java/com/example/demo/controller/HelloController.java',
         }
-        patch_text = '''{"files": [{"path": "...", "patched_content": "..."}]}'''
+        patch_text = '''--- a/src/main/java/com/example/demo/controller/HelloController.java
++++ b/src/main/java/com/example/demo/controller/HelloController.java
+@@ -1,3 +1,3 @@
+-package com.example.demo.controller;
++package com.example.demo.controller;
+ public class HelloController {}
+'''
         
         prompt = self.agent.build_test_prompt(source_info, patch_text)
         
@@ -618,44 +623,46 @@ public class LineNumberTest {
             'method': 'sayHello',
             'repo_relative_path': 'src/main/java/com/example/demo/controller/HelloController.java',
         }
-        patch_text = '''{"files": [{"path": "...", "patched_content": "..."}]}'''
+        patch_text = '''--- a/src/main/java/com/example/demo/controller/HelloController.java
++++ b/src/main/java/com/example/demo/controller/HelloController.java
+@@ -1,3 +1,3 @@
+-package com.example.demo.controller;
++package com.example.demo.controller;
+ public class HelloController {}
+'''
         
         # Mock LLM returns a test patch
-        test_patch_json = json.dumps({
-            'files': [{
-                'path': 'src/test/java/com/example/demo/controller/HelloControllerTest.java',
-                'patched_content': '''package com.example.demo.controller;
-import org.junit.jupiter.api.Test;
-public class HelloControllerTest {
-    @Test
-    void testSayHelloWithNull() {
-        HelloController controller = new HelloController();
-        String result = controller.sayHello(null);
-        assert result != null;
-    }
-}'''
-            }]
-        })
+        test_patch_json = '''--- a/src/test/java/com/example/demo/controller/HelloControllerTest.java
++++ b/src/test/java/com/example/demo/controller/HelloControllerTest.java
+@@ -1,1 +1,8 @@
++package com.example.demo.controller;
++import org.junit.jupiter.api.Test;
++public class HelloControllerTest {
++    @Test
++    void testSayHelloWithNull() {
++        HelloController controller = new HelloController();
++    }
++}
+'''
         self.mock_llm.patch_text = test_patch_json
         
         result = self.agent.generate_test_patch(source_info, patch_text)
         
-        self.assertIn('files', result)
+        self.assertIn('--- a/', result)
         self.assertIn('HelloControllerTest', result)
 
     def test_validate_patch_allows_test_files(self):
         """Test that validate_patch allows src/test/java files."""
-        test_patch = json.dumps({
-            'files': [{
-                'path': 'src/test/java/com/example/demo/controller/HelloControllerTest.java',
-                'patched_content': '''package com.example.demo.controller;
-import org.junit.jupiter.api.Test;
-public class HelloControllerTest {
-    @Test
-    void test() {}
-}'''
-            }]
-        })
+        test_patch = '''--- a/src/test/java/com/example/demo/controller/HelloControllerTest.java
++++ b/src/test/java/com/example/demo/controller/HelloControllerTest.java
+@@ -1,1 +1,5 @@
++package com.example.demo.controller;
++import org.junit.jupiter.api.Test;
++public class HelloControllerTest {
++    @Test
++    void test() {}
++}
+'''
         
         source_info = {
             'repo_relative_path': 'src/main/java/com/example/demo/controller/HelloController.java',

@@ -96,24 +96,22 @@ class TestGitManager(unittest.TestCase):
         result = create_branch(self.repo_path, branch_name)
         self.assertFalse(result)
     
-    def test_apply_patch_json_format(self):
-        """Test applying a JSON-format patch."""
-        import json
-        
-        # Create a test file
+    def test_apply_patch_unified_diff_format(self):
+        """Test applying a unified-diff patch."""
         test_file = os.path.join(self.repo_path, "src/main/java/TestFile.java")
         os.makedirs(os.path.dirname(test_file), exist_ok=True)
-        
-        patch_content = {
-            "files": [
-                {
-                    "path": "src/main/java/TestFile.java",
-                    "patched_content": "public class TestFile { /* patched */ }"
-                }
-            ]
-        }
-        patch_text = json.dumps(patch_content)
-        
+        with open(test_file, 'w') as f:
+            f.write("public class TestFile { }\n")
+        subprocess.check_call(["git", "add", "."], cwd=self.repo_path)
+        subprocess.check_call(["git", "commit", "-m", "Add test file"], cwd=self.repo_path)
+
+        patch_text = """--- a/src/main/java/TestFile.java
++++ b/src/main/java/TestFile.java
+@@ -1 +1 @@
+-public class TestFile { }
++public class TestFile { /* patched */ }
+"""
+
         result = apply_patch(self.repo_path, patch_text)
         
         self.assertTrue(result["applied"])
@@ -124,6 +122,21 @@ class TestGitManager(unittest.TestCase):
         with open(test_file, 'r') as f:
             content = f.read()
         self.assertIn("patched", content)
+
+    def test_apply_patch_json_rejected(self):
+        """Test that JSON patched_content is rejected."""
+        import json
+
+        patch_text = json.dumps({
+            "files": [{
+                "path": "src/main/java/TestFile.java",
+                "patched_content": "public class TestFile { /* patched */ }"
+            }]
+        })
+        result = apply_patch(self.repo_path, patch_text)
+
+        self.assertFalse(result["applied"])
+        self.assertTrue(result["errors"])
     
     def test_apply_patch_json_invalid(self):
         """Test applying invalid JSON patch."""

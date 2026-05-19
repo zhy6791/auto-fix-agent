@@ -1,0 +1,438 @@
+{
+  "status": "completed",
+  "dry_run": false,
+  "raw_stack": "java.lang.NullPointerException: Cannot invoke \"String.split(String)\" because the return value of \"com.fixflow.mall.domain.MallUser.getProfileJson()\" is null\n\tat com.fixflow.mall.service.UserService.getNickname(UserService.java:27)\n\tat com.fixflow.mall.api.MallController.nickname(MallController.java:28)\n\tat java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188)\n\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)\n\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\n\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)\n\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)\n\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)\n\tat org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)\n\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\n\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\n\tat org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\n\tat org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\n\tat org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\n\tat org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)\n\tat org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)\n\tat org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)\n\tat org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)\n\tat org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)\n\tat org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)\n\tat org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)\n\tat org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:384)\n\tat org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)\n\tat org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905)\n\tat org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)\n\tat org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)\n\tat org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)\n\tat java.base/java.lang.Thread.run(Thread.java:1583)\n2026-05-18 17:42:13.515 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=23m49s858ms631µs800ns).",
+  "parsed_stack": [
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "com.fixflow.mall.service.UserService",
+      "method": "getNickname",
+      "line_no": 27,
+      "source_file": "UserService.java",
+      "raw_line": "\tat com.fixflow.mall.service.UserService.getNickname(UserService.java:27)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "com.fixflow.mall.api.MallController",
+      "method": "nickname",
+      "line_no": 28,
+      "source_file": "MallController.java",
+      "raw_line": "\tat com.fixflow.mall.api.MallController.nickname(MallController.java:28)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.method.support.InvocableHandlerMethod",
+      "method": "doInvoke",
+      "line_no": 255,
+      "source_file": "InvocableHandlerMethod.java",
+      "raw_line": "\tat org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.method.support.InvocableHandlerMethod",
+      "method": "invokeForRequest",
+      "line_no": 188,
+      "source_file": "InvocableHandlerMethod.java",
+      "raw_line": "\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod",
+      "method": "invokeAndHandle",
+      "line_no": 118,
+      "source_file": "ServletInvocableHandlerMethod.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter",
+      "method": "invokeHandlerMethod",
+      "line_no": 926,
+      "source_file": "RequestMappingHandlerAdapter.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter",
+      "method": "handleInternal",
+      "line_no": 831,
+      "source_file": "RequestMappingHandlerAdapter.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter",
+      "method": "handle",
+      "line_no": 87,
+      "source_file": "AbstractHandlerMethodAdapter.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.DispatcherServlet",
+      "method": "doDispatch",
+      "line_no": 1089,
+      "source_file": "DispatcherServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.DispatcherServlet",
+      "method": "doService",
+      "line_no": 979,
+      "source_file": "DispatcherServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.FrameworkServlet",
+      "method": "processRequest",
+      "line_no": 1014,
+      "source_file": "FrameworkServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.FrameworkServlet",
+      "method": "doGet",
+      "line_no": 903,
+      "source_file": "FrameworkServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "jakarta.servlet.http.HttpServlet",
+      "method": "service",
+      "line_no": 564,
+      "source_file": "HttpServlet.java",
+      "raw_line": "\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.FrameworkServlet",
+      "method": "service",
+      "line_no": 885,
+      "source_file": "FrameworkServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "jakarta.servlet.http.HttpServlet",
+      "method": "service",
+      "line_no": 658,
+      "source_file": "HttpServlet.java",
+      "raw_line": "\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 195,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 140,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.tomcat.websocket.server.WsFilter",
+      "method": "doFilter",
+      "line_no": 51,
+      "source_file": "WsFilter.java",
+      "raw_line": "\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 164,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 140,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.filter.RequestContextFilter",
+      "method": "doFilterInternal",
+      "line_no": 100,
+      "source_file": "RequestContextFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.filter.OncePerRequestFilter",
+      "method": "doFilter",
+      "line_no": 116,
+      "source_file": "OncePerRequestFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 164,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 140,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.filter.FormContentFilter",
+      "method": "doFilterInternal",
+      "line_no": 93,
+      "source_file": "FormContentFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.filter.OncePerRequestFilter",
+      "method": "doFilter",
+      "line_no": 116,
+      "source_file": "OncePerRequestFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 164,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 140,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.filter.CharacterEncodingFilter",
+      "method": "doFilterInternal",
+      "line_no": 201,
+      "source_file": "CharacterEncodingFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.filter.OncePerRequestFilter",
+      "method": "doFilter",
+      "line_no": 116,
+      "source_file": "OncePerRequestFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 164,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 140,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.StandardWrapperValve",
+      "method": "invoke",
+      "line_no": 167,
+      "source_file": "StandardWrapperValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.StandardContextValve",
+      "method": "invoke",
+      "line_no": 90,
+      "source_file": "StandardContextValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.authenticator.AuthenticatorBase",
+      "method": "invoke",
+      "line_no": 483,
+      "source_file": "AuthenticatorBase.java",
+      "raw_line": "\tat org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.StandardHostValve",
+      "method": "invoke",
+      "line_no": 115,
+      "source_file": "StandardHostValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.valves.ErrorReportValve",
+      "method": "invoke",
+      "line_no": 93,
+      "source_file": "ErrorReportValve.java",
+      "raw_line": "\tat org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.StandardEngineValve",
+      "method": "invoke",
+      "line_no": 74,
+      "source_file": "StandardEngineValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.connector.CoyoteAdapter",
+      "method": "service",
+      "line_no": 344,
+      "source_file": "CoyoteAdapter.java",
+      "raw_line": "\tat org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.coyote.http11.Http11Processor",
+      "method": "service",
+      "line_no": 384,
+      "source_file": "Http11Processor.java",
+      "raw_line": "\tat org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:384)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.coyote.AbstractProcessorLight",
+      "method": "process",
+      "line_no": 63,
+      "source_file": "AbstractProcessorLight.java",
+      "raw_line": "\tat org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.coyote.AbstractProtocol$ConnectionHandler",
+      "method": "process",
+      "line_no": 905,
+      "source_file": "AbstractProtocol.java",
+      "raw_line": "\tat org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.tomcat.util.net.NioEndpoint$SocketProcessor",
+      "method": "doRun",
+      "line_no": 1741,
+      "source_file": "NioEndpoint.java",
+      "raw_line": "\tat org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.tomcat.util.net.SocketProcessorBase",
+      "method": "run",
+      "line_no": 52,
+      "source_file": "SocketProcessorBase.java",
+      "raw_line": "\tat org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.tomcat.util.threads.ThreadPoolExecutor",
+      "method": "runWorker",
+      "line_no": 1190,
+      "source_file": "ThreadPoolExecutor.java",
+      "raw_line": "\tat org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker",
+      "method": "run",
+      "line_no": 659,
+      "source_file": "ThreadPoolExecutor.java",
+      "raw_line": "\tat org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.tomcat.util.threads.TaskThread$WrappingRunnable",
+      "method": "run",
+      "line_no": 63,
+      "source_file": "TaskThread.java",
+      "raw_line": "\tat org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)"
+    }
+  ],
+  "located_files": [
+    {
+      "source_path": "D:\\workspace-repo\\mall-service\\src\\main\\java\\com\\fixflow\\mall\\service\\UserService.java",
+      "repo_relative_path": "src\\main\\java\\com\\fixflow\\mall\\service\\UserService.java",
+      "class_name": "com.fixflow.mall.service.UserService",
+      "method": "getNickname",
+      "line_no": 27,
+      "context_snippet": "    public String getNickname(Long userId) {\n        MallUser user = userRepository.findById(userId).orElseThrow();\n        // BUG-001: profileJson may be null, direct split causes NullPointerException.\n        return user.getProfileJson().split(\":\")[1];\n    }\n}",
+      "full_source": "package com.fixflow.mall.service;\n\nimport com.fixflow.mall.domain.MallUser;\nimport com.fixflow.mall.repo.UserRepository;\nimport org.springframework.stereotype.Service;\n\n@Service\npublic class UserService {\n\n    private final UserRepository userRepository;\n\n    public UserService(UserRepository userRepository) {\n        this.userRepository = userRepository;\n    }\n\n//    public String getNickname(Long userId) {\n//        MallUser user = userRepository.findById(userId).orElseThrow();\n//        String profileJson = user.getProfileJson();\n//        if (profileJson == null || !profileJson.contains(\":\")) {\n//            return \"\"; // or a default nickname\n//        }\n//        return profileJson.split(\":\", -1)[1];\n//    }\n    public String getNickname(Long userId) {\n        MallUser user = userRepository.findById(userId).orElseThrow();\n        // BUG-001: profileJson may be null, direct split causes NullPointerException.\n        return user.getProfileJson().split(\":\")[1];\n    }\n}\n"
+    }
+  ],
+  "prompt": "## 任务\n根据以下 Java 异常堆栈和源码，生成一个最小化补丁以修复该异常。\n\n## 约束\n- 修改最少（最多 40 行）\n- 每个文件最多 3 个 hunk，且每个 hunk 只能修改局部区域\n- 保证代码编译通过\n- 不修改方法签名或删除业务逻辑\n- 只修改上面给出的目标文件，且尽量只改问题行附近的局部代码\n- 不要修改 package 声明、import 语句、类名、方法签名或文件路径，除非修复绝对依赖它们\n- 不要猜测不存在的包名、类名或导入；如果不确定，返回 NO_SAFE_PATCH\n- 优先使用 null check、边界检查等防御性编程\n- 【重要】只允许返回 unified diff，不允许返回 JSON、patched_content、整文件重写或代码片段替换式补丁\n- 【重要】diff 必须尽量只包含少量局部 hunks，不允许大范围替换整个文件\n- 【重要】不得删除文件头部注释、版权注释、LICENSE/Javadoc/TODO/FIXME 等关键注释，除非修复绝对依赖且在 diff 中明确保留\n\n\n## 异常信息\n```\njava.lang.NullPointerException: Cannot invoke \"String.split(String)\" because the return value of \"com.fixflow.mall.domain.MallUser.getProfileJson()\" is null\n\tat com.fixflow.mall.service.UserService.getNickname(UserService.java:27)\n\tat com.fixflow.mall.api.MallController.nickname(MallController.java:28)\n\tat java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat org.springframework.web\n```\n\n## 源码位置与问题上下文\n文件: src\\main\\java\\com\\fixflow\\mall\\service\\UserService.java (repo 相对路径)\n问题行: 27\n方法: getNickname\n\n### 问题行附近代码（7-8 行窗口）:\n```java\n    public String getNickname(Long userId) {\n        MallUser user = userRepository.findById(userId).orElseThrow();\n        // BUG-001: profileJson may be null, direct split causes NullPointerException.\n        return user.getProfileJson().split(\":\")[1];\n    }\n}\n```\n\n### 原始完整文件内容（作为修改基础）:\n```java\npackage com.fixflow.mall.service;\n\nimport com.fixflow.mall.domain.MallUser;\nimport com.fixflow.mall.repo.UserRepository;\nimport org.springframework.stereotype.Service;\n\n@Service\npublic class UserService {\n\n    private final UserRepository userRepository;\n\n    public UserService(UserRepository userRepository) {\n        this.userRepository = userRepository;\n    }\n\n//    public String getNickname(Long userId) {\n//        MallUser user = userRepository.findById(userId).orElseThrow();\n//        String profileJson = user.getProfileJson();\n//        if (profileJson == null || !profileJson.contains(\":\")) {\n//            return \"\"; // or a default nickname\n//        }\n//        return profileJson.split(\":\", -1)[1];\n//    }\n    public String getNickname(Long userId) {\n        MallUser user = userRepository.findById(userId).orElseThrow();\n        // BUG-001: profileJson may be null, direct split causes NullPointerException.\n        return user.getProfileJson().split(\":\")[1];\n    }\n}\n\n```\n\n## 输出格式说明\n你的任务是直接返回 unified diff（--- / +++ / @@ / + / - /  行），只修改必要的局部代码。\n\n返回以下格式之一:\n\n### 选项 1: unified diff\n```diff\n--- a/src/main/java/com/fixflow/mall/service/OrderService.java\n+++ b/src/main/java/com/fixflow/mall/service/OrderService.java\n@@ -1,3 +1,3 @@\n-old line\n+new line\n```\n\n### 选项 2: 无法安全修复\n如果无法生成安全补丁，返回: NO_SAFE_PATCH: 原因说明",
+  "patch_text": "```diff\n--- a/src/main/java/com/fixflow/mall/service/UserService.java\n+++ b/src/main/java/com/fixflow/mall/service/UserService.java\n@@ -24,5 +24,8 @@\n     public String getNickname(Long userId) {\n         MallUser user = userRepository.findById(userId).orElseThrow();\n-        // BUG-001: profileJson may be null, direct split causes NullPointerException.\n-        return user.getProfileJson().split(\":\")[1];\n+        String profileJson = user.getProfileJson();\n+        if (profileJson == null || !profileJson.contains(\":\")) {\n+            return \"\"; // or a default nickname\n+        }\n+        return profileJson.split(\":\", -1)[1];\n     }\n```",
+  "branch_name": "fix/auto-20260519-170244",
+  "apply_result": {
+    "applied": true,
+    "files": [
+      "src/main/java/com/fixflow/mall/service/UserService.java"
+    ],
+    "errors": [],
+    "dry_run": false,
+    "committed": true
+  },
+  "build_result": null,
+  "ci_result": {
+    "compile_result": {
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "test_result": {
+      "code": 0,
+      "stdout": "",
+      "stderr": "Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended\nWARNING: A Java agent has been loaded dynamically (D:\\Maven\\apache-maven-3.6.1\\mvn_repo\\net\\bytebuddy\\byte-buddy-agent\\1.14.19\\byte-buddy-agent-1.14.19.jar)\nWARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning\nWARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information\nWARNING: Dynamic loading of agents will be disallowed by default in a future release\n"
+    },
+    "retries_used": 0,
+    "patch_history": [],
+    "stages_passed": [
+      "compile",
+      "tests"
+    ],
+    "stages_failed": []
+  },
+  "pr_result": {
+    "pr_created": true,
+    "pr_url": "https://gitee.com/ch6enle/mall-service/pulls/113",
+    "pr_number": 113,
+    "error": null
+  },
+  "error": null,
+  "detection_method": "stack_trace",
+  "test_generation_result": {
+    "generated": false,
+    "error": "Hunk in src\\test\\java\\com\\fixflow\\mall\\service\\UserServiceTest.java changes too many lines: 157 > 24; Hunk in src\\test\\java\\com\\fixflow\\mall\\service\\UserServiceTest.java spans too many lines: 130 > 40; Patch too large: 157 > 40"
+  }
+}

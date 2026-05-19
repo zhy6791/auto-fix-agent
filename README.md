@@ -5,11 +5,11 @@
 **核心特性：**
 - 📋 自动提取日志中的异常堆栈信息
 - 🔍 智能定位 Java 源码文件和问题行号（双路径：堆栈定位 + LLM 推断）
-- 🤖 使用 OpenAI LLM 生成最小化补丁
+- 🤖 使用 OpenAI 兼容 LLM 生成最小化补丁（含指数退避重试）
 - 🔀 在本地仓库创建修复分支并提交
 - 🔨 自动编译检查 + 单元测试（`mvn compile` / `mvn test`）
 - 🆕 **自动生成 JUnit5 单元测试**（异常复现 + 边界值 + 回归测试）
-- 🔄 编译/测试失败时自动反馈 LLM 重试修复
+- 🔄 编译/测试失败时自动反馈 LLM 重试修复（失败时自动还原文件状态）
 - 🚀 通过后自动推送并创建 Gitee Pull Request
 - ✅ 支持 dry-run 模式（仅分析不修改）
 - 🧪 完整的单元测试覆盖（79+ 测试通过）
@@ -106,20 +106,27 @@ python -m main --config configs/config.yml --auto-apply --max-retries 5
 
 ```
 auto-fix-agent/
-├── agents/
+├── agents/                            # 核心 agent 模块
 │   ├── __init__.py
-│   └── auto_fix_agent.py          # 核心 agent 流水线
+│   ├── auto_fix_agent.py              # Pipeline 编排器（委托层）
+│   ├── stacktrace_parser.py           # Java 堆栈解析
+│   ├── source_locator.py              # 源码文件定位
+│   ├── prompt_builder.py              # LLM Prompt 构建（修复/测试/重试）
+│   ├── patch_validator.py             # 补丁验证（6 层结构检查）
+│   ├── ci_pipeline.py                 # CI 流水线（编译/测试/重试）
+│   ├── exception_inference.py         # 框架异常推断（LLM 逆向定位）
+│   └── pr_manager.py                  # Gitee PR 管理
 ├── tools/
 │   ├── __init__.py
-│   ├── file_io.py                 # 文件操作
-│   ├── exec_cmd.py                # 命令执行
-│   └── git_manager.py             # Git 操作（分支、提交、推送）
+│   ├── file_io.py                     # 文件操作
+│   ├── exec_cmd.py                    # 命令执行
+│   └── git_manager.py                 # Git 操作（分支、提交、推送、回滚）
 ├── integrations/
 │   ├── __init__.py
-│   ├── llm_client.py              # OpenAI LLM 客户端
-│   └── gitee_client.py            # Gitee API 客户端（PR 创建）
+│   ├── llm_client.py                  # OpenAI 兼容 LLM 客户端（含重试）
+│   └── gitee_client.py                # Gitee API 客户端（PR 创建）
 ├── configs/
-│   └── config.yml                 # 用户配置文件（需填写）
+│   └── config.yml                     # 用户配置文件（需填写）
 ├── tests/
 │   ├── test_file_io.py
 │   ├── test_exec_cmd.py
@@ -129,12 +136,10 @@ auto-fix-agent/
 │   ├── test_gitee_client.py
 │   ├── test_patch_formats.py
 │   └── test_cli_integration.py
-├── scripts/
-│   └── demo.ps1                   # PowerShell 演示脚本
-├── main.py                        # CLI 入口
-├── pyproject.toml                 # 依赖管理
-├── README.md                      # 本文件
-└── demo-plan.md                   # 开发计划
+├── main.py                            # CLI 入口
+├── pyproject.toml                     # 依赖管理
+├── README.md                          # 本文件
+└── TODO.md                            # 改进项跟踪
 ```
 
 ---
@@ -224,8 +229,8 @@ Agent 采用**双路径架构**，根据异常堆栈类型选择不同的源码�
   ├─ 明确约束条件（修改行数、安全规则等）
   └─ 如果是推断路径，标记特殊上下文
   ↓
-LLM 生成补丁（JSON 格式）
-  ├─ patched_content: 修复后的完整源文件
+LLM 生成补丁（unified diff）
+  ├─ 仅输出局部 hunks（--- / +++ / @@ / + / -）
   └─ 必须保证可直接编译
   ↓
 【6 层补丁验证】
@@ -238,15 +243,15 @@ LLM 生成补丁（JSON 格式）
   ↓
 应用补丁
   ├─ 创建修复分支 fix/auto-<timestamp>
-  ├─ 应用 JSON 补丁
+  ├─ 应用 unified diff 补丁
   └─ 提交修改（commit message 含异常类型）
   ↓
 【CI 管道】
   ├─ 编译检查（mvn compile / gradle compileJava）
-  │   └─ 失败 → LLM 反馈重试（最多 max_retries 次）
+  │   └─ 失败 → 还原文件 → LLM 反馈重试（最多 max_retries 次）
   │       └─ 仍失败 → 记录失败，终止
   └─ 单元测试（mvn test / gradle test）[可选]
-      └─ 失败 → LLM 反馈重试（同编译流程）
+      └─ 失败 → 还原文件 → LLM 反馈重试（同编译流程）
   ↓
 【推送 & PR】
   ├─ git push 修复分支到远程
@@ -335,39 +340,7 @@ python -m main --config configs/config.yml --auto-apply
 - **分布式系统异常** - 涉及多个服务交互
 ---
 
-## 安全保障机制
 
-Agent 包含多层安全保障，确保生成的补丁不会损坏源码：
-
-### 1. 提示词层面
-- 明确要求返回**完整可编译的 Java 文件**
-- 禁止返回代码片段、省略号或占位符
-- 禁止删除 package、import、方法签名
-
-### 2. 响应验证层面
-- 检测行号前缀格式（防止 LLM 复制 "59: code" 格式）
-- JSON 结构验证
-
-### 3. 补丁验证层面（6 层验证）
-
-| 层级 | 检查项 | 目的 |
-|------|--------|------|
-| 1 | Package 声明 | 不破坏包结构 |
-| 2 | Import 语句 | 不删除依赖 |
-| 3 | 方法签名 | 不改变 API |
-| 4 | 方法删除检测 | 不删除无关方法 |
-| 5 | 文件大小 | 不意外截断 |
-| 6 | 行号前缀 | 不包含 LLM 格式化伪代码 |
-
-若任何检查失败，补丁被拒绝，异常被报告。
-
-### 4. Git 层面
-- 所有改动在独立分支 `fix/auto-*` 中进行
-- 提交信息包含异常类型，方便追溯
-- 支持 dry-run 模式先查看再应用
-- 重试补丁有独立 commit，避免污染初始修复
-
----
 
 ## CI 管道与自动 PR
 
@@ -390,8 +363,9 @@ gradlew.bat → gradlew → gradle.bat → gradle   (Gradle)
 2. 构建重试提示词（含原始任务上下文 + 错误信息）
 3. 调用 LLM 生成修正补丁
 4. 校验新补丁（6 层验证）
-5. 应用新补丁，重新编译/测试
-6. 重复直至通过或耗尽 `max_retries`（默认 3）
+5. **还原之前补丁修改的文件**（`git checkout HEAD~1 -- <files>`），确保干净状态
+6. 应用新补丁，重新编译/测试
+7. 重复直至通过或耗尽 `max_retries`（默认 3）
 
 若 LLM 返回 `NO_SAFE_PATCH`，或构建工具未安装（`Command not found`），则立即停止重试。
 
@@ -420,6 +394,41 @@ gradlew.bat → gradlew → gradle.bat → gradle   (Gradle)
 - [ ] 修复质量评分
 - [ ] 支持更多框架异常（Quarkus、Micronaut、etc）
 - [ ] 历史修复记录和学习反馈
+
+## 安全性与防护考量
+
+本项目为自动应用 LLM 生成补丁提供了若干内建防护以降低误改源码或造成更大范围破坏的风险。以下为当前实现的要点、已识别的风险与优先级建议（供运维/项目负责人参考）。
+
+已实现的保护（证据位置）
+- `dry-run` 安全模式：只分析，不修改代码（`agents/auto_fix_agent.py` 的 `run_pipeline(dry_run=True)`）。
+- 结构保护校验：检查 package/import/方法签名、窗口外删除、文件缩减比例、行号前缀（`agents/patch_validator.py:validate_java_structure`）。
+- 补丁格式收口：仅接受 `unified diff`，拒绝 JSON `patched_content`、整文件重写、片段替换式补丁（`agents/patch_validator.py`, `tools/git_manager.py`）。
+- 补丁粒度限制：`max_patch_lines`、`max_patch_hunks`、`max_hunk_lines`、`max_hunk_span`、`max_file_change_ratio`（`agents/patch_validator.py`）。
+- 关键注释保护：头部注释、版权/LICENSE、Javadoc、TODO/FIXME 不能被静默删除（`agents/patch_validator.py`）。
+- LLM 失败兜底：空响应或异常统一返回 `NO_SAFE_PATCH` 并中止应用（`integrations/llm_client.py`）。
+- 路径边界校验：使用 `realpath + commonpath` 防止越界写入（`agents/patch_validator.py`, `tools/git_manager.py`）。
+- 原子写入保护：临时文件 + `os.replace`，降低写入中断导致的文件损坏风险（`tools/git_manager.py`）。
+- 分支隔离提交：修改提交在修复分支进行，避免直接污染主线（`agents/auto_fix_agent.py`, `tools/git_manager.py`）。
+- 执行门禁与回滚：编译/测试失败会触发重试与回滚（`agents/ci_pipeline.py` 的 `retry_with_feedback` / `revert_files`）。
+- 命令执行防护：统一返回结构 + 超时控制（`tools/exec_cmd.py`）。
+
+已识别的主要风险（需优先处理）
+- 高风险：CI（mvn/gradle）与单元测试在宿主环境直接运行，可能被构建脚本或补丁利用执行任意命令或发起网络请求（位置：`agents/ci_pipeline.py`, `tools/exec_cmd.py`）。建议：在隔离容器/VM 中运行构建并禁止网络访问。
+- 中高风险：虽然已使用 `realpath`/`commonpath`，但仍建议补充符号链接显式拒绝与 validate→apply 元数据复核，进一步降低 TOCTOU 风险（位置：`agents/patch_validator.py`, `tools/git_manager.py`）。
+- 中风险：允许自动修改构建配置（`pom.xml`/`build.gradle`）、CI 配置或 Dockerfile 等敏感文件，可能使后续构建被滥用。建议：对敏感文件使用白名单/黑名单并要求人工确认。
+- 中风险：自动推送与自动创建 PR（若启用）可能绕过人工审查。建议：默认关闭自动推送/自动 PR，或启用人工审批开关。
+
+短期优先修复建议（前三项）
+1) 将编译与测试迁移到受限沙箱（容器/VM），默认禁止网络、限制资源并挂载为只读或使用工作目录副本（修改点：`agents/ci_pipeline.py`）。
+2) 对符号链接目标做显式拒绝，并在 validate→apply 之间复核文件元数据（mtime/hash）以进一步压缩 TOCTOU 风险（修改点：`agents/patch_validator.py`, `tools/git_manager.py`）。
+3) 对敏感文件（`pom.xml`、`build.gradle`、`Dockerfile`、CI workflow）增加白名单/审批策略，默认禁止自动修改（修改点：`agents/patch_validator.py`）。
+
+审计与可追溯性
+- 建议把每次运行的 `report`、LLM 原始响应、应用补丁的 diff 以及 CI 输出保存到可配置的 `audit_dir`（只追加、带时间戳与校验和），便于事后回溯与安全审计（修改点：`agents/auto_fix_agent.py` 写出 report）。
+
+测试覆盖建议
+- 新增单元/集成测试以覆盖 symlink 路径绕过、validate→apply TOCTOU、对敏感文件的拒绝规则以及容器化 CI 的回退行为（添加在 `tests/`）。
+
 
 ---
 

@@ -32,24 +32,6 @@ class TestPatchFormats(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.workdir, ignore_errors=True)
 
-    def test_apply_patch_json_format(self):
-        patch_obj = {
-            'files': [
-                {
-                    'path': 'src/TestFile.txt',
-                    'patched_content': 'Line 1 Modified\nLine 2\nLine 3\n'
-                }
-            ]
-        }
-        patch_text = json.dumps(patch_obj)
-        result = git_manager.apply_patch(self.repo_path, patch_text)
-
-        self.assertTrue(result['applied'])
-        self.assertIn('src/TestFile.txt', result['files'])
-        with open(self.test_file) as f:
-            content = f.read()
-        self.assertIn('Line 1 Modified', content)
-
     def test_apply_patch_unified_diff_format(self):
         patch_text = '''--- a/src/TestFile.txt
 +++ b/src/TestFile.txt
@@ -62,27 +44,22 @@ class TestPatchFormats(unittest.TestCase):
         result = git_manager.apply_patch(self.repo_path, patch_text)
 
         self.assertTrue(result['applied'])
+        self.assertIn('src/TestFile.txt', result['files'])
         with open(self.test_file) as f:
             content = f.read()
         self.assertIn('Line 1 Modified', content)
 
-    def test_apply_patch_json_creates_new_file(self):
-        patch_obj = {
-            'files': [
-                {
-                    'path': 'src/NewFile.java',
-                    'patched_content': 'public class NewFile {}'
-                }
-            ]
-        }
-        patch_text = json.dumps(patch_obj)
+    def test_apply_patch_json_is_rejected(self):
+        patch_text = json.dumps({
+            'files': [{
+                'path': 'src/NewFile.java',
+                'patched_content': 'public class NewFile {}'
+            }]
+        })
         result = git_manager.apply_patch(self.repo_path, patch_text)
 
-        self.assertTrue(result['applied'])
-        new_file = os.path.join(self.repo_path, 'src', 'NewFile.java')
-        self.assertTrue(os.path.exists(new_file))
-        with open(new_file) as f:
-            self.assertIn('NewFile', f.read())
+        self.assertFalse(result['applied'])
+        self.assertTrue(result['errors'])
 
     def test_apply_patch_json_invalid_format(self):
         patch_text = '{ invalid json }'

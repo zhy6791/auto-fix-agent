@@ -7,7 +7,8 @@ import logging
 import os
 import re
 import subprocess
-from typing import Dict, Any, Optional, Tuple
+import tempfile
+from typing import Dict, Any
 
 _git_logger = logging.getLogger(__name__)
 
@@ -81,9 +82,7 @@ def _strip_markdown_fences(text):
 def apply_patch(repo_path: str, patch_text: str) -> Dict[str, Any]:
     """Apply a unified-diff or JSON patch to files under repo_path.
 
-    Supports:
-    1. JSON format: {"files": [{"path": "...", "patched_content": "..."}]}
-    2. Unified diff format (tries 'patch' utility, falls back to parser)
+    Supports unified diff only (tries 'patch' utility, falls back to parser).
 
     Returns {applied: bool, files: [...], errors: [...]}.
     """
@@ -94,33 +93,19 @@ def apply_patch(repo_path: str, patch_text: str) -> Dict[str, Any]:
     try:
         patch_text = _strip_markdown_fences(patch_text)
 
-        if patch_text.strip().startswith('{'):
-            # JSON mapping format
-            import json
-            obj = json.loads(patch_text)
-            files = obj.get('files', [])
-            for ent in files:
-                rel = ent['path']
-                content = ent['patched_content']
-                abs_path = os.path.normpath(os.path.join(repo_path, str(rel)))
-                # Path traversal protection: ensure resolved path stays within repo
-                if not abs_path.startswith(os.path.normpath(repo_path) + os.sep) and abs_path != os.path.normpath(repo_path):
-                    result['errors'].append('Path traversal rejected: %s' % rel)
-                    continue
-                d = os.path.dirname(abs_path)
-                if d and not os.path.exists(d):
-                    os.makedirs(d, exist_ok=True)
-                with open(abs_path, 'w', encoding='utf-8') as f:
-                    f.write(content)
-                result['files'].append(rel)
-            result['applied'] = True
-            logger.info(f"Applied JSON patch to {len(result['files'])} files")
-        else:
-            applied_files = _apply_unified_diff(repo_path, patch_text, logger)
-            result['applied'] = len(applied_files) > 0
-            result['files'] = applied_files
-            if not result['applied']:
-                result['errors'].append('Failed to apply unified-diff patch')
+        if not patch_text or patch_text.strip().startswith('{'):
+            result['errors'].append('Only unified diff patches are allowed; JSON patched_content is rejected')
+            return result
+
+        if '--- ' not in patch_text or '+++ ' not in patch_text or '@@' not in patch_text:
+            result['errors'].append('Patch must be unified diff')
+            return result
+
+        applied_files = _apply_unified_diff(repo_path, patch_text, logger)
+        result['applied'] = len(applied_files) > 0
+        result['files'] = applied_files
+        if not result['applied']:
+            result['errors'].append('Failed to apply unified-diff patch')
     except Exception as e:
         logger.exception('Error applying patch')
         result['errors'].append(str(e))
@@ -193,7 +178,15 @@ def _apply_diff_fallback(repo_path, patch_text, logger):
 
     # Apply hunks per file
     for file_path, hunks in files.items():
-        abs_path = os.path.join(repo_path, file_path)
+        abs_path = os.path.realpath(os.path.join(repo_path, file_path))
+        repo_root_real = os.path.realpath(repo_path)
+        try:
+            if os.path.commonpath([repo_root_real, abs_path]) != repo_root_real:
+                logger.warning("Rejected path outside repository: %s", abs_path)
+                continue
+        except ValueError:
+            logger.warning("Rejected path outside repository: %s", abs_path)
+            continue
         if not os.path.exists(abs_path):
             logger.warning("File not found for patching: %s", abs_path)
             continue
@@ -223,8 +216,20 @@ def _apply_diff_fallback(repo_path, patch_text, logger):
                 original_lines[old_start:old_start + old_count] = new_hunk_lines
 
             content = '\n'.join(original_lines)
-            with open(abs_path, 'w', encoding='utf-8') as f:
-                f.write(content)
+            d = os.path.dirname(abs_path)
+            if d and not os.path.exists(d):
+                os.makedirs(d, exist_ok=True)
+            fd, tmp_path = tempfile.mkstemp(prefix='.autofix-', dir=d or repo_path, text=True)
+            try:
+                with os.fdopen(fd, 'w', encoding='utf-8') as f:
+                    f.write(content)
+                os.replace(tmp_path, abs_path)
+            finally:
+                if os.path.exists(tmp_path):
+                    try:
+                        os.remove(tmp_path)
+                    except OSError:
+                        pass
             logger.info("Wrote patched file: %s", file_path)
             applied_files.append(file_path)
         except Exception as e:
