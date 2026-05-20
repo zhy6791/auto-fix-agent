@@ -3,10 +3,8 @@
 import os
 import sys
 import subprocess
-import json
 import shutil
 import tempfile
-import subprocess
 import unittest
 
 import yaml
@@ -64,6 +62,10 @@ class TestCLIIntegration(unittest.TestCase):
                 'temperature': 0.2,
             },
             'max_patch_lines': 40,
+            'command_whitelist': [
+                'mvnw.cmd', 'mvnw', 'mvn.cmd', 'mvn.bat', 'mvn',
+                'gradlew.bat', 'gradlew', 'gradle.bat', 'gradle.cmd', 'gradle',
+            ],
             'auto_apply': False,
             'run_tests_on_apply': False,
         }

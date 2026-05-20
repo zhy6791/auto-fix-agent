@@ -24,6 +24,12 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+DEFAULT_COMMAND_WHITELIST = [
+    'mvnw.cmd', 'mvnw', 'mvn.cmd', 'mvn.bat', 'mvn',
+    'gradlew.bat', 'gradlew', 'gradle.bat', 'gradle.cmd', 'gradle',
+]
+
+
 def load_config(config_path):
     """Load YAML configuration from file."""
     if not os.path.exists(config_path):
@@ -48,6 +54,13 @@ def validate_config(config):
     
     if not os.path.exists(config.get('repo_path', '')):
         raise FileNotFoundError(f"Repo path not found: {config['repo_path']}")
+
+    command_whitelist = config.get('command_whitelist')
+    if not command_whitelist:
+        config['command_whitelist'] = list(DEFAULT_COMMAND_WHITELIST)
+        logger.info("command_whitelist not set; using built-in default whitelist")
+    elif not isinstance(command_whitelist, list) or not all(isinstance(item, str) and item.strip() for item in command_whitelist):
+        raise ValueError('command_whitelist must be a non-empty list of command names')
     
     logger.info("Config validation passed")
 

@@ -83,6 +83,10 @@ class TestAutoFixAgent(unittest.TestCase):
                 'temperature': 0.2,
             },
             'max_patch_lines': 40,
+            'command_whitelist': [
+                'mvnw.cmd', 'mvnw', 'mvn.cmd', 'mvn.bat', 'mvn',
+                'gradlew.bat', 'gradlew', 'gradle.bat', 'gradle.cmd', 'gradle',
+            ],
             'auto_apply': False,
             'run_tests_on_apply': False,
         }
@@ -411,6 +415,7 @@ public class LineNumberTest {
             self.assertIn('-q', cmd)
             self.assertTrue(cmd[0] in ('mvn', 'mvn.cmd', 'mvn.bat'))
             self.assertEqual(mock_run.call_args[1]['timeout'], 600)
+            self.assertIn('mvn', [name.lower() for name in mock_run.call_args[1]['allowed_commands']])
 
     def test_run_compile_gradle(self):
         """Test that _run_compile builds gradle command correctly."""

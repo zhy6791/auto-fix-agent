@@ -1,7 +1,7 @@
 """Unit tests for tools/exec_cmd.py"""
 
 import unittest
-import sys
+from unittest.mock import patch
 from tools.exec_cmd import run
 
 
@@ -51,6 +51,29 @@ class TestExecCmd(unittest.TestCase):
         
         self.assertEqual(result["code"], -1)
         self.assertIn("Timeout", result["stderr"])
+
+    def test_run_allows_whitelisted_command(self):
+        """Test that a whitelisted command is allowed and forwarded to subprocess."""
+        with patch('tools.exec_cmd.subprocess.run') as mock_run:
+            mock_run.return_value.returncode = 0
+            mock_run.return_value.stdout = 'hello\n'
+            mock_run.return_value.stderr = ''
+
+            result = run(["C:/Tools/python.exe", "-c", "print('hello')"], allowed_commands=["python.exe"])
+
+        self.assertEqual(result["code"], 0)
+        self.assertEqual(result["stdout"], 'hello\n')
+        self.assertEqual(result["stderr"], '')
+        mock_run.assert_called_once()
+
+    def test_run_blocks_non_whitelisted_command(self):
+        """Test that a non-whitelisted command is blocked before execution."""
+        with patch('tools.exec_cmd.subprocess.run') as mock_run:
+            result = run(["python", "-c", "print('hello')"], allowed_commands=["git", "mvn"])
+
+        self.assertEqual(result["code"], -1)
+        self.assertIn("whitelist", result["stderr"].lower())
+        mock_run.assert_not_called()
 
 
 if __name__ == '__main__':

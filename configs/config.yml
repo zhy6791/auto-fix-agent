@@ -21,6 +21,17 @@ auto_apply: false
 run_compile_on_apply: true
 run_tests_on_apply: true
 max_retries: 3
+command_whitelist:
+  - mvnw.cmd
+  - mvnw
+  - mvn.cmd
+  - mvn.bat
+  - mvn
+  - gradlew.bat
+  - gradlew
+  - gradle.bat
+  - gradle.cmd
+  - gradle
 
 # Test generation configuration (Strategy B: target + boundaries + regression)
 test_generation:

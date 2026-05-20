@@ -37,21 +37,23 @@ def is_tool_missing(build_result):
 def run_compile(repo_path, config, exec_cmd):
     """Run compile-only check (no tests)."""
     build_tool = config.get('java_build', 'maven')
+    allowed_commands = config.get('command_whitelist', [])
     if build_tool == 'gradle':
         cmd = resolve_build_cmd(repo_path, 'gradle', 'compileJava')
     else:
         cmd = resolve_build_cmd(repo_path, 'maven', 'compile', '-q')
-    return exec_cmd.run(cmd, cwd=repo_path, timeout=600)
+    return exec_cmd.run(cmd, cwd=repo_path, timeout=600, allowed_commands=allowed_commands)
 
 
 def run_tests(repo_path, config, exec_cmd):
     """Run unit tests."""
     build_tool = config.get('java_build', 'maven')
+    allowed_commands = config.get('command_whitelist', [])
     if build_tool == 'gradle':
         cmd = resolve_build_cmd(repo_path, 'gradle', 'test')
     else:
         cmd = resolve_build_cmd(repo_path, 'maven', 'test', '-q')
-    return exec_cmd.run(cmd, cwd=repo_path, timeout=1200)
+    return exec_cmd.run(cmd, cwd=repo_path, timeout=1200, allowed_commands=allowed_commands)
 
 
 def revert_files(repo_path, files, git_manager, ref='HEAD'):

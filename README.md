@@ -408,6 +408,7 @@ gradlew.bat → gradlew → gradle.bat → gradle   (Gradle)
 - LLM 失败兜底：空响应或异常统一返回 `NO_SAFE_PATCH` 并中止应用（`integrations/llm_client.py`）。
 - 路径边界校验：使用 `realpath + commonpath` 防止越界写入（`agents/patch_validator.py`, `tools/git_manager.py`）。
 - 原子写入保护：临时文件 + `os.replace`，降低写入中断导致的文件损坏风险（`tools/git_manager.py`）。
+- 命令白名单：仅允许白名单内的外部命令执行（`tools/exec_cmd.py`，由 `command_whitelist` 配置控制）。
 - 分支隔离提交：修改提交在修复分支进行，避免直接污染主线（`agents/auto_fix_agent.py`, `tools/git_manager.py`）。
 - 执行门禁与回滚：编译/测试失败会触发重试与回滚（`agents/ci_pipeline.py` 的 `retry_with_feedback` / `revert_files`）。
 - 命令执行防护：统一返回结构 + 超时控制（`tools/exec_cmd.py`）。
