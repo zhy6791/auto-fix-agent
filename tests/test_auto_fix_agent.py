@@ -13,13 +13,55 @@ from tools import file_io, exec_cmd, git_manager
 
 
 class MockLLMClient(object):
-    def __init__(self, patch_text):
+    def __init__(self, patch_text, chat_responses=None):
         self.patch_text = patch_text
         self.last_prompt = None
+        self.chat_call_count = 0
+        self._chat_responses = chat_responses or []
 
     def generate_patch(self, prompt, max_tokens=1024):
         self.last_prompt = prompt
         return self.patch_text
+
+    def chat(self, messages, tools=None, max_tokens=4096, temperature=None):
+        if self._chat_responses:
+            idx = self.chat_call_count % len(self._chat_responses)
+            self.chat_call_count += 1
+            resp = self._chat_responses[idx]
+            if isinstance(resp, dict):
+                return resp
+            # If string, parse as tool call
+            from integrations.llm_client import _parse_text_tool_call
+            parsed = _parse_text_tool_call(resp)
+            if parsed:
+                return {'content': resp, 'tool_calls': [parsed], 'finish_reason': 'tool_calls'}
+            return {'content': resp, 'tool_calls': None, 'finish_reason': 'stop'}
+        # Default: drive agent through locate → edit → validate → final_patch
+        self.chat_call_count += 1
+        if self.chat_call_count == 1:
+            return {
+                'content': 'Thought: Locating source from stack frame.\nAction: locate_from_stack({})',
+                'tool_calls': [{'name': 'locate_from_stack', 'arguments': {'class_name': 'com.example.demo.controller.HelloController', 'method': 'sayHello', 'line_no': 42}}],
+                'finish_reason': 'tool_calls',
+            }
+        elif self.chat_call_count == 2:
+            return {
+                'content': 'Thought: Found the source. Generating patch.\nAction: edit_code({})',
+                'tool_calls': [{'name': 'edit_code', 'arguments': {'raw_stack': 'test', 'source_info': {'class_name': 'HelloController', 'method': 'sayHello', 'line_no': 42}}}],
+                'finish_reason': 'tool_calls',
+            }
+        elif self.chat_call_count == 3:
+            return {
+                'content': 'Thought: Validating the patch.\nAction: validate_patch({})',
+                'tool_calls': [{'name': 'validate_patch', 'arguments': {'patch_text': self.patch_text}}],
+                'finish_reason': 'tool_calls',
+            }
+        else:
+            return {
+                'content': 'Thought: Patch is valid. Submitting.\nAction: final_patch({})',
+                'tool_calls': [{'name': 'final_patch', 'arguments': {'patch_text': self.patch_text, 'source_info': {'class_name': 'HelloController', 'method': 'sayHello', 'line_no': 42, 'repo_relative_path': 'src/main/java/com/example/demo/controller/HelloController.java'}}}],
+                'finish_reason': 'tool_calls',
+            }
 
 
 class TestAutoFixAgent(unittest.TestCase):

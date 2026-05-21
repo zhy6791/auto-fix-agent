@@ -24,6 +24,8 @@ from agents import (
     ci_pipeline,
     exception_inference,
     pr_manager,
+    tool_registry,
+    react_agent,
 )
 
 logger = logging.getLogger(__name__)
@@ -38,6 +40,9 @@ class AutoFixAgent:
             'git_manager': git_manager,
         }
         self.llm_client = llm_client or self._build_llm_client()
+        self.tool_registry = tool_registry.ToolRegistry(
+            self.config, self.tools, self.llm_client
+        )
 
     def _build_llm_client(self):
         llm_cfg = self.config.get('llm', {}) or {}
@@ -87,6 +92,14 @@ class AutoFixAgent:
 
         Returns a structured report dict.
         """
+        # 高级流水线步骤（内联注释说明）：
+        # 1) 准备报告骨架
+        # 2) 从日志读取并解析最新异常块
+        # 3) 定位源码：优先使用堆栈帧，无法定位时退回到 LLM 推断
+        # 4) 构建 LLM 提示并请求补丁
+        # 5) 使用多层校验验证补丁
+        # 6) 如果非 dry-run：创建分支、应用补丁、提交、生成测试、运行 CI、创建 PR
+        # 7) 返回最终报告（或错误信息）
         report = {
             'status': 'started',
             'dry_run': dry_run,
@@ -110,60 +123,76 @@ class AutoFixAgent:
                 raise ValueError('logs_path not set in config')
             if not repo_path:
                 raise ValueError('repo_path not set in config')
-
+            # 第一步：从日志中提取并解析堆栈信息
+            # 读取最新的日志片段并提取最近的异常块。
+            # `_read_latest_stack` 封装了文件尾读和异常块提取逻辑。
             raw_stack = self._read_latest_stack(logs_path)
             report['raw_stack'] = raw_stack
 
+            # 第二步：将提取到的异常块解析为结构化帧
+            # `parse_stacktrace` 返回帧列表（包含 exception_type、class、method、line_no 等信息）
             parsed_stack = self.parse_stacktrace(raw_stack)
             report['parsed_stack'] = parsed_stack
 
             if not parsed_stack:
                 raise ValueError('No stack trace entries parsed from logs')
 
-            # Find the best frame to analyze: prioritize app code over framework
-            best_frame = self._select_best_frame(repo_path, parsed_stack)
-            if best_frame:
-                # Traditional path: locate from stack trace
-                source_info = self.find_source_location(repo_path, best_frame)
-                detection_method = 'stack_trace'
-            else:
-                # New path: infer from exception message when no app frame found
-                source_info = self._infer_from_exception_message(repo_path, raw_stack, parsed_stack)
-                detection_method = 'exception_inference'
-                if not source_info:
-                    raise ValueError('Could not locate source from stack trace or exception message')
+            # === Agent 决策循环：自主定位源码 + 生成补丁 ===
+            max_iterations = int(self.config.get('max_agent_iterations', 10))
+            agent = react_agent.ReActAgent(
+                self.config, self.tool_registry, self.llm_client,
+                max_iterations=max_iterations,
+            )
+            agent_result = agent.run({
+                'raw_stack': raw_stack,
+                'parsed_stack': parsed_stack,
+                'repo_path': repo_path,
+                'dry_run': dry_run,
+            })
 
-            report['located_files'] = [source_info]
-            report['detection_method'] = detection_method
+            report['agent_iterations'] = agent_result.get('iterations', 0)
+            report['agent_thoughts'] = agent_result.get('thoughts', [])
+            report['agent_tool_calls'] = agent_result.get('tool_calls', [])
 
-            prompt = self.build_prompt(raw_stack, source_info)
-            report['prompt'] = prompt
+            if agent_result.get('aborted'):
+                raise ValueError('Agent aborted: %s' % agent_result.get('abort_reason', 'Unknown'))
 
-            max_tokens = int(self.config.get('max_tokens', 8192))
-            patch_text = self.llm_client.generate_patch(prompt, max_tokens=max_tokens)
+            patch_text = agent_result.get('final_patch', '')
+            source_info = agent_result.get('source_info', {})
+
+            if not patch_text:
+                raise ValueError('Agent did not produce a patch')
+
+            report['located_files'] = [source_info] if source_info else []
             report['patch_text'] = patch_text
+            report['detection_method'] = source_info.get('detection_method', 'agent')
+            report['prompt'] = ''  # prompt is managed internally by the agent
 
-            if self._is_no_safe_patch(patch_text):
-                raise ValueError(patch_text)
-
+            # 第五步：执行多层补丁校验（结构完整性、变更行数/大小、
+            # import/package/class/method 保护、文件路径边界等）。
             validation = self.validate_patch(repo_path, patch_text, source_info=source_info)
             if not validation['valid']:
+                # 发现校验错误时应尽早停止，以避免危险的写入操作。
                 raise ValueError('Patch validation failed: %s' % '; '.join(validation['errors']))
 
             branch_name = self._make_branch_name()
             report['branch_name'] = branch_name
 
             if not dry_run:
+                # 第六步：在仓库中创建隔离的修复分支，用于应用补丁。
                 branch_ok = self.tools['git_manager'].create_branch(repo_path, branch_name)
                 if not branch_ok:
                     raise RuntimeError('Failed to create branch: %s' % branch_name)
 
+                # 将已校验的补丁应用于仓库。
+                # `apply_patch` 会返回包含应用状态和受影响文件的结构化结果。
                 apply_result = self.tools['git_manager'].apply_patch(repo_path, patch_text)
                 apply_result['dry_run'] = False
                 report['apply_result'] = apply_result
 
+                # 如果补丁应用成功，则在修复分支上提交变更。
+                # 提交信息包含异常类型与被修改的类/方法以便追溯。
                 if apply_result.get('applied') and apply_result.get('files'):
-                    # Commit changes on the fix branch so they stay isolated
                     commit_msg = 'fix: auto-fix %s in %s.%s' % (
                         parsed_stack[0].get('exception_type', 'Exception'),
                         source_info.get('class_name', ''),
@@ -175,11 +204,13 @@ class AutoFixAgent:
                     report['apply_result']['committed'] = committed
                     logger.info("Committed on branch %s: %s", branch_name, committed)
 
-                # Generate and apply test patch if enabled
+                # （可选）生成并应用单元测试补丁
                 if apply_result.get('applied'):
                     test_gen_cfg = self.config.get('test_generation', {})
                     if test_gen_cfg.get('enabled', False) and test_gen_cfg.get('framework') == 'junit5':
                         try:
+                            # 调用 prompt_builder 生成针对修复代码的 JUnit5 测试补丁。
+                            # 对生成的测试补丁执行相同的安全校验，校验通过后尝试应用并提交。
                             test_patch = self.generate_test_patch(source_info, report['patch_text'])
                             if not self._is_no_safe_patch(test_patch):
                                 test_validation = self.validate_patch(repo_path, test_patch, source_info=source_info)
@@ -204,6 +235,8 @@ class AutoFixAgent:
                             report['test_generation_result'] = {'generated': False, 'error': str(e)}
 
                 if apply_result.get('applied'):
+                    # 第七步：在包含补丁的分支上运行 CI（编译与测试）。
+                    # CI 管道封装了编译/测试失败时的重试与 LLM 反馈循环。
                     ci_result = self._run_ci_pipeline(
                         repo_path, source_info, raw_stack, parsed_stack,
                         report['patch_text'], report['prompt'],

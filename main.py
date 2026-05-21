@@ -198,6 +198,12 @@ Examples:
         default=None,
         help='Maximum retry attempts on compile/test failure (default: from config)'
     )
+    parser.add_argument(
+        '--max-agent-iterations',
+        type=int,
+        default=None,
+        help='Maximum iterations for the agent decision loop (default: 10)'
+    )
 
     args = parser.parse_args()
     
@@ -220,6 +226,8 @@ Examples:
             config['gitee']['enabled'] = True
         if args.max_retries is not None:
             config['max_retries'] = args.max_retries
+        if args.max_agent_iterations is not None:
+            config['max_agent_iterations'] = args.max_agent_iterations
 
         dry_run = args.dry_run or not args.auto_apply
         logger.info(f"Starting agent pipeline (dry_run={dry_run})...")

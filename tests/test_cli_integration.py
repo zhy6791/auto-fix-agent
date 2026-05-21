@@ -152,11 +152,11 @@ class TestCLIIntegration(unittest.TestCase):
             # Run dry-run with --no-compile to verify flag is accepted
             result = subprocess.run(
                 [sys.executable, 'main.py', '--config', self.config_path,
-                 '--dry-run', '--no-compile'],
+                 '--dry-run', '--no-compile', '--max-agent-iterations', '1'],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 universal_newlines=True,
-                timeout=10,
+                timeout=15,
             )
             # Should complete (or fail for other reasons) without flag-related error
             self.assertNotIn('unrecognized arguments', result.stderr)
@@ -169,11 +169,27 @@ class TestCLIIntegration(unittest.TestCase):
         try:
             result = subprocess.run(
                 [sys.executable, 'main.py', '--config', self.config_path,
-                 '--dry-run', '--max-retries', '5'],
+                 '--dry-run', '--max-retries', '5', '--max-agent-iterations', '1'],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 universal_newlines=True,
-                timeout=10,
+                timeout=15,
+            )
+            self.assertNotIn('unrecognized arguments', result.stderr)
+        finally:
+            del os.environ['DUMMY_KEY']
+
+    def test_cli_max_agent_iterations_flag(self):
+        """Test that --max-agent-iterations flag is accepted."""
+        os.environ['DUMMY_KEY'] = 'test-key'
+        try:
+            result = subprocess.run(
+                [sys.executable, 'main.py', '--config', self.config_path,
+                 '--dry-run', '--max-agent-iterations', '2'],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                universal_newlines=True,
+                timeout=15,
             )
             self.assertNotIn('unrecognized arguments', result.stderr)
         finally:
