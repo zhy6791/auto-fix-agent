@@ -103,6 +103,7 @@ class ReActAgent:
             if tool_name == 'final_patch':
                 result['final_patch'] = tool_args.get('patch_text', '')
                 result['source_info'] = tool_args.get('source_info', {})
+                result['test_code'] = tool_args.get('test_code', '')
                 self.tool_call_history.append({'tool': tool_name, 'args': tool_args, 'result': 'success'})
                 return result
 
@@ -141,7 +142,7 @@ class ReActAgent:
         max_patch_hunks = self.config.get('max_patch_hunks', 3)
         tool_descriptions = self.tool_registry.get_text_tool_descriptions()
 
-        return '''你是一个专业的 Java Web 服务自动调试和修复助手。你的任务是分析 Java 异常日志，定位源码中的 BUG，生成修复补丁。
+        return '''你是一个专业的 Java Web 服务自动调试和修复助手。你的任务是分析 Java 异常日志，定位源码中的 BUG，生成修复补丁和单元测试。
 
 ## 工作流程
 1. 分析已提供的异常堆栈和解析后的帧列表
@@ -150,7 +151,8 @@ class ReActAgent:
 4. 阅读源码，分析 BUG 根因
 5. 使用 edit_code 生成修复补丁
 6. 使用 validate_patch 校验补丁安全性
-7. 校验通过后，调用 final_patch 提交最终补丁
+7. 校验通过后，使用 generate_test 生成 JUnit 单元测试（验证修复是否正确）
+8. 最后调用 final_patch 提交最终补丁和测试代码
 
 ## 约束
 - 补丁必须是 unified diff 格式

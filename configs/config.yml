@@ -25,6 +25,10 @@ auto_apply: false
 run_compile_on_apply: true
 run_tests_on_apply: true
 max_retries: 3
+
+# 自动生成测试
+generate_tests: true            # 是否启用自动生成 JUnit 测试
+test_gen_max_tokens: 4096       # 测试生成的 LLM 最大 token 数
 command_whitelist:
   - mvnw.cmd
   - mvnw
@@ -40,11 +44,11 @@ command_whitelist:
 # Gitee integration (for PR creation)
 gitee:
   enabled: true
-  owner: "ch6enle"                     # auto-detected from git remote if empty
+  owner: "zhao-haoyuan4353"                     # auto-detected from git remote if empty
   repo: "mall-service"                      # auto-detected from git remote if empty
   access_token_env: "GITEE_ACCESS_TOKEN"  # Set this environment variable to your Gitee personal access token
   api_base_url: "https://gitee.com/api/v5"
-  target_branch: "zhy"
+  target_branch: "master"
   pr_title_template: "fix: auto-fix {exception_type} in {class_name}"
   # When tests are enabled, require both compile + tests to pass before PR
   require_tests_to_pass_for_pr: true

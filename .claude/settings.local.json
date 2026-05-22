@@ -19,7 +19,8 @@
       "WebFetch(domain:arxiv.org)",
       "WebFetch(domain:dblp.org)",
       "WebFetch(domain:proceedings.mlr.press)",
-      "Bash(python -c ':*)"
+      "Bash(python -c ':*)",
+      "Bash(python *)"
     ]
   },
   "statusLine": {

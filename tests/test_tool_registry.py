@@ -71,14 +71,15 @@ class TestToolRegistry(unittest.TestCase):
 
     def test_list_tools(self):
         tools = self.registry.list_tools()
-        self.assertEqual(len(tools), 8)
+        self.assertEqual(len(tools), 9)
         names = [t.name for t in tools]
         self.assertIn('read_code', names)
         self.assertIn('final_patch', names)
+        self.assertIn('generate_test', names)
 
     def test_get_openai_tool_schemas(self):
         schemas = self.registry.get_openai_tool_schemas()
-        self.assertEqual(len(schemas), 8)
+        self.assertEqual(len(schemas), 9)
         for schema in schemas:
             self.assertEqual(schema['type'], 'function')
             self.assertIn('function', schema)

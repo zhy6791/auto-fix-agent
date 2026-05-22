@@ -4,7 +4,7 @@
 
 **核心特性：**
 - 📋 自动提取日志中的异常堆栈信息
-- 🧠 **Agent 决策循环**：LLM 自主调用 8 个工具（定位、搜索、阅读、推断、编辑、校验）完成定位与修复，循环轮次可配置
+- 🧠 **Agent 决策循环**：LLM 自主调用 9 个工具（定位、搜索、阅读、推断、编辑、校验、测试生成）完成定位与修复，循环轮次可配置
 - 🔍 智能定位 Java 源码文件和问题行号（堆栈帧定位 + LLM 推断，由 Agent 自主选择）
 - 🤖 使用 OpenAI 兼容 LLM 生成最小化补丁（含指数退避重试）
 - 🔀 在本地仓库创建修复分支并提交
@@ -12,7 +12,7 @@
 - 🔄 编译/测试失败时自动反馈 LLM 重试修复（失败时自动还原文件状态）
 - 🚀 通过后自动推送并创建 Gitee Pull Request
 - ✅ 支持 dry-run 模式（仅分析不修改）
-- 🧪 完整的单元测试覆盖（110+ 测试通过）
+- 🧪 完整的单元测试覆盖（130+ 测试通过）
 
 ---
 
@@ -37,8 +37,9 @@ auto-fix-agent/
 │   │   ├── tool_registry.py         # 工具注册表：8 个工具的定义与分发
 │   │   └── prompt_builder.py        # LLM Prompt 构建（补丁生成、重试）
 │   │
-│   ├── post_processing/             # 后处理：补丁校验 + 分支管理
-│   │   └── patch_validator.py       # 补丁校验（格式、路径、结构、注释保护）
+│   ├── post_processing/             # 后处理：补丁校验 + 测试生成
+│   │   ├── patch_validator.py       # 补丁校验（格式、路径、结构、注释保护）
+│   │   └── test_generator.py        # JUnit 测试生成（LLM 生成 + 写入文件）
 │   │
 │   └── ci/                          # CI 管道 + PR 管理
 │       ├── ci_pipeline.py           # CI 管道（编译/测试 + LLM 重试反馈）
@@ -57,6 +58,7 @@ auto-fix-agent/
 │   ├── test_auto_fix_agent.py       # 主编排器测试
 │   ├── test_react_agent.py          # Agent 循环测试
 │   ├── test_tool_registry.py        # 工具注册表测试
+│   ├── test_test_generator.py       # 测试生成器测试
 │   ├── test_patch_formats.py        # 补丁格式测试
 │   ├── test_cli_integration.py      # CLI 集成测试
 │   ├── test_file_io.py              # 文件 I/O 测试
@@ -135,7 +137,8 @@ Agent 的主入口是 `main.py`：先读取 `configs/config.yml`，校验 `logs_
 | `read_code` | 读取仓库内任意文件内容 |
 | `edit_code` | 调用 LLM 生成最小化 unified diff 补丁（不直接写文件） |
 | `validate_patch` | 校验补丁格式、路径边界、hunk 大小、Java 结构完整性 |
-| `final_patch` | 提交最终补丁，退出循环 |
+| `generate_test` | 为修复的类生成 JUnit 5 单元测试（验证修复是否正确） |
+| `final_patch` | 提交最终补丁和测试代码，退出循环 |
 | `abort` | 判断无法安全修复，退出循环 |
 
 #### Agent 决策链示例
@@ -151,8 +154,10 @@ Agent 的主入口是 `main.py`：先读取 `configs/config.yml`，校验 `logs_
          Action: edit_code({raw_stack: “...”, source_info: {...}})
 迭代 5: Thought: 补丁已生成，先校验安全性。
          Action: validate_patch({patch_text: “...”, source_info: {...}})
-迭代 6: Thought: 校验通过，提交最终补丁。
-         Action: final_patch({patch_text: “...”, source_info: {...}})
+迭代 6: Thought: 校验通过，生成 JUnit 测试验证修复。
+         Action: generate_test({source_info: {...}, patch_text: “...”, raw_stack: “...”})
+迭代 7: Thought: 测试已生成，提交最终补丁和测试代码。
+         Action: final_patch({patch_text: “...”, source_info: {...}, test_code: “...”})
 ```
 
 ### 3. 补丁验证：先校验，再落盘
@@ -240,7 +245,8 @@ Agent 循环退出后，`agents/patch_validator.py` 会在应用前做多层检�
 │  │     ├─ infer_source      → LLM 推断应用层源码位置       │ │
 │  │     ├─ edit_code         → LLM 生成 unified diff 补丁  │ │
 │  │     ├─ validate_patch    → 校验格式/路径/结构/粒度      │ │
-│  │     ├─ final_patch       → 提交补丁，退出循环 ✓        │ │
+│  │     ├─ generate_test     → 生成 JUnit 5 单元测试       │ │
+│  │     ├─ final_patch       → 提交补丁+测试，退出循环 ✓   │ │
 │  │     └─ abort             → 放弃修复，退出循环 ✗        │ │
 │  └────────────────────────────────────────────────────────┘ │
 │  超时/达到上限 → 自动 abort                                  │
@@ -263,7 +269,13 @@ Agent 循环退出后，`agents/patch_validator.py` 会在应用前做多层检�
                    ┌─────┴─────┐
                    │ 应用失败   │ 应用成功
                    ▼           ▼
-                报告错误   CI 管道（含重试）
+                报告错误   生成 JUnit 测试
+                               │
+                               ▼
+                          写入测试文件 → commit
+                               │
+                               ▼
+                         CI 管道（含重试）
                                │
                      ┌── CI 管道（含重试）──┐
                      │                      │
@@ -323,19 +335,28 @@ main.py
         │           │     └── llm_client.generate_patch()
         │           ├── ToolRegistry.execute("validate_patch")
         │           │     └── patch_validator.validate_patch()
+        │           ├── ToolRegistry.execute("generate_test")
+        │           │     └── test_generator.collect_project_context() + generate_test()
         │           └── ToolRegistry.execute("final_patch" | "abort")
         │
         ├── 阶段 3: 补丁校验 + 应用 [post_processing/]
         │     ├── patch_validator.validate_patch()
         │     └── git_manager.create_branch() / apply_patch() / commit_changes()
         │
-        ├── 阶段 4: CI 管道 [ci/]
+        ├── 阶段 4: 自动生成测试 [post_processing/]
+        │     └── test_generator.run_test_generation()
+        │           ├── test_generator.collect_project_context()
+        │           ├── test_generator.generate_test()
+        │           ├── test_generator.write_test_file()
+        │           └── git_manager.commit_changes()
+        │
+        ├── 阶段 5: CI 管道 [ci/]
         │     └── ci_pipeline.run_ci_pipeline()
         │           ├── ci_pipeline.run_compile()
         │           ├── ci_pipeline.run_tests()
         │           └── ci_pipeline.retry_with_feedback()
         │
-        └── 阶段 5: 创建 PR [ci/]
+        └── 阶段 6: 创建 PR [ci/]
               └── pr_manager.push_and_create_pr()
 ```
 
@@ -351,6 +372,7 @@ main.py
 - [x] ~~CI 失败时自动重试修复~~ — 已实现
 - [x] ~~自动创建 Gitee Pull Request~~ — 已实现
 - [x] ~~LLM 驱动的 Agent 决策循环（自主定位 + 修复）~~ — 已实现
+- [x] ~~自动生成 JUnit 5 单元测试验证修复~~ — 已实现
 - [ ] 支持 Gradle 和 TestNG
 - [ ] 修复质量评分
 - [ ] 支持更多框架异常（Quarkus、Micronaut、etc）

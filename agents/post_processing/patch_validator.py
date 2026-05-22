@@ -372,8 +372,18 @@ def validate_patch(config, repo_path, patch_text, source_info, file_io):
 
             if old_text:
                 old_non_empty = len([l for l in old_text.splitlines() if l.strip()])
-                if old_non_empty > 0 and changed_lines > old_non_empty * max_file_change_ratio:
-                    result['errors'].append('Patch changes too much of %s: %d changed lines over %d non-empty lines' % (rel_path, changed_lines, old_non_empty))
+                if old_non_empty > 0:
+                    # 对小文件放宽限制：文件越小，允许的比例越高
+                    # 小于 20 行的文件允许修改 80%，20-40 行允许 60%，大于 40 行使用默认比例
+                    if old_non_empty < 20:
+                        effective_ratio = 0.80
+                    elif old_non_empty < 40:
+                        effective_ratio = 0.60
+                    else:
+                        effective_ratio = max_file_change_ratio
+
+                    if changed_lines > old_non_empty * effective_ratio:
+                        result['errors'].append('Patch changes too much of %s: %d changed lines over %d non-empty lines (ratio limit: %.0f%%)' % (rel_path, changed_lines, old_non_empty, effective_ratio * 100))
 
                 if source_info:
                     target_rel = os.path.normpath(str(source_info.get('repo_relative_path', '')))

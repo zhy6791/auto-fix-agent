@@ -10,7 +10,7 @@ import os
 from tools import file_io, git_manager
 from agents.log_extraction import stacktrace_parser, source_locator, exception_inference
 from agents.agent_loop import prompt_builder
-from agents.post_processing import patch_validator
+from agents.post_processing import patch_validator, test_generator
 
 logger = logging.getLogger(__name__)
 
@@ -144,10 +144,30 @@ class ToolRegistry:
             category='analyze',
         ))
 
-        # 7. final_patch
+        # 7. generate_test
+        self.register(ToolDef(
+            name='generate_test',
+            description='Generate JUnit 5 unit test for the fixed class. Use this AFTER validate_patch passes and BEFORE final_patch. Returns test_code that can be reviewed before final_patch.',
+            parameters={
+                'type': 'object',
+                'properties': {
+                    'source_info': {
+                        'type': 'object',
+                        'description': 'Source info dict (contains class_name, method, line_no, repo_relative_path, full_source)',
+                    },
+                    'patch_text': {'type': 'string', 'description': 'The validated unified diff patch'},
+                    'raw_stack': {'type': 'string', 'description': 'The raw exception stack trace'},
+                },
+                'required': ['source_info', 'patch_text', 'raw_stack'],
+            },
+            fn=lambda **kw: _generate_test(config, repo_path, llm_client, file_io_mod, kw),
+            category='generate',
+        ))
+
+        # 8. final_patch
         self.register(ToolDef(
             name='final_patch',
-            description='Signal that the agent has completed the fix. Provide the final validated patch and source info. This exits the agent loop.',
+            description='Signal that the agent has completed the fix. Provide the final validated patch, source info, and optionally test_code. This exits the agent loop.',
             parameters={
                 'type': 'object',
                 'properties': {
@@ -156,14 +176,15 @@ class ToolRegistry:
                         'type': 'object',
                         'description': 'Source info dict (contains class_name, method, line_no, repo_relative_path, etc.)',
                     },
+                    'test_code': {'type': 'string', 'description': 'Optional: generated JUnit test code from generate_test tool'},
                 },
                 'required': ['patch_text', 'source_info'],
             },
-            fn=lambda **kw: {'signal': 'final_patch', 'patch_text': kw.get('patch_text', ''), 'source_info': kw.get('source_info', {})},
+            fn=lambda **kw: {'signal': 'final_patch', 'patch_text': kw.get('patch_text', ''), 'source_info': kw.get('source_info', {}), 'test_code': kw.get('test_code', '')},
             category='signal',
         ))
 
-        # 8. abort
+        # 9. abort
         self.register(ToolDef(
             name='abort',
             description='Signal that the agent cannot safely fix the issue. This exits the agent loop with a failure reason.',
@@ -286,3 +307,32 @@ def _validate_patch(config, repo_path, file_io_mod, kw):
     source_info = kw.get('source_info')
     result = patch_validator.validate_patch(config, repo_path, patch_text, source_info, file_io_mod)
     return result
+
+
+def _generate_test(config, repo_path, llm_client, file_io_mod, kw):
+    """Generate JUnit test code for the fixed class."""
+    source_info = kw.get('source_info', {})
+    patch_text = kw.get('patch_text', '')
+    raw_stack = kw.get('raw_stack', '')
+
+    if not source_info or not patch_text:
+        return {'error': 'source_info and patch_text are required', 'test_code': ''}
+
+    try:
+        # Collect project context
+        tools = {'file_io': file_io_mod}
+        context = test_generator.collect_project_context(repo_path, source_info, tools)
+
+        # Generate test code
+        test_code = test_generator.generate_test(
+            llm_client, config, source_info, patch_text, raw_stack,
+            project_context=context
+        )
+
+        if test_code:
+            return {'test_code': test_code, 'success': True}
+        else:
+            return {'test_code': '', 'success': False, 'error': 'LLM failed to generate valid test code'}
+    except Exception as e:
+        logger.exception('Test generation failed in agent tool')
+        return {'test_code': '', 'success': False, 'error': str(e)}

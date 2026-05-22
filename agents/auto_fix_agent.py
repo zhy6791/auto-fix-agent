@@ -18,7 +18,7 @@ from tools import file_io, exec_cmd, git_manager
 from integrations.llm_client import LLMClient
 from agents.log_extraction import stacktrace_parser, source_locator, exception_inference
 from agents.agent_loop import react_agent, tool_registry, prompt_builder
-from agents.post_processing import patch_validator
+from agents.post_processing import patch_validator, test_generator
 from agents.ci import ci_pipeline, pr_manager
 
 logger = logging.getLogger(__name__)
@@ -105,6 +105,7 @@ class AutoFixAgent:
             'apply_result': {'applied': False, 'files': [], 'errors': [], 'dry_run': dry_run},
             'build_result': None,
             'ci_result': None,
+            'test_gen_result': None,
             'pr_result': None,
             'error': None,
         }
@@ -208,8 +209,55 @@ class AutoFixAgent:
                                 commit_msg, len(apply_result.get('files', [])))
 
                 if apply_result.get('applied'):
-                    # ── Stage 5: CI 管道 ──
-                    logger.info('[5/5] CI 管道...')
+                    # ── Stage 5: 自动生成测试 ──
+                    if self.config.get('generate_tests', True):
+                        logger.info('[5/6] 生成 JUnit 测试...')
+
+                        # 优先使用 agent loop 中生成的测试代码
+                        agent_test_code = agent_result.get('test_code', '')
+                        if agent_test_code:
+                            logger.info('  使用 Agent 生成的测试代码')
+                            test_rel_path = prompt_builder._derive_test_path(source_info)
+                            written_path = test_generator.write_test_file(
+                                repo_path, test_rel_path, agent_test_code
+                            )
+                            if written_path:
+                                commit_msg = 'test: add JUnit tests for auto-fix in %s' % (
+                                    source_info.get('class_name', 'unknown')
+                                )
+                                committed = self.tools['git_manager'].commit_changes(
+                                    repo_path, commit_msg, files=[test_rel_path]
+                                )
+                                test_gen_result = {
+                                    'generated': True,
+                                    'test_path': test_rel_path,
+                                    'committed': committed,
+                                    'error': None,
+                                }
+                            else:
+                                test_gen_result = {
+                                    'generated': False,
+                                    'test_path': '',
+                                    'committed': False,
+                                    'error': 'Failed to write test file',
+                                }
+                        else:
+                            # Fallback: 使用独立的 test_generator
+                            logger.info('  Agent 未生成测试，使用独立生成器')
+                            test_gen_result = test_generator.run_test_generation(
+                                self.config, repo_path, source_info,
+                                report['patch_text'], raw_stack,
+                                self.llm_client, self.tools,
+                            )
+
+                        report['test_gen_result'] = test_gen_result
+                        if test_gen_result.get('generated'):
+                            logger.info('  测试已生成: %s', test_gen_result.get('test_path', ''))
+                        else:
+                            logger.warning('  测试生成失败: %s', test_gen_result.get('error', 'unknown'))
+
+                    # ── Stage 6: CI 管道 ──
+                    logger.info('[6/6] CI 管道...')
                     ci_result = self._run_ci_pipeline(
                         repo_path, source_info, raw_stack, parsed_stack,
                         report['patch_text'], report['prompt'],

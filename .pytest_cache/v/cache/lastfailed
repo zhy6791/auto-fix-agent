@@ -1,4 +1,1 @@
-{
-  "tests/test_react_agent.py::TestReActAgent": true,
-  "tests/test_tool_registry.py::TestToolRegistry": true
-}
+{}
