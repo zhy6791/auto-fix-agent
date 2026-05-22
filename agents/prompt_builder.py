@@ -156,7 +156,8 @@ def generate_test_patch(source_info, fix_patch_text, config, llm_client):
     return test_patch_text
 
 
-def build_retry_prompt(original_prompt, source_info, failed_stage, error_output):
+def build_retry_prompt(original_prompt, source_info, failed_stage, error_output,
+                       broken_file_content=None):
     """Build a prompt asking the LLM to fix compile/test failures."""
     stage_cn = '编译' if failed_stage == 'compile' else '单元测试'
 
@@ -173,10 +174,19 @@ def build_retry_prompt(original_prompt, source_info, failed_stage, error_output)
     lines.append(error_output)
     lines.append('```')
     lines.append('')
+
+    if broken_file_content:
+        lines.append('## 当前失败的文件完整内容（请基于此内容生成修复补丁）')
+        lines.append('```java')
+        lines.append(broken_file_content)
+        lines.append('```')
+        lines.append('')
+
     lines.append('## 要求')
     lines.append('- 修复导致 %s 失败的问题' % stage_cn)
     lines.append('- 保持原来针对异常的正确修复不丢失')
-    lines.append('- 返回格式必须与之前一致：unified diff 补丁')
+    lines.append('- 【重要】只返回 unified diff 格式的补丁，不要包含 ```diff 或 ``` 围栏标记')
+    lines.append('- 【重要】补丁中的代码必须是有效的 Java 代码，不能包含 markdown 标记')
     lines.append('- 如果无法同时满足编译和修复异常，优先保证编译通过')
 
     return '\n'.join(lines)

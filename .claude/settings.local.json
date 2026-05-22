@@ -8,7 +8,17 @@
       "Bash(python -m main --config configs/config.yml --auto-apply)",
       "Bash(python -m pytest tests/ -v)",
       "Bash(npx *)",
-      "Bash(python -m pytest tests/ -q)"
+      "Bash(python -m pytest tests/ -q)",
+      "Bash(python -m pytest tests/ -v --tb=short)",
+      "Bash(PYTHONIOENCODING=utf-8 python -c ' *)",
+      "Bash(python -m pytest tests/ --tb=short)",
+      "Bash(python -m pytest tests/test_llm_client.py -v --tb=short)",
+      "WebSearch",
+      "WebFetch(domain:scholar.google.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:arxiv.org)",
+      "WebFetch(domain:dblp.org)",
+      "WebFetch(domain:proceedings.mlr.press)"
     ]
   },
   "statusLine": {

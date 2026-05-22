@@ -29,6 +29,8 @@ def _strip_markdown_fences(text):
         lines = lines[1:]
     if lines and lines[-1].strip().startswith('```'):
         lines = lines[:-1]
+    # Strip any internal fence lines (LLM sometimes returns multiple blocks)
+    lines = [ln for ln in lines if ln.strip() != '```']
     return '\n'.join(lines)
 
 
@@ -352,17 +354,21 @@ def validate_patch(config, repo_path, patch_text, source_info, file_io):
             changed_lines = len(item.get('removed_lines', [])) + len(item.get('added_lines', []))
             result['changed_lines'] += changed_lines
 
-            hunks = item.get('hunks', [])
-            if len(hunks) > max_patch_hunks:
-                result['errors'].append('Patch for %s has too many hunks: %d > %d' % (rel_path, len(hunks), max_patch_hunks))
+            is_test_file = 'src/test/java' in str(rel_path).replace('\\', '/')
 
-            for hunk in hunks:
-                hunk_changed = sum(1 for ln in hunk.get('lines', []) if ln.startswith(('+', '-')) and not ln.startswith(('+++', '---')))
-                hunk_span = max(int(hunk.get('old_count', 0)), int(hunk.get('new_count', 0)))
-                if hunk_changed > max_hunk_lines:
-                    result['errors'].append('Hunk in %s changes too many lines: %d > %d' % (rel_path, hunk_changed, max_hunk_lines))
-                if hunk_span > max_hunk_span:
-                    result['errors'].append('Hunk in %s spans too many lines: %d > %d' % (rel_path, hunk_span, max_hunk_span))
+            # Test files are inherently larger (new test class), skip hunk size limits
+            hunks = item.get('hunks', [])
+            if not is_test_file:
+                if len(hunks) > max_patch_hunks:
+                    result['errors'].append('Patch for %s has too many hunks: %d > %d' % (rel_path, len(hunks), max_patch_hunks))
+
+                for hunk in hunks:
+                    hunk_changed = sum(1 for ln in hunk.get('lines', []) if ln.startswith(('+', '-')) and not ln.startswith(('+++', '---')))
+                    hunk_span = max(int(hunk.get('old_count', 0)), int(hunk.get('new_count', 0)))
+                    if hunk_changed > max_hunk_lines:
+                        result['errors'].append('Hunk in %s changes too many lines: %d > %d' % (rel_path, hunk_changed, max_hunk_lines))
+                    if hunk_span > max_hunk_span:
+                        result['errors'].append('Hunk in %s spans too many lines: %d > %d' % (rel_path, hunk_span, max_hunk_span))
 
             if old_text:
                 old_non_empty = len([l for l in old_text.splitlines() if l.strip()])
@@ -372,7 +378,6 @@ def validate_patch(config, repo_path, patch_text, source_info, file_io):
                 if source_info:
                     target_rel = os.path.normpath(str(source_info.get('repo_relative_path', '')))
                     item_rel = os.path.normpath(str(rel_path))
-                    is_test_file = 'src/test/java' in str(rel_path).replace('\\', '/')
                     if target_rel and item_rel != target_rel and not is_test_file:
                         result['errors'].append('Patch touches files outside analyzed target: %s' % rel_path)
 
@@ -387,12 +392,9 @@ def validate_patch(config, repo_path, patch_text, source_info, file_io):
                             result['errors'].append('Protected comment line was removed from %s: %s' % (rel_path, protected_line))
                             break
 
-                if source_info and old_text:
+                # Java structure validation: only for source files, not test files
+                if source_info and old_text and not is_test_file:
                     line_no = source_info.get('line_no')
-                    # Reuse Java structure validation against reconstructed file only for stronger checks.
-                    # For unified diff patches we validate the diff itself first, then apply structural checks
-                    # on the original/new text pair by reconstructing the target region with SequenceMatcher.
-                    # If the patch is malformed, the diff validation above will already reject it.
                     new_text_guess = old_text
                     for hunk in reversed(hunks):
                         old_start = int(hunk.get('old_start', 1)) - 1
@@ -416,8 +418,15 @@ def validate_patch(config, repo_path, patch_text, source_info, file_io):
                         result['errors'].extend(struct_errors)
 
 
-        if result['changed_lines'] > max_patch_lines:
-            result['errors'].append('Patch too large: %s > %s' % (result['changed_lines'], max_patch_lines))
+        # Only enforce max_patch_lines on non-test files (test files are inherently larger)
+        non_test_changed = 0
+        for item in files:
+            new_path = item.get('new_path') or item.get('old_path') or ''
+            rel = new_path[2:] if new_path.startswith(('a/', 'b/')) else new_path
+            if 'src/test/java' not in str(rel).replace('\\', '/'):
+                non_test_changed += len(item.get('removed_lines', [])) + len(item.get('added_lines', []))
+        if non_test_changed > max_patch_lines:
+            result['errors'].append('Patch too large: %s > %s' % (non_test_changed, max_patch_lines))
 
         result['valid'] = len(result['errors']) == 0
         return result

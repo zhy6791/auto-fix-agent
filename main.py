@@ -19,7 +19,8 @@ from tools import file_io, exec_cmd, git_manager
 
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    datefmt='%H:%M:%S',
 )
 logger = logging.getLogger(__name__)
 
@@ -34,11 +35,10 @@ def load_config(config_path):
     """Load YAML configuration from file."""
     if not os.path.exists(config_path):
         raise FileNotFoundError(f"Config file not found: {config_path}")
-    
+
     with open(config_path, 'r', encoding='utf-8') as f:
         config = yaml.safe_load(f) or {}
-    
-    logger.info(f"Loaded config from {config_path}")
+
     return config
 
 
@@ -48,99 +48,135 @@ def validate_config(config):
     missing = [f for f in required_fields if not config.get(f)]
     if missing:
         raise ValueError(f"Missing required config fields: {', '.join(missing)}")
-    
+
     if not os.path.exists(config.get('logs_path', '')):
         raise FileNotFoundError(f"Logs file not found: {config['logs_path']}")
-    
+
     if not os.path.exists(config.get('repo_path', '')):
         raise FileNotFoundError(f"Repo path not found: {config['repo_path']}")
 
     command_whitelist = config.get('command_whitelist')
     if not command_whitelist:
         config['command_whitelist'] = list(DEFAULT_COMMAND_WHITELIST)
-        logger.info("command_whitelist not set; using built-in default whitelist")
     elif not isinstance(command_whitelist, list) or not all(isinstance(item, str) and item.strip() for item in command_whitelist):
         raise ValueError('command_whitelist must be a non-empty list of command names')
-    
-    logger.info("Config validation passed")
+
+
+def _ok(k):
+    return '\033[32m✔\033[0m' if k else '\033[31m✘\033[0m'
 
 
 def print_report(report, output_file=None):
-    """Pretty-print the agent report."""
-    print("\n" + "="*70)
-    print("AUTOFIX AGENT REPORT")
-    print("="*70)
+    """Print a concise agent report."""
+    status = report.get('status', 'unknown')
+    dry_run = report.get('dry_run', False)
+    error = report.get('error')
+    parsed = report.get('parsed_stack', [])
+    located = report.get('located_files', [])
+    patch_text = report.get('patch_text', '')
+    apply_result = report.get('apply_result', {})
+    test_gen = report.get('test_generation_result', {})
+    ci_result = report.get('ci_result', {})
+    pr_result = report.get('pr_result', {})
+    iterations = report.get('agent_iterations', 0)
+    tool_calls = report.get('agent_tool_calls', [])
 
-    print(f"\nStatus: {report.get('status')}")
-    print(f"Dry Run: {report.get('dry_run')}")
+    print()
+    print('\033[90m  ──────────────────────────────────────────────\033[0m')
+    print('\033[1m   Report\033[0m')
+    print('\033[90m  ──────────────────────────────────────────────\033[0m')
 
-    if report.get('error'):
-        print(f"\n[ERROR] {report['error']}")
+    if error:
+        print(f'   \033[31m✘ {error}\033[0m')
+        print('\033[90m  ──────────────────────────────────────────────\033[0m\n')
+        _save_report(report, output_file)
         return
 
-    if report.get('parsed_stack'):
-        print(f"\nParsed Frames: {len(report['parsed_stack'])}")
-        for idx, frame in enumerate(report['parsed_stack'][:3]):
-            print(f"  [{idx}] {frame.get('class_name')}.{frame.get('method')}() "
-                  f"@ line {frame.get('line_no')}")
+    # ── 异常 + 定位 + 补丁 ──
+    if parsed:
+        exc = parsed[0].get('exception_type', 'Exception')
+        top = '%s.%s():%s' % (parsed[0].get('class_name', ''), parsed[0].get('method', ''), parsed[0].get('line_no', '?'))
+        print(f'   \033[33m{exc}\033[0m')
+        print(f'   {top}')
+    if located:
+        info = located[0]
+        print(f'   \033[90m→\033[0m {info.get("repo_relative_path", "?")}:{info.get("line_no", "?")}')
+    if patch_text:
+        for line in patch_text.splitlines():
+            if line.startswith('@@') or line.startswith('---') or line.startswith('+++'):
+                print(f'   \033[36m{line}\033[0m')
+            elif line.startswith('+') and not line.startswith('+++'):
+                print(f'   \033[32m{line}\033[0m')
+            elif line.startswith('-') and not line.startswith('---'):
+                print(f'   \033[31m{line}\033[0m')
+            elif line.strip():
+                print(f'   \033[90m{line}\033[0m')
 
-    if report.get('located_files'):
-        print(f"\nLocated Files:")
-        for info in report['located_files']:
-            print(f"  - {info.get('repo_relative_path')} (line {info.get('line_no')})")
+    # ── 结果一览 ──
+    print()
+    applied = apply_result.get('applied', False)
+    branch = report.get('branch_name', '')
+    files = apply_result.get('files', [])
+    if applied:
+        print(f'   {_ok(True)} 补丁已应用  \033[90m{branch}\033[0m  ({", ".join(files)})')
+    elif dry_run:
+        print(f'   \033[33m○\033[0m dry-run 模式，未修改代码')
+    else:
+        errs = '; '.join(apply_result.get('errors', []))
+        print(f'   {_ok(False)} 补丁未应用  {errs}')
 
-    if report.get('branch_name'):
-        print(f"\nBranch Name: {report['branch_name']}")
-
-    if report.get('patch_text'):
-        patch_preview = report['patch_text'][:200]
-        if len(report['patch_text']) > 200:
-            patch_preview += "..."
-        print(f"\nPatch Preview:\n{patch_preview}")
-
-    apply_result = report.get('apply_result', {})
-    if apply_result.get('applied'):
-        print(f"\n[OK] Patch Applied!")
-        print(f"   Files touched: {', '.join(apply_result.get('files', []))}")
-    elif not apply_result.get('dry_run'):
-        print(f"\n[WARN] Patch Not Applied")
-        if apply_result.get('errors'):
-            for err in apply_result['errors']:
-                print(f"   Error: {err}")
-
-    if report.get('build_result'):
-        build = report['build_result']
-        print(f"\nBuild Result:")
-        print(f"   Exit code: {build.get('code')}")
-        if build.get('code') == 0:
-            print(f"   [OK] Build successful")
+    if test_gen:
+        if test_gen.get('generated'):
+            print(f'   {_ok(True)} 测试已生成  ({", ".join(test_gen.get("files", []))})')
         else:
-            print(f"   [FAIL] Build failed")
+            print(f'   {_ok(False)} 测试生成失败  {test_gen.get("error", "")}')
 
-    ci_result = report.get('ci_result', {})
     if ci_result:
-        print(f"\nCI Pipeline:")
-        for stage in ci_result.get('stages_passed', []):
-            print(f"   [OK] {stage}")
-        for stage in ci_result.get('stages_failed', []):
-            print(f"   [FAIL] {stage}")
-        if ci_result.get('retries_used', 0) > 0:
-            print(f"   Retries used: {ci_result['retries_used']}")
+        passed = ci_result.get('stages_passed', [])
+        failed = ci_result.get('stages_failed', [])
+        retries = ci_result.get('retries_used', 0)
+        parts = []
+        for s in passed:
+            parts.append(f'{_ok(True)} {s}')
+        for s in failed:
+            parts.append(f'{_ok(False)} {s}')
+        line = '   ' + '  '.join(parts)
+        if retries > 0:
+            line += f'  \033[33m↻{retries}\033[0m'
+        print(line)
+        # Show last error detail for failed stages
+        for entry in reversed(ci_result.get('patch_history', [])):
+            if entry.get('stage') in failed and entry.get('error'):
+                err_preview = entry['error'].replace('\n', ' ').strip()[:150]
+                if err_preview:
+                    print(f'   \033[90m└ {err_preview}\033[0m')
+                break
 
-    pr_result = report.get('pr_result', {})
     if pr_result:
         if pr_result.get('pr_created'):
-            print(f"\n[OK] Pull Request created: {pr_result['pr_url']}")
+            print(f'   {_ok(True)} PR: \033[4m{pr_result["pr_url"]}\033[0m')
         elif pr_result.get('error'):
-            print(f"\n[WARN] PR creation failed: {pr_result['error']}")
+            print(f'   {_ok(False)} PR: {pr_result["error"]}')
 
-    print("\n" + "="*70)
+    # ── 统计 ──
+    stats = []
+    if iterations > 0:
+        stats.append(f'{iterations} 轮')
+    if tool_calls:
+        stats.append(f'{len(tool_calls)} 工具')
+    stats.append('dry-run' if dry_run else status)
+    print(f'\n   \033[90m{" · ".join(stats)}\033[0m')
+    print('\033[90m  ──────────────────────────────────────────────\033[0m\n')
 
+    _save_report(report, output_file)
+
+
+def _save_report(report, output_file):
     if output_file:
-        os.makedirs(os.path.dirname(output_file), exist_ok=True)
+        os.makedirs(os.path.dirname(output_file) or '.', exist_ok=True)
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
-        logger.info(f"Full report saved to {output_file}")
+        logger.info(f"Report saved to {output_file}")
 
 
 def main():
@@ -211,10 +247,7 @@ Examples:
         logging.getLogger().setLevel(logging.DEBUG)
     
     try:
-        logger.info("Loading configuration...")
         config = load_config(args.config)
-        
-        logger.info("Validating configuration...")
         validate_config(config)
 
         if args.no_compile:
@@ -230,20 +263,28 @@ Examples:
             config['max_agent_iterations'] = args.max_agent_iterations
 
         dry_run = args.dry_run or not args.auto_apply
-        logger.info(f"Starting agent pipeline (dry_run={dry_run})...")
-        
+
+        print()
+        print('\033[36m  ╔══════════════════════════════════════════════════════════╗\033[0m')
+        print('\033[36m  ║\033[0m  \033[1;36m⚡ AutoFix Agent\033[0m  ·  \033[90mJava Web 服务自动修复\033[0m                 \033[36m║\033[0m')
+        print('\033[36m  ║\033[0m  \033[90mLLM 驱动异常分析 → 源码定位 → 补丁生成 → CI → PR\033[0m   \033[36m║\033[0m')
+        print('\033[36m  ╚══════════════════════════════════════════════════════════╝\033[0m')
+        print()
+        logger.info('日志: %s', config.get('logs_path', ''))
+        logger.info('仓库: %s', config.get('repo_path', ''))
+        logger.info('模式: %s', 'dry-run' if dry_run else 'auto-apply')
+
         agent = AutoFixAgent(
             config,
             tools={'file_io': file_io, 'exec_cmd': exec_cmd, 'git_manager': git_manager}
         )
-        
+
         report = agent.run_pipeline(dry_run=dry_run)
-        
+
         output_file = f"agent_report_{report.get('branch_name', 'unknown')}.json" if report.get('branch_name') else None
         print_report(report, output_file=output_file)
-        
+
         if report.get('status') == 'completed':
-            logger.info("Pipeline completed successfully")
             return 0
         else:
             logger.error("Pipeline failed: %s", report.get('error'))

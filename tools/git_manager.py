@@ -72,10 +72,14 @@ def checkout_branch(repo_path: str, branch_name: str) -> bool:
 def _strip_markdown_fences(text):
     """Strip markdown code fences from patch text if present."""
     lines = text.split('\n')
+    # Strip leading fence
     if lines and lines[0].strip().startswith('```'):
         lines = lines[1:]
+    # Strip trailing fence
     if lines and lines[-1].strip() == '```':
         lines = lines[:-1]
+    # Strip any internal fence lines (LLM sometimes returns multiple blocks)
+    lines = [ln for ln in lines if ln.strip() != '```']
     return '\n'.join(lines)
 
 
@@ -105,35 +109,79 @@ def apply_patch(repo_path: str, patch_text: str) -> Dict[str, Any]:
         result['applied'] = len(applied_files) > 0
         result['files'] = applied_files
         if not result['applied']:
-            result['errors'].append('Failed to apply unified-diff patch')
+            result['errors'].append('No files were patched (patch command failed or no matching files)')
     except Exception as e:
         logger.exception('Error applying patch')
         result['errors'].append(str(e))
     return result
 
 
+def _extract_patch_paths(patch_text):
+    """Extract repo-relative file paths from +++ headers in a unified diff.
+
+    After `patch -p1`, the first path component is stripped. If the resulting
+    path doesn't exist (e.g. LLM added an extra directory prefix), try
+    stripping additional components until a valid path is found.
+    """
+    paths = []
+    for line in patch_text.split('\n'):
+        if not line.startswith('+++'):
+            continue
+        parts = line.split('\t')[0].split(' ')
+        if len(parts) <= 1:
+            continue
+        raw = parts[-1]
+        # Strip 'b/' prefix (diff convention)
+        if raw.startswith('b/'):
+            raw = raw[2:]
+        # After -p1, this is the path. Normalize separators.
+        raw = raw.replace('\\', '/')
+        if raw not in paths:
+            paths.append(raw)
+    return paths
+
+
 def _apply_unified_diff(repo_path, patch_text, logger):
     """Apply unified-diff. Try 'patch' CLI first, fall back to internal parser."""
     applied_files = []
+    patch_stderr = ''
     try:
         res = subprocess.run(['patch', '-p1', '--batch'], cwd=repo_path,
                              input=patch_text, stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE, universal_newlines=True, timeout=30)
+        patch_stderr = (res.stderr or '').strip()
         if res.returncode in (0, 1):
-            for line in patch_text.split('\n'):
-                if line.startswith('+++'):
-                    parts = line.split('\t')[0].split(' ')
-                    if len(parts) > 1:
-                        fpath = parts[-1].lstrip('b/')
-                        if fpath not in applied_files:
-                            applied_files.append(fpath)
+            for fpath in _extract_patch_paths(patch_text):
+                corrected = _correct_patch_path(repo_path, fpath)
+                if corrected not in applied_files:
+                    applied_files.append(corrected)
             logger.info(f"Applied unified-diff via 'patch' to {len(applied_files)} files")
             return applied_files
-    except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
-        pass
+        else:
+            logger.warning("patch -p1 failed (exit %d): %s", res.returncode, patch_stderr[:300])
+    except (subprocess.TimeoutExpired, FileNotFoundError, OSError) as e:
+        logger.warning("patch -p1 exception: %s", e)
 
     applied_files = _apply_diff_fallback(repo_path, patch_text, logger)
     return applied_files
+
+
+def _correct_patch_path(repo_path, fpath):
+    """Try progressively stripping directory levels to find the real repo path.
+
+    Handles cases where the LLM generated an extra directory prefix
+    (e.g. 'mall-service/src/Main.java' when the real path is 'src/Main.java').
+    """
+    parts = fpath.replace('\\', '/').split('/')
+    # Try the path as-is first
+    for i in range(len(parts)):
+        candidate = '/'.join(parts[i:])
+        if os.path.isfile(os.path.join(repo_path, candidate)):
+            return candidate
+        # Stop stripping once we hit a common source root
+        if parts[i] in ('src', 'main', 'test', 'java', 'resources', 'pom.xml', 'build.gradle'):
+            return candidate
+    return fpath
 
 
 _HUNK_HEADER_RE = re.compile(r'^@@\s+-(\d+)(?:,(\d+))?\s+\+(\d+)(?:,(\d+))?\s+@@')
@@ -156,7 +204,10 @@ def _apply_diff_fallback(repo_path, patch_text, logger):
         if line.startswith('+++'):
             parts = line.split('\t')[0].split(' ')
             if len(parts) > 1:
-                current_file = parts[-1].lstrip('b/')
+                raw_path = parts[-1]
+                if raw_path.startswith('b/'):
+                    raw_path = raw_path[2:]
+                current_file = _correct_patch_path(repo_path, raw_path)
                 files[current_file] = []
                 current_hunk = None
         elif line.startswith('@@'):
@@ -188,7 +239,20 @@ def _apply_diff_fallback(repo_path, patch_text, logger):
             logger.warning("Rejected path outside repository: %s", abs_path)
             continue
         if not os.path.exists(abs_path):
-            logger.warning("File not found for patching: %s", abs_path)
+            # New file creation: collect all added lines from hunks
+            new_lines = []
+            for hunk in hunks:
+                for hunk_line in hunk.get('lines', []):
+                    if hunk_line.startswith('+') and not hunk_line.startswith('+++'):
+                        new_lines.append(hunk_line[1:])
+                    elif hunk_line.startswith(' '):
+                        new_lines.append(hunk_line[1:])
+            if new_lines:
+                os.makedirs(os.path.dirname(abs_path), exist_ok=True)
+                with open(abs_path, 'w', encoding='utf-8') as f:
+                    f.write('\n'.join(new_lines) + '\n')
+                applied_files.append(file_path)
+                logger.info("Created new file: %s (%d lines)", file_path, len(new_lines))
             continue
 
         try:
@@ -283,21 +347,47 @@ def parse_gitee_owner_repo(remote_url):
 
 
 def revert_files(repo_path: str, files: list, ref: str = 'HEAD') -> bool:
-    """Revert specified files to a given git ref via git checkout."""
+    """Revert specified files to a given git ref via git checkout.
+
+    For files that don't exist at the target ref (newly created files),
+    deletes them instead.
+    """
     if not files:
         return True
     try:
         rel_files = []
+        new_files = []
         for f in files:
             if os.path.isabs(f):
-                rel_files.append(os.path.relpath(f, repo_path))
+                rel = os.path.relpath(f, repo_path)
             else:
-                rel_files.append(f)
-        subprocess.check_call(
-            ['git', '-C', repo_path, 'checkout', ref, '--'] + rel_files,
-            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
-        )
-        _git_logger.info("Reverted %d files to %s", len(rel_files), ref)
+                rel = f
+            # Check if file exists at target ref
+            ret = subprocess.run(
+                ['git', '-C', repo_path, 'cat-file', '-e', '%s:%s' % (ref, rel)],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
+            if ret.returncode == 0:
+                rel_files.append(rel)
+            else:
+                new_files.append(rel)
+
+        # Revert files that exist at target ref
+        if rel_files:
+            subprocess.check_call(
+                ['git', '-C', repo_path, 'checkout', ref, '--'] + rel_files,
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
+
+        # Delete files that are newly created (don't exist at target ref)
+        for f in new_files:
+            abs_f = os.path.join(repo_path, f)
+            if os.path.exists(abs_f):
+                os.remove(abs_f)
+                _git_logger.info("Deleted new file: %s", f)
+
+        _git_logger.info("Reverted %d files, deleted %d new files to %s",
+                         len(rel_files), len(new_files), ref)
         return True
     except subprocess.CalledProcessError as e:
         _git_logger.warning("Failed to revert files to %s: %s", ref, e)

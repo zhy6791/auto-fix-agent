@@ -123,21 +123,28 @@ class AutoFixAgent:
                 raise ValueError('logs_path not set in config')
             if not repo_path:
                 raise ValueError('repo_path not set in config')
-            # 第一步：从日志中提取并解析堆栈信息
-            # 读取最新的日志片段并提取最近的异常块。
-            # `_read_latest_stack` 封装了文件尾读和异常块提取逻辑。
+
+            # ── Stage 1: 异常提取 ──
+            logger.info('[1/6] 提取异常堆栈...')
             raw_stack = self._read_latest_stack(logs_path)
             report['raw_stack'] = raw_stack
 
-            # 第二步：将提取到的异常块解析为结构化帧
-            # `parse_stacktrace` 返回帧列表（包含 exception_type、class、method、line_no 等信息）
             parsed_stack = self.parse_stacktrace(raw_stack)
             report['parsed_stack'] = parsed_stack
 
             if not parsed_stack:
                 raise ValueError('No stack trace entries parsed from logs')
 
-            # === Agent 决策循环：自主定位源码 + 生成补丁 ===
+            exc_type = parsed_stack[0].get('exception_type', 'Exception')
+            top_frame = '%s.%s():%s' % (
+                parsed_stack[0].get('class_name', '?'),
+                parsed_stack[0].get('method', '?'),
+                parsed_stack[0].get('line_no', '?'),
+            )
+            logger.info('  异常: %s  顶层帧: %s', exc_type, top_frame)
+
+            # ── Stage 2: Agent 决策循环 ──
+            logger.info('[2/6] Agent 决策循环...')
             max_iterations = int(self.config.get('max_agent_iterations', 10))
             agent = react_agent.ReActAgent(
                 self.config, self.tool_registry, self.llm_client,
@@ -166,32 +173,34 @@ class AutoFixAgent:
             report['located_files'] = [source_info] if source_info else []
             report['patch_text'] = patch_text
             report['detection_method'] = source_info.get('detection_method', 'agent')
-            report['prompt'] = ''  # prompt is managed internally by the agent
+            report['prompt'] = ''
 
-            # 第五步：执行多层补丁校验（结构完整性、变更行数/大小、
-            # import/package/class/method 保护、文件路径边界等）。
+            logger.info('  完成: %d 轮迭代, %d 次工具调用',
+                        agent_result.get('iterations', 0),
+                        len(agent_result.get('tool_calls', [])))
+
+            # ── Stage 3: 补丁校验 ──
+            logger.info('[3/6] 补丁校验...')
             validation = self.validate_patch(repo_path, patch_text, source_info=source_info)
             if not validation['valid']:
-                # 发现校验错误时应尽早停止，以避免危险的写入操作。
                 raise ValueError('Patch validation failed: %s' % '; '.join(validation['errors']))
+            logger.info('  校验通过')
 
             branch_name = self._make_branch_name()
             report['branch_name'] = branch_name
 
             if not dry_run:
-                # 第六步：在仓库中创建隔离的修复分支，用于应用补丁。
+                # ── Stage 4: 应用补丁 ──
+                logger.info('[4/6] 应用补丁...')
                 branch_ok = self.tools['git_manager'].create_branch(repo_path, branch_name)
                 if not branch_ok:
                     raise RuntimeError('Failed to create branch: %s' % branch_name)
+                logger.info('  分支: %s', branch_name)
 
-                # 将已校验的补丁应用于仓库。
-                # `apply_patch` 会返回包含应用状态和受影响文件的结构化结果。
                 apply_result = self.tools['git_manager'].apply_patch(repo_path, patch_text)
                 apply_result['dry_run'] = False
                 report['apply_result'] = apply_result
 
-                # 如果补丁应用成功，则在修复分支上提交变更。
-                # 提交信息包含异常类型与被修改的类/方法以便追溯。
                 if apply_result.get('applied') and apply_result.get('files'):
                     commit_msg = 'fix: auto-fix %s in %s.%s' % (
                         parsed_stack[0].get('exception_type', 'Exception'),
@@ -202,20 +211,29 @@ class AutoFixAgent:
                         repo_path, commit_msg, files=apply_result['files']
                     )
                     report['apply_result']['committed'] = committed
-                    logger.info("Committed on branch %s: %s", branch_name, committed)
+                    logger.info('  已提交: %s (%d 文件)',
+                                commit_msg, len(apply_result.get('files', [])))
 
-                # （可选）生成并应用单元测试补丁
+                # ── Stage 5: 测试生成（可选）──
                 if apply_result.get('applied'):
                     test_gen_cfg = self.config.get('test_generation', {})
                     if test_gen_cfg.get('enabled', False) and test_gen_cfg.get('framework') == 'junit5':
+                        logger.info('[5/6] 生成 JUnit5 测试...')
                         try:
-                            # 调用 prompt_builder 生成针对修复代码的 JUnit5 测试补丁。
-                            # 对生成的测试补丁执行相同的安全校验，校验通过后尝试应用并提交。
                             test_patch = self.generate_test_patch(source_info, report['patch_text'])
                             if not self._is_no_safe_patch(test_patch):
                                 test_validation = self.validate_patch(repo_path, test_patch, source_info=source_info)
                                 if test_validation['valid']:
                                     test_apply = self.tools['git_manager'].apply_patch(repo_path, test_patch)
+                                    # If apply failed, delete existing test files and retry
+                                    if not test_apply.get('applied') and test_apply.get('errors'):
+                                        logger.info('  测试补丁首次应用失败，尝试清理已有测试文件后重试...')
+                                        for f in test_validation.get('files', []):
+                                            abs_f = os.path.join(repo_path, f)
+                                            if os.path.exists(abs_f):
+                                                os.remove(abs_f)
+                                                logger.info('  已删除: %s', f)
+                                        test_apply = self.tools['git_manager'].apply_patch(repo_path, test_patch)
                                     if test_apply.get('applied'):
                                         test_committed = self.tools['git_manager'].commit_changes(
                                             repo_path, 'test: auto-generate unit tests for %s' % source_info.get('method', 'test'),
@@ -223,20 +241,22 @@ class AutoFixAgent:
                                         )
                                         report['test_patch_applied'] = True
                                         report['test_generation_result'] = {'generated': True, 'files': test_apply.get('files', [])}
-                                        logger.info("Generated and applied test patch: %s", test_apply.get('files', []))
+                                        logger.info('  测试已生成: %s', test_apply.get('files', []))
                                     else:
-                                        report['test_generation_result'] = {'generated': False, 'error': 'Failed to apply test patch'}
+                                        errs = '; '.join(test_apply.get('errors', []))
+                                        logger.warning('  测试补丁应用失败: %s', errs)
+                                        report['test_generation_result'] = {'generated': False, 'error': 'Failed to apply: %s' % errs}
                                 else:
                                     report['test_generation_result'] = {'generated': False, 'error': '; '.join(test_validation['errors'])}
                             else:
                                 report['test_generation_result'] = {'generated': False, 'error': 'LLM cannot generate safe tests'}
                         except Exception as e:
-                            logger.warning('Test generation failed: %s', str(e))
+                            logger.warning('  测试生成失败: %s', str(e))
                             report['test_generation_result'] = {'generated': False, 'error': str(e)}
 
                 if apply_result.get('applied'):
-                    # 第七步：在包含补丁的分支上运行 CI（编译与测试）。
-                    # CI 管道封装了编译/测试失败时的重试与 LLM 反馈循环。
+                    # ── Stage 6: CI 管道 ──
+                    logger.info('[6/6] CI 管道...')
                     ci_result = self._run_ci_pipeline(
                         repo_path, source_info, raw_stack, parsed_stack,
                         report['patch_text'], report['prompt'],
@@ -244,11 +264,22 @@ class AutoFixAgent:
                     )
                     report['ci_result'] = ci_result
 
+                    for stage in ci_result.get('stages_passed', []):
+                        logger.info('  ✔ %s', stage)
+                    for stage in ci_result.get('stages_failed', []):
+                        logger.info('  ✘ %s', stage)
+                    if ci_result.get('retries_used', 0) > 0:
+                        logger.info('  ↻ LLM 重试: %d 次', ci_result['retries_used'])
+
                     if self.config.get('gitee', {}).get('enabled', False) and \
                             'compile' in ci_result.get('stages_passed', []):
-                        report['pr_result'] = self._push_and_create_pr(
+                        logger.info('  创建 Gitee PR...')
+                        pr_result = self._push_and_create_pr(
                             repo_path, branch_name, parsed_stack, source_info, ci_result
                         )
+                        report['pr_result'] = pr_result
+                        if pr_result.get('pr_created'):
+                            logger.info('  PR: %s', pr_result.get('pr_url', ''))
             else:
                 report['apply_result'] = {
                     'applied': False,

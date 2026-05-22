@@ -13,6 +13,19 @@ logger = logging.getLogger(__name__)
 _RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 504}
 
 
+def _strip_markdown_fences(text):
+    """Strip markdown code fences from LLM response."""
+    if not text:
+        return text
+    lines = text.splitlines()
+    if lines and lines[0].strip().startswith('```'):
+        lines = lines[1:]
+    if lines and lines[-1].strip().startswith('```'):
+        lines = lines[:-1]
+    lines = [ln for ln in lines if ln.strip() != '```']
+    return '\n'.join(lines)
+
+
 class LLMClient:
     def __init__(self, api_key, model: str = 'gpt-4o-mini', temperature: float = 0.2, base_url: str = None, timeout: int = 300, max_retries: int = 3):
         """Initialize LLM client.
@@ -87,6 +100,7 @@ class LLMClient:
                 resp.raise_for_status()
                 data = resp.json()
                 result = data['choices'][0]['message']['content']
+                result = _strip_markdown_fences(result)
                 logger.debug(f"Raw LLM response length: {len(result)}, content preview: {result[:200]}...")
                 if not result or not result.strip():
                     logger.warning('LLM returned empty or whitespace-only response')

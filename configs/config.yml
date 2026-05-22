@@ -5,14 +5,18 @@ repo_path: "D:/workspace-repo/mall-service"  # 你的 Maven 项目根目录（�
 java_build: "maven"
 branch_prefix: "fix/"
 llm:
-    base_url: "https://token-plan-cn.xiaomimimo.com/v1"
-    provider: "openai"
-    model: "mimo-v2.5-pro"
-    api_key_env: "MIMO_API_KEY"
+    # base_url: "https://token-plan-cn.xiaomimimo.com/v1"
+    # provider: "openai"
+    # model: "mimo-v2.5-pro"
+    # api_key_env: "MIMO_API_KEY"
     # base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
     # provider: "dashscope"
     # model: "qwen3-max"
     # api_key_env: "DASHSCOPE_API_KEY"
+    base_url: "https://api.deepseek.com"
+    provider: "openai"
+    model: "deepseek-v4-pro"
+    api_key_env: "DEEPSEEK_API_KEY"
     temperature: 0.2
     timeout: 300
 max_patch_lines: 40

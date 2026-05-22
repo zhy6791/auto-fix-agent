@@ -73,8 +73,26 @@ def retry_with_feedback(original_prompt, source_info, failed_stage,
     if not error_output:
         error_output = (build_result.get('stdout', '') or '')[:3000]
 
+    # For test failures, include the broken test file content so LLM can fix it
+    broken_file_content = None
+    if failed_stage == 'tests':
+        repo_relative = source_info.get('repo_relative_path', '')
+        if repo_relative:
+            # Derive test file path from source path
+            test_path = repo_relative.replace('/main/java/', '/test/java/')
+            if not test_path.endswith('Test.java'):
+                test_path = test_path.replace('.java', 'Test.java')
+            abs_test = os.path.join(repo_path, test_path)
+            if os.path.exists(abs_test):
+                try:
+                    with open(abs_test, 'r', encoding='utf-8') as f:
+                        broken_file_content = f.read()
+                except Exception:
+                    pass
+
     retry_prompt = prompt_builder.build_retry_prompt(
-        original_prompt, source_info, failed_stage, error_output
+        original_prompt, source_info, failed_stage, error_output,
+        broken_file_content=broken_file_content,
     )
 
     max_tokens = int(config.get('max_tokens', 8192))
@@ -150,10 +168,13 @@ def run_ci_pipeline(repo_path, source_info, raw_stack, parsed_stack,
                 })
                 break
 
+            err = (compile_result.get('stderr', '') or '')[:2000]
+            if not err:
+                err = (compile_result.get('stdout', '') or '')[:2000]
             ci_result['patch_history'].append({
                 'stage': 'compile',
                 'attempt': attempt + 1,
-                'error': (compile_result.get('stderr', '') or '')[:2000],
+                'error': err,
             })
             if attempt >= max_retries:
                 ci_result['compile_result'] = compile_result
@@ -198,10 +219,13 @@ def run_ci_pipeline(repo_path, source_info, raw_stack, parsed_stack,
                 })
                 break
 
+            err = (test_result.get('stderr', '') or '')[:2000]
+            if not err:
+                err = (test_result.get('stdout', '') or '')[:2000]
             ci_result['patch_history'].append({
                 'stage': 'tests',
                 'attempt': attempt + 1,
-                'error': (test_result.get('stderr', '') or '')[:2000],
+                'error': err,
             })
             if attempt >= max_retries:
                 ci_result['test_result'] = test_result

@@ -66,7 +66,7 @@ class ReActAgent:
 
         for iteration in range(self.max_iterations):
             result['iterations'] = iteration + 1
-            logger.info('Agent iteration %d/%d', iteration + 1, self.max_iterations)
+            logger.info('  ─── 迭代 %d/%d', iteration + 1, self.max_iterations)
 
             # Call LLM
             llm_response = self._call_llm()
@@ -79,7 +79,7 @@ class ReActAgent:
             thought, tool_name, tool_args = self._parse_response(llm_response)
             if thought:
                 self.thoughts.append(thought)
-                logger.info('Thought: %s', thought[:200])
+                logger.info('  ❮ %s', thought[:150])
 
             if tool_name is None:
                 # Couldn't parse any action, ask agent to clarify
@@ -87,7 +87,17 @@ class ReActAgent:
                 self.scratchpad.append({'role': 'user', 'content': 'Observation: Could not parse your action. Please respond with Thought: followed by Action: tool_name({args})'})
                 continue
 
-            logger.info('Action: %s(%s)', tool_name, json.dumps(tool_args, ensure_ascii=False)[:200])
+            # Format args concisely for logging
+            arg_parts = []
+            for k, v in tool_args.items():
+                if k in ('patch_text', 'raw_stack', 'full_source'):
+                    continue
+                val_str = str(v)
+                if len(val_str) > 50:
+                    val_str = val_str[:47] + '...'
+                arg_parts.append('%s=%s' % (k, val_str))
+            args_display = ', '.join(arg_parts)
+            logger.info('  → %s(%s)', tool_name, args_display)
 
             # Handle signal tools
             if tool_name == 'final_patch':

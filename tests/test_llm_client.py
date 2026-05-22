@@ -71,6 +71,22 @@ class TestLLMClient(unittest.TestCase):
         self.assertIn('NO_SAFE_PATCH', result)
         self.assertIn('Connection', result)
 
+    @patch('requests.post')
+    def test_generate_patch_strips_markdown_fences(self, mock_post):
+        fenced = '```diff\n--- a/Foo.java\n+++ b/Foo.java\n@@ -1,1 +1,1 @@\n-old\n+new\n```'
+        mock_response = MagicMock()
+        mock_response.json.return_value = {
+            'choices': [{'message': {'content': fenced}}]
+        }
+        mock_post.return_value = mock_response
+
+        client = LLMClient(api_key='test-key')
+        result = client.generate_patch('test prompt')
+
+        self.assertNotIn('```', result)
+        self.assertIn('--- a/Foo.java', result)
+        self.assertIn('+new', result)
+
     def test_generate_patch_no_api_key(self):
         client = LLMClient(api_key='')
         result = client.generate_patch('test prompt')

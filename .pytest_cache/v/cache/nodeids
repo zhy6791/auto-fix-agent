@@ -69,6 +69,7 @@
   "tests/test_gitee_client.py::TestGiteeClient::test_init_defaults",
   "tests/test_llm_client.py::TestLLMClient::test_generate_patch_connection_error",
   "tests/test_llm_client.py::TestLLMClient::test_generate_patch_no_api_key",
+  "tests/test_llm_client.py::TestLLMClient::test_generate_patch_strips_markdown_fences",
   "tests/test_llm_client.py::TestLLMClient::test_generate_patch_success",
   "tests/test_llm_client.py::TestLLMClient::test_generate_patch_system_message",
   "tests/test_llm_client.py::TestLLMClient::test_generate_patch_timeout",
