@@ -433,3 +433,63 @@ def validate_patch(config, repo_path, patch_text, source_info, file_io):
     except Exception as e:
         result['errors'].append(str(e))
         return result
+
+
+def validate_test_patch(repo_path, patch_text, source_info):
+    """轻量级测试文件补丁校验，无 hunk/行数限制。
+
+    返回: {valid: bool, errors: list, test_file_path: str|None}
+    """
+    result = {'valid': False, 'errors': [], 'test_file_path': None}
+    try:
+        patch_text = _strip_markdown_fences(patch_text or '')
+        if not patch_text or is_no_safe_patch(patch_text):
+            result['errors'].append('LLM did not produce a safe test patch')
+            return result
+        if not _is_unified_diff(patch_text):
+            result['errors'].append('Test patch must be unified diff')
+            return result
+        files = _parse_unified_diff(patch_text)
+        if not files:
+            result['errors'].append('No file hunks in test patch')
+            return result
+        if len(files) != 1:
+            result['errors'].append('Test patch should target exactly 1 file, got %d' % len(files))
+            return result
+
+        item = files[0]
+        new_path = item.get('new_path') or item.get('old_path') or ''
+        if new_path.startswith(('a/', 'b/')):
+            new_path = new_path[2:]
+        new_path = new_path.replace('\\', '/')
+
+        if '/test/java/' not in new_path:
+            result['errors'].append('Test patch must target src/test/java/, got: %s' % new_path)
+            return result
+        if not new_path.endswith('Test.java'):
+            result['errors'].append('Test class must end with Test.java, got: %s' % new_path)
+            return result
+
+        added = item.get('added_lines', [])
+        added_text = '\n'.join(added)
+        if '@Test' not in added_text:
+            result['errors'].append('Test class must contain @Test annotations')
+            return result
+        if 'import org.junit' not in added_text.lower():
+            result['errors'].append('Test class must import JUnit classes')
+            return result
+
+        total_added = len(added)
+        if total_added < 10:
+            result['errors'].append('Test class too small: %d lines (minimum 10)' % total_added)
+            return result
+        if total_added > 500:
+            result['errors'].append('Test class too large: %d lines (maximum 500)' % total_added)
+            return result
+
+        result['valid'] = True
+        result['test_file_path'] = new_path
+        return result
+    except Exception as e:
+        result['errors'].append(str(e))
+        return result

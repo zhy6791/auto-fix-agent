@@ -214,53 +214,13 @@ class AutoFixAgent:
                     logger.info('  已提交: %s (%d 文件)',
                                 commit_msg, len(apply_result.get('files', [])))
 
-                # ── Stage 5: 测试生成（可选）──
                 if apply_result.get('applied'):
-                    test_gen_cfg = self.config.get('test_generation', {})
-                    if test_gen_cfg.get('enabled', False) and test_gen_cfg.get('framework') == 'junit5':
-                        logger.info('[5/6] 生成 JUnit5 测试...')
-                        try:
-                            test_patch = self.generate_test_patch(source_info, report['patch_text'])
-                            if not self._is_no_safe_patch(test_patch):
-                                test_validation = self.validate_patch(repo_path, test_patch, source_info=source_info)
-                                if test_validation['valid']:
-                                    test_apply = self.tools['git_manager'].apply_patch(repo_path, test_patch)
-                                    # If apply failed, delete existing test files and retry
-                                    if not test_apply.get('applied') and test_apply.get('errors'):
-                                        logger.info('  测试补丁首次应用失败，尝试清理已有测试文件后重试...')
-                                        for f in test_validation.get('files', []):
-                                            abs_f = os.path.join(repo_path, f)
-                                            if os.path.exists(abs_f):
-                                                os.remove(abs_f)
-                                                logger.info('  已删除: %s', f)
-                                        test_apply = self.tools['git_manager'].apply_patch(repo_path, test_patch)
-                                    if test_apply.get('applied'):
-                                        test_committed = self.tools['git_manager'].commit_changes(
-                                            repo_path, 'test: auto-generate unit tests for %s' % source_info.get('method', 'test'),
-                                            files=test_apply.get('files', [])
-                                        )
-                                        report['test_patch_applied'] = True
-                                        report['test_generation_result'] = {'generated': True, 'files': test_apply.get('files', [])}
-                                        logger.info('  测试已生成: %s', test_apply.get('files', []))
-                                    else:
-                                        errs = '; '.join(test_apply.get('errors', []))
-                                        logger.warning('  测试补丁应用失败: %s', errs)
-                                        report['test_generation_result'] = {'generated': False, 'error': 'Failed to apply: %s' % errs}
-                                else:
-                                    report['test_generation_result'] = {'generated': False, 'error': '; '.join(test_validation['errors'])}
-                            else:
-                                report['test_generation_result'] = {'generated': False, 'error': 'LLM cannot generate safe tests'}
-                        except Exception as e:
-                            logger.warning('  测试生成失败: %s', str(e))
-                            report['test_generation_result'] = {'generated': False, 'error': str(e)}
-
-                if apply_result.get('applied'):
-                    # ── Stage 6: CI 管道 ──
-                    logger.info('[6/6] CI 管道...')
+                    # ── Stage 5: CI 管道 ──
+                    logger.info('[5/5] CI 管道...')
                     ci_result = self._run_ci_pipeline(
                         repo_path, source_info, raw_stack, parsed_stack,
                         report['patch_text'], report['prompt'],
-                        initial_files=apply_result.get('files', [])
+                        initial_files=apply_result.get('files', []),
                     )
                     report['ci_result'] = ci_result
 

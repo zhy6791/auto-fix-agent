@@ -76,19 +76,15 @@ def retry_with_feedback(original_prompt, source_info, failed_stage,
     # For test failures, include the broken test file content so LLM can fix it
     broken_file_content = None
     if failed_stage == 'tests':
-        repo_relative = source_info.get('repo_relative_path', '')
-        if repo_relative:
-            # Derive test file path from source path
-            test_path = repo_relative.replace('/main/java/', '/test/java/')
-            if not test_path.endswith('Test.java'):
-                test_path = test_path.replace('.java', 'Test.java')
-            abs_test = os.path.join(repo_path, test_path)
-            if os.path.exists(abs_test):
-                try:
-                    with open(abs_test, 'r', encoding='utf-8') as f:
-                        broken_file_content = f.read()
-                except Exception:
-                    pass
+        from agents.prompt_builder import _derive_test_path
+        test_path = _derive_test_path(source_info)
+        abs_test = os.path.join(repo_path, test_path)
+        if os.path.exists(abs_test):
+            try:
+                with open(abs_test, 'r', encoding='utf-8') as f:
+                    broken_file_content = f.read()
+            except Exception:
+                pass
 
     retry_prompt = prompt_builder.build_retry_prompt(
         original_prompt, source_info, failed_stage, error_output,

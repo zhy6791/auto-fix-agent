@@ -1,6 +1,16 @@
 """LLM prompt construction for patch generation, test generation, and retries."""
 
 
+def _derive_test_path(source_info):
+    """从源码路径推导测试文件路径，兼容 Windows 反斜杠。"""
+    repo_rel = source_info.get('repo_relative_path', '')
+    repo_rel = repo_rel.replace('\\', '/')
+    test_path = repo_rel.replace('/main/java/', '/test/java/')
+    if not test_path.rsplit('/', 1)[-1].endswith('Test.java'):
+        test_path = test_path.replace('.java', 'Test.java')
+    return test_path
+
+
 def build_prompt(config, raw_stack, source_info):
     """Build the LLM prompt for minimal patch generation."""
     max_patch_lines = config.get('max_patch_lines', 40)
@@ -133,15 +143,19 @@ def build_test_prompt(source_info, fix_patch_text):
         lines.append('... [补丁内容较长，摘要] ...')
     lines.append('```')
     lines.append('')
+    test_path = _derive_test_path(source_info)
     lines.append('## 输出格式')
-    lines.append('返回 unified diff：')
+    lines.append('返回 unified diff（新建文件格式）：')
     lines.append('```diff')
-    lines.append('--- a/src/test/java/包路径/类名Test.java')
-    lines.append('+++ b/src/test/java/包路径/类名Test.java')
-    lines.append('@@ -1,3 +1,3 @@')
-    lines.append('-old line')
-    lines.append('+new line')
+    lines.append('--- /dev/null')
+    lines.append('+++ b/%s' % test_path)
+    lines.append('@@ -0,0 +1,N @@')
+    lines.append('+package ...;')
+    lines.append('+import org.junit.jupiter.api.Test;')
+    lines.append('+...')
     lines.append('```')
+    lines.append('')
+    lines.append('注意：这是新建文件，必须使用 --- /dev/null 格式，不要使用 --- a/... 格式。')
     lines.append('')
     lines.append('若无法生成安全测试，返回: NO_SAFE_PATCH: 原因说明')
 
@@ -154,6 +168,29 @@ def generate_test_patch(source_info, fix_patch_text, config, llm_client):
     max_tokens = int(config.get('max_tokens', 8192))
     test_patch_text = llm_client.generate_patch(test_prompt, max_tokens=max_tokens)
     return test_patch_text
+
+
+def build_test_retry_prompt(source_info, fix_patch_text, failed_patch, error_output):
+    """构建测试生成重试 prompt。"""
+    lines = []
+    lines.append('## 任务：你的上一个测试补丁失败了，请修复')
+    lines.append('')
+    lines.append('## 失败的测试补丁')
+    lines.append('```diff')
+    lines.append(failed_patch[:2000])
+    lines.append('```')
+    lines.append('')
+    lines.append('## 错误输出')
+    lines.append('```')
+    lines.append(error_output[:2000])
+    lines.append('```')
+    lines.append('')
+    lines.append('## 要求')
+    lines.append('- 修复上述错误，生成可编译通过的测试类')
+    lines.append('- 使用 --- /dev/null 格式（新建文件）')
+    lines.append('- 测试文件路径: %s' % _derive_test_path(source_info))
+    lines.append('- 如果无法安全修复，返回: NO_SAFE_PATCH: 原因')
+    return '\n'.join(lines)
 
 
 def build_retry_prompt(original_prompt, source_info, failed_stage, error_output,
