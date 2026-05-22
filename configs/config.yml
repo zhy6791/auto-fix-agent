@@ -37,15 +37,6 @@ command_whitelist:
   - gradle.cmd
   - gradle
 
-# Test generation configuration (Strategy B: target + boundaries + regression)
-test_generation:
-  enabled: true
-  strategy: "B"  # Option A: only target method / Option B: target + boundaries + regression
-  framework: "junit5"  # Only Maven + JUnit5 supported for now
-  max_test_cases: 5
-  max_test_files: 1
-  test_class_suffix: "Test"
-
 # Gitee integration (for PR creation)
 gitee:
   enabled: true

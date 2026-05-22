@@ -75,7 +75,6 @@ def print_report(report, output_file=None):
     located = report.get('located_files', [])
     patch_text = report.get('patch_text', '')
     apply_result = report.get('apply_result', {})
-    test_gen = report.get('test_generation_result', {})
     ci_result = report.get('ci_result', {})
     pr_result = report.get('pr_result', {})
     iterations = report.get('agent_iterations', 0)
@@ -124,12 +123,6 @@ def print_report(report, output_file=None):
     else:
         errs = '; '.join(apply_result.get('errors', []))
         print(f'   {_ok(False)} 补丁未应用  {errs}')
-
-    if test_gen:
-        if test_gen.get('generated'):
-            print(f'   {_ok(True)} 测试已生成  ({", ".join(test_gen.get("files", []))})')
-        else:
-            print(f'   {_ok(False)} 测试生成失败  {test_gen.get("error", "")}')
 
     if ci_result:
         passed = ci_result.get('stages_passed', [])

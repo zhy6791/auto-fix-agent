@@ -9,15 +9,59 @@
 - 🤖 使用 OpenAI 兼容 LLM 生成最小化补丁（含指数退避重试）
 - 🔀 在本地仓库创建修复分支并提交
 - 🔨 自动编译检查 + 单元测试（`mvn compile` / `mvn test`）
-- 🆕 **自动生成 JUnit5 单元测试**（异常复现 + 边界值 + 回归测试）
 - 🔄 编译/测试失败时自动反馈 LLM 重试修复（失败时自动还原文件状态）
 - 🚀 通过后自动推送并创建 Gitee Pull Request
 - ✅ 支持 dry-run 模式（仅分析不修改）
-- 🧪 完整的单元测试覆盖（129+ 测试通过）
+- 🧪 完整的单元测试覆盖（110+ 测试通过）
 
 ---
 
+## 系统目录架构
 
+```
+auto-fix-agent/
+├── main.py                          # CLI 入口，参数解析，配置加载
+├── configs/
+│   └── config.yml                   # 运行配置（LLM、仓库路径、CI、Gitee 等）
+│
+├── agents/                          # Agent 核心逻辑
+│   ├── auto_fix_agent.py            # 主编排器：run_pipeline() 串联各阶段
+│   ├── react_agent.py               # ReAct 决策循环引擎（新增）
+│   ├── tool_registry.py             # 工具注册表：8 个工具的定义与分发（新增）
+│   ├── stacktrace_parser.py         # Java 堆栈解析（正则提取帧信息）
+│   ├── source_locator.py            # 源码定位（按类名/路径查找 .java 文件）
+│   ├── exception_inference.py       # LLM 推断定位（堆栈全为框架代码时使用）
+│   ├── prompt_builder.py            # LLM Prompt 构建（补丁生成、重试）
+│   ├── patch_validator.py           # 补丁校验（格式、路径、结构、注释保护）
+│   ├── ci_pipeline.py               # CI 管道（编译/测试 + LLM 重试反馈）
+│   └── pr_manager.py                # Gitee PR 管理（推送分支 + 创建 PR）
+│
+├── integrations/                    # 外部 API 客户端
+│   ├── llm_client.py                # LLM 客户端（generate_patch + chat）
+│   └── gitee_client.py              # Gitee API 客户端
+│
+├── tools/                           # 底层工具模块
+│   ├── file_io.py                   # 文件读写（read_file, tail_file, write_file）
+│   ├── git_manager.py               # Git 操作（分支、提交、应用补丁、推送）
+│   └── exec_cmd.py                  # 命令执行（白名单 + 超时控制）
+│
+├── tests/                           # 单元测试
+│   ├── test_auto_fix_agent.py       # 主编排器测试
+│   ├── test_react_agent.py          # Agent 循环测试（新增）
+│   ├── test_tool_registry.py        # 工具注册表测试（新增）
+│   ├── test_patch_formats.py        # 补丁格式测试
+│   ├── test_cli_integration.py      # CLI 集成测试
+│   ├── test_file_io.py              # 文件 I/O 测试
+│   ├── test_git_manager.py          # Git 操作测试
+│   ├── test_llm_client.py           # LLM 客户端测试
+│   ├── test_gitee_client.py         # Gitee 客户端测试
+│   └── test_exec_cmd.py             # 命令执行测试
+│
+├── agent_report_fix/                # 运行报告输出目录（JSON 格式）
+├── scripts/
+│   └── demo.ps1                     # PowerShell 演示脚本
+└── pyproject.toml                   # Python 项目元数据和依赖
+```
 
 
 
@@ -36,13 +80,7 @@ python -m main --config configs/config.yml --dry-run
 python -m main --config configs/config.yml --auto-apply
 ```
 
-这将：
-1. 创建一个 `fix/auto-<timestamp>` 分支
-2. 应用 LLM 生成的补丁到工作区
-3. 提交修改到修复分支
-4. 执行编译检查（`mvn compile` 或 `gradle compileJava`）
-5. 若编译失败，将错误反馈给 LLM 重试修复（最多 `max_retries` 次）
-6. 编译通过后，推送分支到远程并创建 Gitee PR
+
 
 
 ## 修复流程详解
@@ -137,18 +175,7 @@ Agent 循环退出后，`agents/patch_validator.py` 会在应用前做多层检�
 
 `dry-run` 模式下只做分析和验证，不会创建分支，也不会写文件。
 
-### 5. 可选：自动生成 JUnit5 测试
-
-如果开启 `test_generation.enabled=true` 且 `framework=junit5`，agent 会基于修复补丁再生成测试补丁：
-
-- 复现原异常
-- 验证修复有效
-- 补充边界值
-- 添加回归测试
-
-测试补丁同样要经过统一 diff 校验和结构验证，通过后才会被应用并提交。
-
-### 6. CI 管道：编译 / 测试 / 失败重试
+### 5. CI 管道：编译 / 测试 / 失败重试
 
 `agents/ci_pipeline.py` 负责后续门禁：
 
@@ -166,7 +193,7 @@ Agent 循环退出后，`agents/patch_validator.py` 会在应用前做多层检�
 
 如果构建工具本身缺失，流程会直接停止重试，而不会继续”盲修”。
 
-### 7. 推送分支并创建 Gitee PR
+### 6. 推送分支并创建 Gitee PR
 
 只有在满足以下条件时才会进入 PR 阶段：
 
@@ -181,7 +208,7 @@ Agent 循环退出后，`agents/patch_validator.py` 会在应用前做多层检�
 3. 使用 Gitee API 创建 PR。
 4. PR 标题遵循 `pr_title_template`，正文包含异常信息和 CI 状态。
 
-### 8. 总体流程图
+### 7. 总体流程图
 
 ```text
 日志文件
@@ -228,12 +255,8 @@ Agent 循环退出后，`agents/patch_validator.py` 会在应用前做多层检�
                    ┌─────┴─────┐
                    │ 应用失败   │ 应用成功
                    ▼           ▼
-                报告错误   测试生成（可选）
+                报告错误   CI 管道（含重试）
                                │
-                          生成 JUnit5 测试
-                          校验 → 应用 → commit
-                               │
-                               ▼
                      ┌── CI 管道（含重试）──┐
                      │                      │
                      ▼                      ▼
@@ -266,52 +289,7 @@ Agent 循环退出后，`agents/patch_validator.py` 会在应用前做多层检�
 
 ---
 
-## 系统目录架构
 
-```
-auto-fix-agent/
-├── main.py                          # CLI 入口，参数解析，配置加载
-├── configs/
-│   └── config.yml                   # 运行配置（LLM、仓库路径、CI、Gitee 等）
-│
-├── agents/                          # Agent 核心逻辑
-│   ├── auto_fix_agent.py            # 主编排器：run_pipeline() 串联各阶段
-│   ├── react_agent.py               # ReAct 决策循环引擎（新增）
-│   ├── tool_registry.py             # 工具注册表：8 个工具的定义与分发（新增）
-│   ├── stacktrace_parser.py         # Java 堆栈解析（正则提取帧信息）
-│   ├── source_locator.py            # 源码定位（按类名/路径查找 .java 文件）
-│   ├── exception_inference.py       # LLM 推断定位（堆栈全为框架代码时使用）
-│   ├── prompt_builder.py            # LLM Prompt 构建（补丁生成、测试生成、重试）
-│   ├── patch_validator.py           # 补丁校验（格式、路径、结构、注释保护）
-│   ├── ci_pipeline.py               # CI 管道（编译/测试 + LLM 重试反馈）
-│   └── pr_manager.py                # Gitee PR 管理（推送分支 + 创建 PR）
-│
-├── integrations/                    # 外部 API 客户端
-│   ├── llm_client.py                # LLM 客户端（generate_patch + chat）
-│   └── gitee_client.py              # Gitee API 客户端
-│
-├── tools/                           # 底层工具模块
-│   ├── file_io.py                   # 文件读写（read_file, tail_file, write_file）
-│   ├── git_manager.py               # Git 操作（分支、提交、应用补丁、推送）
-│   └── exec_cmd.py                  # 命令执行（白名单 + 超时控制）
-│
-├── tests/                           # 单元测试
-│   ├── test_auto_fix_agent.py       # 主编排器测试
-│   ├── test_react_agent.py          # Agent 循环测试（新增）
-│   ├── test_tool_registry.py        # 工具注册表测试（新增）
-│   ├── test_patch_formats.py        # 补丁格式测试
-│   ├── test_cli_integration.py      # CLI 集成测试
-│   ├── test_file_io.py              # 文件 I/O 测试
-│   ├── test_git_manager.py          # Git 操作测试
-│   ├── test_llm_client.py           # LLM 客户端测试
-│   ├── test_gitee_client.py         # Gitee 客户端测试
-│   └── test_exec_cmd.py             # 命令执行测试
-│
-├── agent_report_fix/                # 运行报告输出目录（JSON 格式）
-├── scripts/
-│   └── demo.ps1                     # PowerShell 演示脚本
-└── pyproject.toml                   # Python 项目元数据和依赖
-```
 
 ### 模块调用关系
 
@@ -322,7 +300,7 @@ main.py
         │     └── stacktrace_parser.extract_latest_exception_block()
         │         stacktrace_parser.parse_stacktrace()
         │
-        ├── 阶段 2: Agent 决策循环（新增）
+        ├── 阶段 2: Agent 决策循环
         │     └── ReActAgent.run()
         │           ├── ToolRegistry.execute("locate_from_stack")
         │           │     └── source_locator.find_source_location()
@@ -343,131 +321,17 @@ main.py
         │     ├── patch_validator.validate_patch()
         │     └── git_manager.create_branch() / apply_patch() / commit_changes()
         │
-        ├── 阶段 4: 测试生成（可选）
-        │     └── prompt_builder.generate_test_patch()
-        │
-        ├── 阶段 5: CI 管道
+        ├── 阶段 4: CI 管道
         │     └── ci_pipeline.run_ci_pipeline()
         │           ├── ci_pipeline.run_compile()
         │           ├── ci_pipeline.run_tests()
         │           └── ci_pipeline.retry_with_feedback()
         │
-        └── 阶段 6: 创建 PR
+        └── 阶段 5: 创建 PR
               └── pr_manager.push_and_create_pr()
 ```
 
----
 
-## 自动测试生成
-
-Agent 支持在修复后自动生成 **Maven + JUnit5** 测试，并将其纳入 PR 门禁。
-
-### 开启配置
-
-```yaml
-test_generation:
-  enabled: true
-  strategy: "B"      # A: 仅目标方法 / B: 目标+边界+回归
-  framework: "junit5"
-  max_test_cases: 5
-  max_test_files: 1
-
-run_compile_on_apply: true
-run_tests_on_apply: true
-
-gitee:
-  require_tests_to_pass_for_pr: true
-```
-
-### Strategy B 覆盖范围
-
-- 异常复现
-- 修复验证
-- 边界值
-- 回归测试
-
-### 规则
-
-启用测试生成后，必须 **编译通过 + 测试通过** 才会创建 PR。
-
-### 使用
-
-直接运行：
-
-```bash
-python -m main --config configs/config.yml --auto-apply
-```
-
----
-
-## 可修复的 Bug 类型
-
-### 1. 业务逻辑异常 ✅
-**条件**：堆栈中有业务代码帧（如 `com.fixflow.mall.service.OrderService`）
-**Agent 工具**：`locate_from_stack` 定位源文件 → `read_code` / `search_code` 查看上下文 → `edit_code` 生成补丁
-
-#### 示例 1: 空指针异常 (NullPointerException)
-**异常堆栈特征**：包含 `java.lang.NullPointerException` 和业务方法帧
-#### 示例 2: 数组越界异常 (IndexOutOfBoundsException)
-**异常堆栈特征**：包含 `java.lang.IndexOutOfBoundsException` 和业务方法帧
-#### 示例 3: 类型转换异常 (ClassCastException)
-
-### 2. 框架配置异常 ✅
-**条件**：堆栈全是框架代码（Spring/Tomcat/Jakarta），无业务帧
-**Agent 工具**：`infer_source` 通过 LLM 推断应用层源码位置 → `search_code` 确认文件 → `edit_code` 生成补丁
-
-#### 示例 1: @PathVariable 绑定错误
-**异常堆栈特征**：`org.springframework.web.bind.MissingPathVariableException` + "Required URI template variable 'xxx' ... is not present"
-#### 示例 2: @RequestParam 缺失
-**异常堆栈特征**：`org.springframework.web.bind.MissingServletRequestParameterException`
-
-### 3. 当前不支持的 Bug 类型 ❌
-以下类型的异常因需要外部资源/配置变更，暂不自动修复：
-- **数据库连接异常** - 需要修改配置文件/环境变量
-- **依赖包缺失** - 需要修改 pom.xml/build.gradle
-- **权限异常** - 需要改变系统配置
-- **业务逻辑错误**（无堆栈指向） - 需要深度业务分析
-- **分布式系统异常** - 涉及多个服务交互
----
-
-
-
-## CI 管道与自动 PR
-
-补丁应用后，agent 可自动执行编译检查、单元测试，通过后推送并创建 PR。
-
-### 编译检查
-
-优先使用项目自带的 wrapper 脚本（`mvnw`/`gradlew`），找不到才用系统命令：
-
-```
-mvnw.cmd → mvnw → mvn.cmd → mvn.bat → mvn    (Maven)
-gradlew.bat → gradlew → gradle.bat → gradle   (Gradle)
-```
-
-### LLM 重试反馈
-
-若编译或测试失败，agent 不会直接放弃，而是：
-
-1. 提取错误输出（stderr/stdout，截断至 3000 字符）
-2. 构建重试提示词（含原始任务上下文 + 错误信息）
-3. 调用 LLM 生成修正补丁
-4. 校验新补丁（6 层验证）
-5. **还原之前补丁修改的文件**（`git checkout HEAD~1 -- <files>`），确保干净状态
-6. 应用新补丁，重新编译/测试
-7. 重复直至通过或耗尽 `max_retries`（默认 3）
-
-若 LLM 返回 `NO_SAFE_PATCH`，或构建工具未安装（`Command not found`），则立即停止重试。
-
-### Gitee PR 创建
-
-编译通过后，agent 自动：
-
-1. 推送修复分支到远程仓库
-2. 调用 Gitee API v5 创建 PR
-3. PR 描述中包含异常信息和 CI 管道状态
-
----
 
 ## 后续开发建议
 
@@ -478,9 +342,7 @@ gradlew.bat → gradlew → gradle.bat → gradle   (Gradle)
 - [x] ~~自动编译检查与单元测试~~ — 已实现
 - [x] ~~CI 失败时自动重试修复~~ — 已实现
 - [x] ~~自动创建 Gitee Pull Request~~ — 已实现
-- [x] ~~自动生成 JUnit5 单元测试（Strategy B）~~ — 已实现 ✨
 - [x] ~~LLM 驱动的 Agent 决策循环（自主定位 + 修复）~~ — 已实现
-- [ ] 支持 Option A（仅目标方法单测）
 - [ ] 支持 Gradle 和 TestNG
 - [ ] 修复质量评分
 - [ ] 支持更多框架异常（Quarkus、Micronaut、etc）
@@ -506,25 +368,7 @@ gradlew.bat → gradlew → gradle.bat → gradle   (Gradle)
 - 执行门禁与回滚：编译/测试失败会触发重试与回滚（`agents/ci_pipeline.py` 的 `retry_with_feedback` / `revert_files`）。
 - 命令执行防护：统一返回结构 + 超时控制（`tools/exec_cmd.py`）。
 
-已识别的主要风险（需优先处理）
-- 高风险：CI（mvn/gradle）与单元测试在宿主环境直接运行，可能被构建脚本或补丁利用执行任意命令或发起网络请求（位置：`agents/ci_pipeline.py`, `tools/exec_cmd.py`）。建议：在隔离容器/VM 中运行构建并禁止网络访问。
-- 中高风险：虽然已使用 `realpath`/`commonpath`，但仍建议补充符号链接显式拒绝与 validate→apply 元数据复核，进一步降低 TOCTOU 风险（位置：`agents/patch_validator.py`, `tools/git_manager.py`）。
-- 中风险：允许自动修改构建配置（`pom.xml`/`build.gradle`）、CI 配置或 Dockerfile 等敏感文件，可能使后续构建被滥用。建议：对敏感文件使用白名单/黑名单并要求人工确认。
-- 中风险：自动推送与自动创建 PR（若启用）可能绕过人工审查。建议：默认关闭自动推送/自动 PR，或启用人工审批开关。
 
-短期优先修复建议（前三项）
-1) 将编译与测试迁移到受限沙箱（容器/VM），默认禁止网络、限制资源并挂载为只读或使用工作目录副本（修改点：`agents/ci_pipeline.py`）。
-2) 对符号链接目标做显式拒绝，并在 validate→apply 之间复核文件元数据（mtime/hash）以进一步压缩 TOCTOU 风险（修改点：`agents/patch_validator.py`, `tools/git_manager.py`）。
-3) 对敏感文件（`pom.xml`、`build.gradle`、`Dockerfile`、CI workflow）增加白名单/审批策略，默认禁止自动修改（修改点：`agents/patch_validator.py`）。
-
-审计与可追溯性
-- 建议把每次运行的 `report`、LLM 原始响应、应用补丁的 diff 以及 CI 输出保存到可配置的 `audit_dir`（只追加、带时间戳与校验和），便于事后回溯与安全审计（修改点：`agents/auto_fix_agent.py` 写出 report）。
-
-测试覆盖建议
-- 新增单元/集成测试以覆盖 symlink 路径绕过、validate→apply TOCTOU、对敏感文件的拒绝规则以及容器化 CI 的回退行为（添加在 `tests/`）。
-
-
----
 
 ## 许可证
 

@@ -294,12 +294,6 @@ class AutoFixAgent:
     def build_prompt(self, raw_stack, source_info):
         return prompt_builder.build_prompt(self.config, raw_stack, source_info)
 
-    def build_test_prompt(self, source_info, fix_patch_text):
-        return prompt_builder.build_test_prompt(source_info, fix_patch_text)
-
-    def generate_test_patch(self, source_info, fix_patch_text):
-        return prompt_builder.generate_test_patch(source_info, fix_patch_text, self.config, self.llm_client)
-
     def _build_retry_prompt(self, original_prompt, source_info, failed_stage, error_output):
         return prompt_builder.build_retry_prompt(original_prompt, source_info, failed_stage, error_output)
 

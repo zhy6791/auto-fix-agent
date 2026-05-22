@@ -20,13 +20,6 @@ def push_and_create_pr(repo_path, branch_name, parsed_stack, source_info,
         result['error'] = 'Gitee integration not enabled'
         return result
 
-    # Check if tests are required and if they passed
-    test_gen_cfg = config.get('test_generation', {})
-    if test_gen_cfg.get('enabled', False) and gitee_cfg.get('require_tests_to_pass_for_pr', True):
-        if 'tests' not in ci_result.get('stages_passed', []):
-            result['error'] = 'Tests must pass before PR can be created (tests failed or skipped)'
-            return result
-
     owner = gitee_cfg.get('owner', '')
 
     repo = gitee_cfg.get('repo', '')
