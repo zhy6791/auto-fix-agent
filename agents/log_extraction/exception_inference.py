@@ -105,7 +105,7 @@ def parse_inference_response(repo_path, llm_response, file_io, locate_fn):
         lines = content.splitlines()
 
         # Find method if possible
-        from agents import source_locator
+        from agents.log_extraction import source_locator
         method_line = source_locator.find_method_line(lines, suspected_method) if suspected_method else None
         if method_line is None:
             method_line = max(1, len(lines) // 2)  # Fallback to middle
@@ -140,7 +140,7 @@ def infer_from_exception_message(repo_path, raw_stack, parsed_stack,
 
     Returns source_info dict or None if inference fails.
     """
-    from agents import source_locator
+    from agents.log_extraction import source_locator
 
     try:
         logger.info('Attempting to infer source location from exception message')

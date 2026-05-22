@@ -67,7 +67,8 @@ def retry_with_feedback(original_prompt, source_info, failed_stage,
 
     Returns new patch text, or None if LLM cannot fix.
     """
-    from agents import prompt_builder, patch_validator
+    from agents.agent_loop import prompt_builder
+    from agents.post_processing import patch_validator
 
     error_output = (build_result.get('stderr', '') or '')[:3000]
     if not error_output:
@@ -76,7 +77,7 @@ def retry_with_feedback(original_prompt, source_info, failed_stage,
     # For test failures, include the broken test file content so LLM can fix it
     broken_file_content = None
     if failed_stage == 'tests':
-        from agents.prompt_builder import _derive_test_path
+        from agents.agent_loop.prompt_builder import _derive_test_path
         test_path = _derive_test_path(source_info)
         abs_test = os.path.join(repo_path, test_path)
         if os.path.exists(abs_test):

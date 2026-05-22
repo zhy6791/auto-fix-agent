@@ -16,17 +16,10 @@ except ImportError:  # pragma: no cover - non-Windows platforms
 
 from tools import file_io, exec_cmd, git_manager
 from integrations.llm_client import LLMClient
-from agents import (
-    stacktrace_parser,
-    source_locator,
-    prompt_builder,
-    patch_validator,
-    ci_pipeline,
-    exception_inference,
-    pr_manager,
-    tool_registry,
-    react_agent,
-)
+from agents.log_extraction import stacktrace_parser, source_locator, exception_inference
+from agents.agent_loop import react_agent, tool_registry, prompt_builder
+from agents.post_processing import patch_validator
+from agents.ci import ci_pipeline, pr_manager
 
 logger = logging.getLogger(__name__)
 

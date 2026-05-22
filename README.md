@@ -26,15 +26,23 @@ auto-fix-agent/
 │
 ├── agents/                          # Agent 核心逻辑
 │   ├── auto_fix_agent.py            # 主编排器：run_pipeline() 串联各阶段
-│   ├── react_agent.py               # ReAct 决策循环引擎（新增）
-│   ├── tool_registry.py             # 工具注册表：8 个工具的定义与分发（新增）
-│   ├── stacktrace_parser.py         # Java 堆栈解析（正则提取帧信息）
-│   ├── source_locator.py            # 源码定位（按类名/路径查找 .java 文件）
-│   ├── exception_inference.py       # LLM 推断定位（堆栈全为框架代码时使用）
-│   ├── prompt_builder.py            # LLM Prompt 构建（补丁生成、重试）
-│   ├── patch_validator.py           # 补丁校验（格式、路径、结构、注释保护）
-│   ├── ci_pipeline.py               # CI 管道（编译/测试 + LLM 重试反馈）
-│   └── pr_manager.py                # Gitee PR 管理（推送分支 + 创建 PR）
+│   │
+│   ├── log_extraction/              # 日志提取 + 源码定位
+│   │   ├── stacktrace_parser.py     # Java 堆栈解析（正则提取帧信息）
+│   │   ├── source_locator.py        # 源码定位（按类名/路径查找 .java 文件）
+│   │   └── exception_inference.py   # LLM 推断定位（堆栈全为框架代码时使用）
+│   │
+│   ├── agent_loop/                  # Agent 决策循环
+│   │   ├── react_agent.py           # ReAct 决策循环引擎
+│   │   ├── tool_registry.py         # 工具注册表：8 个工具的定义与分发
+│   │   └── prompt_builder.py        # LLM Prompt 构建（补丁生成、重试）
+│   │
+│   ├── post_processing/             # 后处理：补丁校验 + 分支管理
+│   │   └── patch_validator.py       # 补丁校验（格式、路径、结构、注释保护）
+│   │
+│   └── ci/                          # CI 管道 + PR 管理
+│       ├── ci_pipeline.py           # CI 管道（编译/测试 + LLM 重试反馈）
+│       └── pr_manager.py            # Gitee PR 管理（推送分支 + 创建 PR）
 │
 ├── integrations/                    # 外部 API 客户端
 │   ├── llm_client.py                # LLM 客户端（generate_patch + chat）
@@ -47,8 +55,8 @@ auto-fix-agent/
 │
 ├── tests/                           # 单元测试
 │   ├── test_auto_fix_agent.py       # 主编排器测试
-│   ├── test_react_agent.py          # Agent 循环测试（新增）
-│   ├── test_tool_registry.py        # 工具注册表测试（新增）
+│   ├── test_react_agent.py          # Agent 循环测试
+│   ├── test_tool_registry.py        # 工具注册表测试
 │   ├── test_patch_formats.py        # 补丁格式测试
 │   ├── test_cli_integration.py      # CLI 集成测试
 │   ├── test_file_io.py              # 文件 I/O 测试
@@ -296,11 +304,11 @@ Agent 循环退出后，`agents/patch_validator.py` 会在应用前做多层检�
 ```text
 main.py
   └── AutoFixAgent.run_pipeline()
-        ├── 阶段 1: 堆栈提取
+        ├── 阶段 1: 堆栈提取 [log_extraction/]
         │     └── stacktrace_parser.extract_latest_exception_block()
         │         stacktrace_parser.parse_stacktrace()
         │
-        ├── 阶段 2: Agent 决策循环
+        ├── 阶段 2: Agent 决策循环 [agent_loop/]
         │     └── ReActAgent.run()
         │           ├── ToolRegistry.execute("locate_from_stack")
         │           │     └── source_locator.find_source_location()
@@ -317,17 +325,17 @@ main.py
         │           │     └── patch_validator.validate_patch()
         │           └── ToolRegistry.execute("final_patch" | "abort")
         │
-        ├── 阶段 3: 补丁校验 + 应用
+        ├── 阶段 3: 补丁校验 + 应用 [post_processing/]
         │     ├── patch_validator.validate_patch()
         │     └── git_manager.create_branch() / apply_patch() / commit_changes()
         │
-        ├── 阶段 4: CI 管道
+        ├── 阶段 4: CI 管道 [ci/]
         │     └── ci_pipeline.run_ci_pipeline()
         │           ├── ci_pipeline.run_compile()
         │           ├── ci_pipeline.run_tests()
         │           └── ci_pipeline.retry_with_feedback()
         │
-        └── 阶段 5: 创建 PR
+        └── 阶段 5: 创建 PR [ci/]
               └── pr_manager.push_and_create_pr()
 ```
 

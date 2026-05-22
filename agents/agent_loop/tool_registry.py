@@ -8,13 +8,9 @@ import logging
 import os
 
 from tools import file_io, git_manager
-from agents import (
-    stacktrace_parser,
-    source_locator,
-    prompt_builder,
-    patch_validator,
-    exception_inference,
-)
+from agents.log_extraction import stacktrace_parser, source_locator, exception_inference
+from agents.agent_loop import prompt_builder
+from agents.post_processing import patch_validator
 
 logger = logging.getLogger(__name__)
 

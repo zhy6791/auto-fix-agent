@@ -6,7 +6,7 @@ import subprocess
 import tempfile
 import unittest
 
-from agents.tool_registry import ToolDef, ToolRegistry
+from agents.agent_loop.tool_registry import ToolDef, ToolRegistry
 from tools import file_io, exec_cmd, git_manager
 
 

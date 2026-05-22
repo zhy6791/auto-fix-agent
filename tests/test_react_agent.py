@@ -6,8 +6,8 @@ import subprocess
 import tempfile
 import unittest
 
-from agents.react_agent import ReActAgent
-from agents.tool_registry import ToolRegistry
+from agents.agent_loop.react_agent import ReActAgent
+from agents.agent_loop.tool_registry import ToolRegistry
 from tools import file_io, exec_cmd, git_manager
 
 
