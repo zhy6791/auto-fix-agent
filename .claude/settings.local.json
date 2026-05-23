@@ -21,7 +21,9 @@
       "WebFetch(domain:proceedings.mlr.press)",
       "Bash(python -c ':*)",
       "Bash(python *)",
-      "Bash(pip install *)"
+      "Bash(pip install *)",
+      "Read(//d/workspace-repo/mall-service/**)",
+      "Bash(mvn test *)"
     ]
   },
   "statusLine": {

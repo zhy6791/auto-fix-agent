@@ -79,86 +79,100 @@ def print_report(report, output_file=None):
     iterations = report.get('agent_iterations', 0)
     tool_calls = report.get('agent_tool_calls', [])
 
+    # ── Report 标题 ──
     print()
-    print('\033[90m  ──────────────────────────────────────────────\033[0m')
-    print('\033[1m   Report\033[0m')
-    print('\033[90m  ──────────────────────────────────────────────\033[0m')
+    print('\033[36m════════════════════════════════════════════════════════════\033[0m')
+    print('\033[1;36m  📋 执行报告\033[0m')
+    print('\033[36m════════════════════════════════════════════════════════════\033[0m')
 
     if error:
-        print(f'   \033[31m✘ {error}\033[0m')
-        print('\033[90m  ──────────────────────────────────────────────\033[0m\n')
+        print(f'\n  \033[31m✘ 执行失败: {error}\033[0m\n')
+        print('\033[36m════════════════════════════════════════════════════════════\033[0m\n')
         _save_report(report, output_file)
         return
 
-    # ── 异常 + 定位 + 补丁 ──
+    # ── 异常信息 ──
     if parsed:
         exc = parsed[0].get('exception_type', 'Exception')
         top = '%s.%s():%s' % (parsed[0].get('class_name', ''), parsed[0].get('method', ''), parsed[0].get('line_no', '?'))
-        print(f'   \033[33m{exc}\033[0m')
-        print(f'   {top}')
+        print(f'\n  \033[1m异常类型:\033[0m \033[33m{exc}\033[0m')
+        print(f'  \033[1m触发位置:\033[0m {top}')
+
+    # ── 定位结果 ──
     if located:
         info = located[0]
-        print(f'   \033[90m→\033[0m {info.get("repo_relative_path", "?")}:{info.get("line_no", "?")}')
+        detection = info.get('detection_method', 'agent')
+        print(f'  \033[1m定位方式:\033[0m {detection}')
+        print(f'  \033[1m源文件:\033[0m   {info.get("repo_relative_path", "?")}:{info.get("line_no", "?")}')
+
+    # ── 补丁内容 ──
     if patch_text:
+        print(f'\n  \033[1m补丁内容:\033[0m')
         for line in patch_text.splitlines():
             if line.startswith('@@') or line.startswith('---') or line.startswith('+++'):
-                print(f'   \033[36m{line}\033[0m')
+                print(f'  \033[36m{line}\033[0m')
             elif line.startswith('+') and not line.startswith('+++'):
-                print(f'   \033[32m{line}\033[0m')
+                print(f'  \033[32m{line}\033[0m')
             elif line.startswith('-') and not line.startswith('---'):
-                print(f'   \033[31m{line}\033[0m')
+                print(f'  \033[31m{line}\033[0m')
             elif line.strip():
-                print(f'   \033[90m{line}\033[0m')
+                print(f'  \033[90m{line}\033[0m')
 
-    # ── 结果一览 ──
-    print()
+    # ── 执行结果 ──
+    print(f'\n  \033[1m执行结果:\033[0m')
     applied = apply_result.get('applied', False)
     branch = report.get('branch_name', '')
     files = apply_result.get('files', [])
     if applied:
-        print(f'   {_ok(True)} 补丁已应用  \033[90m{branch}\033[0m  ({", ".join(files)})')
+        print(f'  {_ok(True)} 补丁已应用  \033[90m分支: {branch}\033[0m  \033[90m文件: {", ".join(files)}\033[0m')
     elif dry_run:
-        print(f'   \033[33m○\033[0m dry-run 模式，未修改代码')
+        print(f'  \033[33m○\033[0m dry-run 模式，未修改代码')
     else:
         errs = '; '.join(apply_result.get('errors', []))
-        print(f'   {_ok(False)} 补丁未应用  {errs}')
+        print(f'  {_ok(False)} 补丁未应用  \033[31m{errs}\033[0m')
 
+    # ── CI 结果 ──
     if ci_result:
         passed = ci_result.get('stages_passed', [])
         failed = ci_result.get('stages_failed', [])
         retries = ci_result.get('retries_used', 0)
+        print(f'\n  \033[1mCI 管道:\033[0m')
         parts = []
         for s in passed:
             parts.append(f'{_ok(True)} {s}')
         for s in failed:
             parts.append(f'{_ok(False)} {s}')
-        line = '   ' + '  '.join(parts)
+        line = '  ' + '  '.join(parts)
         if retries > 0:
-            line += f'  \033[33m↻{retries}\033[0m'
+            line += f'  \033[33m↻ LLM重试 {retries} 次\033[0m'
         print(line)
         # Show last error detail for failed stages
         for entry in reversed(ci_result.get('patch_history', [])):
             if entry.get('stage') in failed and entry.get('error'):
                 err_preview = entry['error'].replace('\n', ' ').strip()[:150]
                 if err_preview:
-                    print(f'   \033[90m└ {err_preview}\033[0m')
+                    print(f'  \033[90m└ 错误详情: {err_preview}\033[0m')
                 break
 
+    # ── PR 结果 ──
     if pr_result:
+        print(f'\n  \033[1mPull Request:\033[0m')
         if pr_result.get('pr_created'):
-            print(f'   {_ok(True)} PR: \033[4m{pr_result["pr_url"]}\033[0m')
+            print(f'  {_ok(True)} PR 已创建: \033[4m{pr_result["pr_url"]}\033[0m')
         elif pr_result.get('error'):
-            print(f'   {_ok(False)} PR: {pr_result["error"]}')
+            print(f'  {_ok(False)} PR 创建失败: \033[31m{pr_result["error"]}\033[0m')
 
-    # ── 统计 ──
+    # ── 统计摘要 ──
+    print(f'\n  \033[1m统计摘要:\033[0m')
     stats = []
     if iterations > 0:
-        stats.append(f'{iterations} 轮')
+        stats.append(f'Agent 迭代 {iterations} 轮')
     if tool_calls:
-        stats.append(f'{len(tool_calls)} 工具')
-    stats.append('dry-run' if dry_run else status)
-    print(f'\n   \033[90m{" · ".join(stats)}\033[0m')
-    print('\033[90m  ──────────────────────────────────────────────\033[0m\n')
+        stats.append(f'工具调用 {len(tool_calls)} 次')
+    stats.append('模式: dry-run' if dry_run else f'状态: {status}')
+    print(f'  \033[90m{" · ".join(stats)}\033[0m')
+    print()
+    print('\033[36m════════════════════════════════════════════════════════════\033[0m\n')
 
     _save_report(report, output_file)
 

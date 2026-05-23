@@ -103,7 +103,26 @@ def retry_with_feedback(original_prompt, source_info, failed_stage,
         logger.warning('Retry patch failed validation: %s', '; '.join(validation['errors']))
         return None
 
+    # Additional check: verify patch can be applied cleanly
+    if not _verify_patch_applicable(repo_path, new_patch_text):
+        logger.warning('Retry patch cannot be applied cleanly to the current code')
+        return None
+
     return new_patch_text
+
+
+def _verify_patch_applicable(repo_path, patch_text):
+    """Verify that a patch can be applied cleanly using git apply --check."""
+    import subprocess
+    try:
+        res = subprocess.run(['git', 'apply', '--check'],
+                             cwd=repo_path, input=patch_text,
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             universal_newlines=True, timeout=30)
+        return res.returncode == 0
+    except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
+        # If git is not available, skip this check
+        return True
 
 
 def run_ci_pipeline(repo_path, source_info, raw_stack, parsed_stack,
@@ -216,9 +235,10 @@ def run_ci_pipeline(repo_path, source_info, raw_stack, parsed_stack,
                 })
                 break
 
-            err = (test_result.get('stderr', '') or '')[:2000]
+            # Maven outputs test failures to stdout; stderr often only has JVM warnings
+            err = (test_result.get('stdout', '') or '')[:2000]
             if not err:
-                err = (test_result.get('stdout', '') or '')[:2000]
+                err = (test_result.get('stderr', '') or '')[:2000]
             ci_result['patch_history'].append({
                 'stage': 'tests',
                 'attempt': attempt + 1,
@@ -243,6 +263,22 @@ def run_ci_pipeline(repo_path, source_info, raw_stack, parsed_stack,
             apply_result = tools['git_manager'].apply_patch(repo_path, new_patch)
             retry_files = apply_result.get('files', [])
             current_patch = new_patch
+
+            # Verify compilation after applying retry patch
+            if run_compile_flag and apply_result.get('applied'):
+                compile_check = compile_fn(repo_path)
+                if compile_check['code'] != 0:
+                    logger.warning('Retry patch failed compilation check, reverting')
+                    if retry_files:
+                        revert_files(repo_path, retry_files, tools['git_manager'], ref='HEAD~1')
+                    ci_result['stages_failed'].append('tests')
+                    ci_result['patch_history'].append({
+                        'stage': 'tests',
+                        'attempt': attempt + 1,
+                        'error': 'Retry patch failed compilation: %s'
+                                 % (compile_check.get('stderr', '') or '')[:500],
+                    })
+                    break
 
     if ci_result['retries_used'] > 0 and current_patch != original_patch_text and retry_files:
         tools['git_manager'].commit_changes(

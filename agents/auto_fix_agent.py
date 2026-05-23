@@ -7,6 +7,7 @@ and PR management.
 
 import logging
 import os
+import sys
 from datetime import datetime
 
 try:
@@ -21,6 +22,17 @@ from agents.agent_loop import react_agent, tool_registry, prompt_builder
 from agents.post_processing import patch_validator, test_generator
 from agents.ci import ci_pipeline, pr_manager
 logger = logging.getLogger(__name__)
+
+
+def _print_step_header(step_num, total, title):
+    """Print a colored step header with timestamp."""
+    timestamp = datetime.now().strftime('%H:%M:%S')
+    # Use ANSI colors: cyan for header, gray for timestamp
+    sys.stderr.write('\n')
+    sys.stderr.write('\033[36m════════════════════════════════════════════════════════════\033[0m\n')
+    sys.stderr.write('\033[1;36m  [%d/%d] %s\033[0m  \033[90m%s\033[0m\n' % (step_num, total, title, timestamp))
+    sys.stderr.write('\033[36m════════════════════════════════════════════════════════════\033[0m\n')
+    sys.stderr.flush()
 
 
 class AutoFixAgent:
@@ -118,10 +130,7 @@ class AutoFixAgent:
                 raise ValueError('repo_path not set in config')
 
             # ── Stage 1: 异常提取 ──
-            logger.info('')
-            logger.info('════════════════════════════════════════════════════════════')
-            logger.info('  [1/6] 提取异常堆栈')
-            logger.info('════════════════════════════════════════════════════════════')
+            _print_step_header(1, 6, '提取异常堆栈')
             raw_stack = self._read_latest_stack(logs_path)
             report['raw_stack'] = raw_stack
 
@@ -142,10 +151,7 @@ class AutoFixAgent:
             logger.info('────────────────────────────────────────────────────────────')
 
             # ── Stage 2: Agent 决策循环 ──
-            logger.info('')
-            logger.info('════════════════════════════════════════════════════════════')
-            logger.info('  [2/6] Agent 决策循环')
-            logger.info('════════════════════════════════════════════════════════════')
+            _print_step_header(2, 6, 'Agent 决策循环')
             max_iterations = int(self.config.get('max_agent_iterations', 10))
             agent = react_agent.ReActAgent(
                 self.config, self.tool_registry, self.llm_client,
@@ -182,10 +188,7 @@ class AutoFixAgent:
             logger.info('────────────────────────────────────────────────────────────')
 
             # ── Stage 3: 补丁校验 ──
-            logger.info('')
-            logger.info('════════════════════════════════════════════════════════════')
-            logger.info('  [3/6] 补丁校验')
-            logger.info('════════════════════════════════════════════════════════════')
+            _print_step_header(3, 6, '补丁校验')
             validation = self.validate_patch(repo_path, patch_text, source_info=source_info)
             if not validation['valid']:
                 raise ValueError('Patch validation failed: %s' % '; '.join(validation['errors']))
@@ -197,10 +200,7 @@ class AutoFixAgent:
 
             if not dry_run:
                 # ── Stage 4: 应用补丁 ──
-                logger.info('')
-                logger.info('════════════════════════════════════════════════════════════')
-                logger.info('  [4/6] 应用补丁')
-                logger.info('════════════════════════════════════════════════════════════')
+                _print_step_header(4, 6, '应用补丁')
                 branch_ok = self.tools['git_manager'].create_branch(repo_path, branch_name)
                 if not branch_ok:
                     raise RuntimeError('Failed to create branch: %s' % branch_name)
@@ -227,10 +227,7 @@ class AutoFixAgent:
                 if apply_result.get('applied'):
                     # ── Stage 5: 自动生成测试 ──
                     if self.config.get('generate_tests', True):
-                        logger.info('')
-                        logger.info('════════════════════════════════════════════════════════════')
-                        logger.info('  [5/6] 生成 JUnit 测试')
-                        logger.info('════════════════════════════════════════════════════════════')
+                        _print_step_header(5, 6, '生成 JUnit 测试')
 
                         # 优先使用 agent loop 中生成的测试代码
                         agent_test_code = agent_result.get('test_code', '')
@@ -277,10 +274,7 @@ class AutoFixAgent:
                         logger.info('────────────────────────────────────────────────────────────')
 
                     # ── Stage 6: CI 管道 ──
-                    logger.info('')
-                    logger.info('════════════════════════════════════════════════════════════')
-                    logger.info('  [6/6] CI 管道')
-                    logger.info('════════════════════════════════════════════════════════════')
+                    _print_step_header(6, 6, 'CI 管道')
                     ci_result = self._run_ci_pipeline(
                         repo_path, source_info, raw_stack, parsed_stack,
                         report['patch_text'], report['prompt'],

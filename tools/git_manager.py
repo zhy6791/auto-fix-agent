@@ -142,12 +142,38 @@ def _extract_patch_paths(patch_text):
 
 
 def _apply_unified_diff(repo_path, patch_text, logger):
-    """Apply unified-diff. Try 'patch' CLI first, fall back to internal parser."""
+    """Apply unified-diff. Try 'git apply' first, then 'patch' CLI, fall back to internal parser."""
     applied_files = []
+
+    # Strategy 1: Try git apply (more strict but better error messages)
+    try:
+        res = subprocess.run(['git', 'apply', '--check', '--verbose'],
+                             cwd=repo_path, input=patch_text,
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             universal_newlines=True, timeout=30)
+        if res.returncode == 0:
+            # Apply for real
+            res = subprocess.run(['git', 'apply', '--verbose'],
+                                 cwd=repo_path, input=patch_text,
+                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                 universal_newlines=True, timeout=30)
+            if res.returncode == 0:
+                for fpath in _extract_patch_paths(patch_text):
+                    corrected = _correct_patch_path(repo_path, fpath)
+                    if corrected not in applied_files:
+                        applied_files.append(corrected)
+                logger.info("Applied unified-diff via 'git apply' to %d files", len(applied_files))
+                return applied_files
+        else:
+            logger.info("git apply --check failed: %s", (res.stderr or '').strip()[:200])
+    except (subprocess.TimeoutExpired, FileNotFoundError, OSError) as e:
+        logger.info("git apply not available: %s", e)
+
+    # Strategy 2: Try patch CLI with fuzz factor
     patch_stderr = ''
     try:
-        res = subprocess.run(['patch', '-p1', '--batch'], cwd=repo_path,
-                             input=patch_text, stdout=subprocess.PIPE,
+        res = subprocess.run(['patch', '-p1', '--batch', '--fuzz=3'],
+                             cwd=repo_path, input=patch_text, stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE, universal_newlines=True, timeout=30)
         patch_stderr = (res.stderr or '').strip()
         if res.returncode in (0, 1):
@@ -155,13 +181,14 @@ def _apply_unified_diff(repo_path, patch_text, logger):
                 corrected = _correct_patch_path(repo_path, fpath)
                 if corrected not in applied_files:
                     applied_files.append(corrected)
-            logger.info(f"Applied unified-diff via 'patch' to {len(applied_files)} files")
+            logger.info("Applied unified-diff via 'patch' to %d files", len(applied_files))
             return applied_files
         else:
             logger.warning("patch -p1 failed (exit %d): %s", res.returncode, patch_stderr[:300])
     except (subprocess.TimeoutExpired, FileNotFoundError, OSError) as e:
         logger.warning("patch -p1 exception: %s", e)
 
+    # Strategy 3: Internal fallback parser
     applied_files = _apply_diff_fallback(repo_path, patch_text, logger)
     return applied_files
 
