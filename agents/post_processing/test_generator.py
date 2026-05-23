@@ -68,18 +68,23 @@ def collect_project_context(repo_path, source_info, tools):
     # 3. 读取被修复类的依赖类源码
     try:
         full_source = source_info.get('full_source', '')
-        # 提取 import 语句，找到项目内的依赖类
-        imports = re.findall(r'import\s+(com\.\w+\.\w+\.\w+);', full_source)
-        for imp in imports[:3]:  # 最多读取 3 个依赖类
-            # 将包名转换为路径
-            dep_path = imp.replace('.', '/') + '.java'
-            dep_full_path = os.path.join(repo_path, 'src', 'main', 'java', dep_path)
-            if os.path.exists(dep_full_path):
-                try:
-                    content = tools['file_io'].read_file(dep_full_path)
-                    context['dependency_sources'][imp] = content[:1500]
-                except Exception:
-                    pass
+        # 提取 import 语句，找到项目内的依赖类（支持任意层级包名）
+        imports = re.findall(r'import\s+(com\.[a-zA-Z0-9_.]+);', full_source)
+        # 优先读取返回类型和参数类型相关的类（更可能被测试用到）
+        # 普通 import 最多读取 5 个
+        for imp in imports[:5]:
+            # 将包名转换为路径：最后一个点号前的是包路径，最后的是类名
+            parts = imp.rsplit('.', 1)
+            if len(parts) == 2:
+                dep_path = parts[0].replace('.', '/') + '/' + parts[1] + '.java'
+                dep_full_path = os.path.join(repo_path, 'src', 'main', 'java', dep_path)
+                if os.path.exists(dep_full_path):
+                    try:
+                        content = tools['file_io'].read_file(dep_full_path)
+                        # 类定义 + 方法签名部分通常够用，取前2000字符
+                        context['dependency_sources'][imp] = content[:2000]
+                    except Exception:
+                        pass
     except Exception as e:
         logger.debug('读取依赖类失败: %s', e)
 
@@ -133,6 +138,9 @@ def build_test_generation_prompt(source_info, patch_text, raw_stack,
     lines.append('- 【重要】使用 when(...).thenReturn(...) 设置 mock 返回值，不要创建匿名实现类')
     lines.append('- 【禁止】不要创建接口的匿名实现类（如 new UserRepository() {...}），这会导致编译失败')
     lines.append('- 【禁止】不要使用 SpringBootTest，这是单元测试不是集成测试')
+    lines.append('- 【禁止】不要调用依赖类中不存在的方法（如 result.isSuccess()），必须严格参考下面提供的依赖类源码中的实际方法')
+    lines.append('- 【重要】对于 Result 类，使用 getCode() == 1 判断成功，不要使用 isSuccess()（该方法不存在）')
+    lines.append('- 【重要】对于 RedisTemplate.delete()，使用 delete(any(Set.class)) 或 delete(anyCollection()）避免重载歧义')
     lines.append('- 测试方法命名清晰，使用 @DisplayName 说明测试意图')
     lines.append('- 至少包含以下测试用例：')
     lines.append('  1. 正向测试：验证修复后的方法在正常输入下能正确工作')
@@ -217,6 +225,16 @@ def build_test_generation_prompt(source_info, patch_text, raw_stack,
         lines.append('添加新的测试方法来验证本次修复。不要删除或修改已有的测试。')
         lines.append('```java')
         lines.append(existing_test_content)
+        lines.append('```')
+        lines.append('')
+
+    # 编译错误信息（重试时提供）
+    compile_error = source_info.get('compile_error', '')
+    if compile_error:
+        lines.append('## 上一次生成的测试代码编译失败')
+        lines.append('请根据以下编译错误修正测试代码：')
+        lines.append('```')
+        lines.append(compile_error)
         lines.append('```')
         lines.append('')
 
@@ -319,7 +337,8 @@ def run_test_generation(config, repo_path, source_info, patch_text, raw_stack,
     3. 读取已有测试文件（如存在）
     4. 调用 LLM 生成测试代码
     5. 写入测试文件
-    6. 提交到 git
+    6. 编译验证（失败时重试1次）
+    7. 提交到 git
 
     Args:
         config: 配置字典。
@@ -357,21 +376,54 @@ def run_test_generation(config, repo_path, source_info, patch_text, raw_stack,
             except Exception:
                 pass
 
-        # 生成测试代码
-        test_code = generate_test(
-            llm_client, config, source_info, patch_text, raw_stack,
-            existing_test_content=existing_content,
-            project_context=project_context
-        )
-        if not test_code:
-            result['error'] = 'LLM 未能生成有效的测试代码'
-            return result
+        # 生成测试代码（最多重试1次）
+        compile_error = None
+        test_code = None
+        for attempt in range(2):
+            # 如果是重试，将编译错误加入 prompt
+            if attempt == 1 and compile_error:
+                logger.info('  编译失败，重试生成测试代码...')
+                # 将编译错误追加到 source_info 供 prompt 使用
+                source_info_with_error = dict(source_info)
+                source_info_with_error['compile_error'] = compile_error
+            else:
+                source_info_with_error = source_info
 
-        # 写入文件
-        written_path = write_test_file(repo_path, test_rel_path, test_code)
-        if not written_path:
-            result['error'] = '写入测试文件失败'
-            return result
+            test_code = generate_test(
+                llm_client, config, source_info_with_error, patch_text, raw_stack,
+                existing_test_content=existing_content,
+                project_context=project_context
+            )
+            if not test_code:
+                result['error'] = 'LLM 未能生成有效的测试代码'
+                return result
+
+            # 写入文件
+            written_path = write_test_file(repo_path, test_rel_path, test_code)
+            if not written_path:
+                result['error'] = '写入测试文件失败'
+                return result
+
+            # 编译验证
+            if 'ci_pipeline' in tools and 'exec_cmd' in tools:
+                try:
+                    from agents.ci.ci_pipeline import run_compile
+                    compile_result = run_compile(repo_path, config, tools['exec_cmd'])
+                    if compile_result.get('code') != 0:
+                        compile_error = compile_result.get('stderr', '') or compile_result.get('stdout', '')
+                        # 提取关键错误信息（最多500字符）
+                        if compile_error:
+                            lines = compile_error.splitlines()
+                            error_lines = [l for l in lines if 'ERROR' in l or 'error' in l.lower()]
+                            compile_error = '\n'.join(error_lines[:10])[:500]
+                        logger.warning('  测试编译失败: %s', compile_error[:200])
+                        continue  # 重试
+                except Exception as e:
+                    logger.debug('编译验证跳过: %s', e)
+
+            # 编译通过或跳过验证
+            break
+
         result['generated'] = True
 
         # 提交
