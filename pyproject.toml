@@ -9,6 +9,8 @@ pyyaml = "*"
 requests = "*"
 openai = "*"
 gitpython = "*"
+javalang = ">=0.13.0"
+networkx = ">=3.0"
 
 [build-system]
 requires = ["hatchling"]

@@ -9,6 +9,7 @@ import os
 
 from tools import file_io, git_manager
 from agents.log_extraction import stacktrace_parser, source_locator, exception_inference
+from agents.log_extraction.search_manager import SearchManager
 from agents.agent_loop import prompt_builder
 from agents.post_processing import patch_validator, test_generator
 
@@ -93,7 +94,7 @@ class ToolRegistry:
         # 4. infer_source
         self.register(ToolDef(
             name='infer_source',
-            description='When the stack trace contains only framework code (Spring/Tomcat), use LLM to infer which application class/method is responsible based on the exception message. Returns source_info or null.',
+            description='Infer which application class is responsible for the exception. Internally uses code graph search first (high accuracy), falls back to LLM inference if graph search fails. Returns source_info or null.',
             parameters={
                 'type': 'object',
                 'properties': {
@@ -199,6 +200,7 @@ class ToolRegistry:
             category='signal',
         ))
 
+
     def register(self, tool_def):
         self._tools[tool_def.name] = tool_def
 
@@ -255,6 +257,12 @@ def _read_code(repo_path, file_io_mod, path):
         return {'error': 'path is required'}
     if not os.path.isabs(path):
         path = os.path.join(repo_path, path)
+    if os.path.isdir(path):
+        entries = []
+        for name in sorted(os.listdir(path)):
+            prefix = '[DIR] ' if os.path.isdir(os.path.join(path, name)) else '[FILE]'
+            entries.append('%s %s' % (prefix, name))
+        return {'content': '\n'.join(entries), 'path': path, 'is_directory': True}
     try:
         content = file_io_mod.read_file(path)
         return {'content': content, 'path': path}
@@ -285,12 +293,106 @@ def _locate_from_stack(repo_path, file_io_mod, kw):
 def _infer_source(repo_path, config, llm_client, file_io_mod, kw):
     raw_stack = kw.get('raw_stack', '')
     parsed_stack = kw.get('parsed_stack', [])
+
+    # 优先使用代码图谱搜索（比LLM推断更可靠）
+    graph_result = _try_graph_search(repo_path, config, parsed_stack, file_io_mod)
+    if graph_result:
+        logger.info('infer_source: 代码图谱搜索成功定位到 %s', graph_result.get('class_name', ''))
+        return graph_result
+
+    # 回退到LLM推断
+    logger.info('infer_source: 代码图谱搜索无结果，使用LLM推断')
     result = exception_inference.infer_from_exception_message(
         repo_path, raw_stack, parsed_stack, config, llm_client, file_io_mod
     )
     if result:
         return result
     return {'error': 'Could not infer source from exception message'}
+
+
+def _try_graph_search(repo_path, config, parsed_stack, file_io_mod):
+    """使用代码图谱搜索定位源码，成功返回source_info，失败返回None"""
+    try:
+        orcaloca_config = config.get('orcaloca', {})
+        if not orcaloca_config.get('enabled', False):
+            return None
+
+        from agents.code_graph.repo_graph import RepoGraph
+        graph = RepoGraph()
+        build_timeout = orcaloca_config.get('build_timeout', 60)
+        max_files = orcaloca_config.get('max_files', 10000)
+        graph.build(repo_path, max_files=max_files, timeout=build_timeout)
+
+        if not graph.is_built():
+            return None
+
+        search_manager = SearchManager(graph, repo_path)
+
+        # 从parsed_stack提取异常类型
+        exception_type = ''
+        if parsed_stack:
+            exception_type = parsed_stack[0].get('exception_type', '')
+            # 取简单类名
+            if '.' in exception_type:
+                exception_type = exception_type.split('.')[-1]
+
+        # 策略1: exception_type搜索
+        if exception_type:
+            results = search_manager.search_by_exception_type(exception_type)
+            if results:
+                return _search_result_to_source_info(results[0], repo_path, file_io_mod)
+
+        # 策略2: annotation搜索Controller
+        for ann in ['@RestController', '@Controller']:
+            results = search_manager.search_by_annotation(ann)
+            if results:
+                return _search_result_to_source_info(results[0], repo_path, file_io_mod)
+
+        return None
+    except Exception as e:
+        logger.debug('图搜索回退失败: %s', e)
+        return None
+
+
+def _search_result_to_source_info(search_result, repo_path, file_io_mod):
+    """将SearchResult转换为source_info格式"""
+    try:
+        file_path = search_result.file_path
+        if not os.path.isabs(file_path):
+            file_path = os.path.join(repo_path, file_path)
+
+        source_text = file_io_mod.read_file(file_path)
+        source_lines = source_text.splitlines()
+
+        # 查找类定义行作为line_no
+        class_name = search_result.class_name
+        line_no = 0
+        for i, line in enumerate(source_lines):
+            if 'class %s' % class_name in line or 'interface %s' % class_name in line:
+                line_no = i + 1
+                break
+
+        # 构建context_snippet
+        if line_no > 0:
+            start = max(0, line_no - 4)
+            end = min(len(source_lines), line_no + 4)
+            snippet = '\n'.join(source_lines[start:end])
+        else:
+            snippet = '\n'.join(source_lines[:10])
+
+        return {
+            'source_path': file_path,
+            'repo_relative_path': os.path.relpath(file_path, repo_path),
+            'class_name': search_result.class_name,
+            'method': search_result.method_name or '',
+            'line_no': line_no,
+            'context_snippet': snippet,
+            'full_source': source_text,
+            'detection_method': 'graph_search',
+        }
+    except Exception as e:
+        logger.debug('转换SearchResult失败: %s', e)
+        return None
 
 
 def _edit_code(config, llm_client, kw):

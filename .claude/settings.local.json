@@ -20,7 +20,8 @@
       "WebFetch(domain:dblp.org)",
       "WebFetch(domain:proceedings.mlr.press)",
       "Bash(python -c ':*)",
-      "Bash(python *)"
+      "Bash(python *)",
+      "Bash(pip install *)"
     ]
   },
   "statusLine": {

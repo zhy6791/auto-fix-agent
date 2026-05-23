@@ -17,8 +17,8 @@ llm:
     # provider: "openai"
     # model: "deepseek-v4-pro"
     # api_key_env: "DEEPSEEK_API_KEY"
-    # temperature: 0.2
-    # timeout: 300
+    temperature: 0.2
+    timeout: 300
 max_patch_lines: 40
 max_tokens: 8192
 auto_apply: false
@@ -52,4 +52,10 @@ gitee:
   pr_title_template: "fix: auto-fix {exception_type} in {class_name}"
   # When tests are enabled, require both compile + tests to pass before PR
   require_tests_to_pass_for_pr: true
+
+# OrcaLoca 增强定位配置（图谱搜索内嵌于infer_source工具）
+orcaloca:
+  enabled: true                    # 是否启用 OrcaLoca 增强定位
+  max_files: 10000                 # 最大解析文件数
+  build_timeout: 60                # 图构建超时（秒）
 

@@ -19,8 +19,7 @@ from tools import file_io, exec_cmd, git_manager
 
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s [%(levelname)s] %(message)s',
-    datefmt='%H:%M:%S',
+    format='%(message)s',
 )
 logger = logging.getLogger(__name__)
 
@@ -263,9 +262,10 @@ Examples:
         print('\033[36m  ║\033[0m  \033[90mLLM 驱动异常分析 → 源码定位 → 补丁生成 → CI → PR\033[0m   \033[36m║\033[0m')
         print('\033[36m  ╚══════════════════════════════════════════════════════════╝\033[0m')
         print()
-        logger.info('日志: %s', config.get('logs_path', ''))
-        logger.info('仓库: %s', config.get('repo_path', ''))
-        logger.info('模式: %s', 'dry-run' if dry_run else 'auto-apply')
+        logger.info('')
+        logger.info('  日志: %s', config.get('logs_path', ''))
+        logger.info('  仓库: %s', config.get('repo_path', ''))
+        logger.info('  模式: %s', 'dry-run' if dry_run else 'auto-apply')
 
         agent = AutoFixAgent(
             config,

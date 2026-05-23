@@ -66,7 +66,7 @@ class ReActAgent:
 
         for iteration in range(self.max_iterations):
             result['iterations'] = iteration + 1
-            logger.info('  ─── 迭代 %d/%d', iteration + 1, self.max_iterations)
+            logger.info('  ┌── 迭代 %d/%d ──────────────────────────────────', iteration + 1, self.max_iterations)
 
             # Call LLM
             llm_response = self._call_llm()
@@ -79,7 +79,7 @@ class ReActAgent:
             thought, tool_name, tool_args = self._parse_response(llm_response)
             if thought:
                 self.thoughts.append(thought)
-                logger.info('  ❮ %s', thought[:150])
+                logger.info('  │ 💭 思考: %s', thought[:150])
 
             if tool_name is None:
                 # Couldn't parse any action, ask agent to clarify
@@ -97,10 +97,12 @@ class ReActAgent:
                     val_str = val_str[:47] + '...'
                 arg_parts.append('%s=%s' % (k, val_str))
             args_display = ', '.join(arg_parts)
-            logger.info('  → %s(%s)', tool_name, args_display)
+            logger.info('  │ 🔧 行动: [%s] %s', tool_name, args_display)
 
             # Handle signal tools
             if tool_name == 'final_patch':
+                logger.info('  │ ✅ 完成: 补丁已提交，退出Agent循环')
+                logger.info('  └────────────────────────────────────────────')
                 result['final_patch'] = tool_args.get('patch_text', '')
                 result['source_info'] = tool_args.get('source_info', {})
                 result['test_code'] = tool_args.get('test_code', '')
@@ -108,6 +110,8 @@ class ReActAgent:
                 return result
 
             if tool_name == 'abort':
+                logger.info('  │ ❌ 中止: %s', tool_args.get('reason', 'Unknown'))
+                logger.info('  └────────────────────────────────────────────')
                 result['aborted'] = True
                 result['abort_reason'] = tool_args.get('reason', 'Unknown')
                 self.tool_call_history.append({'tool': tool_name, 'args': tool_args, 'result': 'aborted'})
@@ -116,6 +120,8 @@ class ReActAgent:
             # Execute tool
             tool_result = self.tool_registry.execute(tool_name, tool_args)
             tool_result_str = self._format_observation(tool_result)
+            logger.info('  │ 📋 结果: %s', tool_result_str[:200])
+            logger.info('  └────────────────────────────────────────────')
 
             # Update scratchpad
             assistant_msg = 'Thought: %s\nAction: %s(%s)' % (thought or '', tool_name, json.dumps(tool_args, ensure_ascii=False))
@@ -142,17 +148,41 @@ class ReActAgent:
         max_patch_hunks = self.config.get('max_patch_hunks', 3)
         tool_descriptions = self.tool_registry.get_text_tool_descriptions()
 
+        # 基础工作流程
+        workflow = '''## 工作流程
+
+### 场景A：堆栈包含应用代码帧
+1. 分析异常堆栈，识别应用层代码帧（非 java.*/javax.*/org.springframework.* 等框架包）
+2. 使用 locate_from_stack 定位源文件
+3. 阅读源码，分析 BUG 根因
+4. 使用 edit_code 生成修复补丁
+5. 使用 validate_patch 校验补丁安全性
+6. 校验通过后，使用 generate_test 生成 JUnit 单元测试
+7. 最后调用 final_patch 提交最终补丁和测试代码
+
+### 场景B：堆栈全部是框架代码（Spring/Tomcat/JDK等）
+**禁止行为：**
+- 禁止使用 locate_from_stack（会失败）
+- 禁止使用 search_code 猜测类名（会浪费迭代）
+- 禁止猜测包名前缀（如 com.example.*）
+
+**必须按以下顺序执行：**
+
+步骤1：调用 infer_source 定位源文件
+   - 示例：infer_source({"raw_stack": "...", "parsed_stack": [...]})
+   - 该工具内部会先搜索代码图谱，再用LLM推断，准确率高
+
+步骤2：用 read_code 读取 infer_source 返回的 source_path
+
+步骤3：分析源码，用 edit_code 生成补丁
+
+步骤4：用 validate_patch 校验，generate_test 生成测试，final_patch 提交'''
+
+        # OrcaLoca增强已在工作流程中直接体现，无需额外追加
+
         return '''你是一个专业的 Java Web 服务自动调试和修复助手。你的任务是分析 Java 异常日志，定位源码中的 BUG，生成修复补丁和单元测试。
 
-## 工作流程
-1. 分析已提供的异常堆栈和解析后的帧列表
-2. 选择最可能的业务代码帧（优先选择应用代码而非框架代码）
-3. 使用 locate_from_stack 定位源文件，或使用 infer_source 处理纯框架堆栈
-4. 阅读源码，分析 BUG 根因
-5. 使用 edit_code 生成修复补丁
-6. 使用 validate_patch 校验补丁安全性
-7. 校验通过后，使用 generate_test 生成 JUnit 单元测试（验证修复是否正确）
-8. 最后调用 final_patch 提交最终补丁和测试代码
+%s
 
 ## 约束
 - 补丁必须是 unified diff 格式
@@ -171,10 +201,14 @@ class ReActAgent:
 1. Thought: 你的分析和下一步计划
 2. Action: 要调用的工具名称和参数
 
-示例：
+示例1（堆栈有应用代码帧）：
 Thought: 堆栈第一帧是 HelloController.sayHello，先定位源文件。
 Action: locate_from_stack({"class_name": "com.example.HelloController", "method": "sayHello", "line_no": 42})
-''' % (max_patch_lines, max_patch_hunks, tool_descriptions)
+
+示例2（堆栈全是框架代码）：
+Thought: 堆栈全是 Spring 框架代码，无法直接定位。使用 infer_source 通过代码图谱搜索定位应用代码。
+Action: infer_source({"raw_stack": "...", "parsed_stack": [...]})
+''' % (workflow, max_patch_lines, max_patch_hunks, tool_descriptions)
 
     def _build_initial_user_message(self, context):
         raw_stack = context.get('raw_stack', '')

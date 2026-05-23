@@ -1,0 +1,701 @@
+{
+  "status": "completed",
+  "dry_run": false,
+  "raw_stack": "org.springframework.web.bind.MissingPathVariableException: Required URI template variable 'id' for method parameter type Long is not present\n\tat org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.handleMissingValue(PathVariableMethodArgumentResolver.java:101)\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.handleMissingValue(AbstractNamedValueMethodArgumentResolver.java:234)\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:125)\n\tat org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:224)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:178)\n\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)\n\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\n\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)\n\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)\n\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)\n\tat org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)\n\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\n\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\n\tat org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\n\tat org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\n\tat org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\n\tat org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)\n\tat org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)\n\tat org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)\n\tat org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)\n\tat org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)\n\tat org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)\n\tat org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)\n\tat org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:384)\n\tat org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)\n\tat org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905)\n\tat org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)\n\tat org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)\n\tat org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)\n\tat java.base/java.lang.Thread.run(Thread.java:1583)",
+  "parsed_stack": [
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver",
+      "method": "handleMissingValue",
+      "line_no": 101,
+      "source_file": "PathVariableMethodArgumentResolver.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.handleMissingValue(PathVariableMethodArgumentResolver.java:101)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver",
+      "method": "handleMissingValue",
+      "line_no": 234,
+      "source_file": "AbstractNamedValueMethodArgumentResolver.java",
+      "raw_line": "\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.handleMissingValue(AbstractNamedValueMethodArgumentResolver.java:234)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver",
+      "method": "resolveArgument",
+      "line_no": 125,
+      "source_file": "AbstractNamedValueMethodArgumentResolver.java",
+      "raw_line": "\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:125)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.method.support.HandlerMethodArgumentResolverComposite",
+      "method": "resolveArgument",
+      "line_no": 122,
+      "source_file": "HandlerMethodArgumentResolverComposite.java",
+      "raw_line": "\tat org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.method.support.InvocableHandlerMethod",
+      "method": "getMethodArgumentValues",
+      "line_no": 224,
+      "source_file": "InvocableHandlerMethod.java",
+      "raw_line": "\tat org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:224)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.method.support.InvocableHandlerMethod",
+      "method": "invokeForRequest",
+      "line_no": 178,
+      "source_file": "InvocableHandlerMethod.java",
+      "raw_line": "\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:178)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod",
+      "method": "invokeAndHandle",
+      "line_no": 118,
+      "source_file": "ServletInvocableHandlerMethod.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter",
+      "method": "invokeHandlerMethod",
+      "line_no": 926,
+      "source_file": "RequestMappingHandlerAdapter.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter",
+      "method": "handleInternal",
+      "line_no": 831,
+      "source_file": "RequestMappingHandlerAdapter.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter",
+      "method": "handle",
+      "line_no": 87,
+      "source_file": "AbstractHandlerMethodAdapter.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.DispatcherServlet",
+      "method": "doDispatch",
+      "line_no": 1089,
+      "source_file": "DispatcherServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.DispatcherServlet",
+      "method": "doService",
+      "line_no": 979,
+      "source_file": "DispatcherServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.FrameworkServlet",
+      "method": "processRequest",
+      "line_no": 1014,
+      "source_file": "FrameworkServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.FrameworkServlet",
+      "method": "doGet",
+      "line_no": 903,
+      "source_file": "FrameworkServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "jakarta.servlet.http.HttpServlet",
+      "method": "service",
+      "line_no": 564,
+      "source_file": "HttpServlet.java",
+      "raw_line": "\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.FrameworkServlet",
+      "method": "service",
+      "line_no": 885,
+      "source_file": "FrameworkServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "jakarta.servlet.http.HttpServlet",
+      "method": "service",
+      "line_no": 658,
+      "source_file": "HttpServlet.java",
+      "raw_line": "\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 195,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 140,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.tomcat.websocket.server.WsFilter",
+      "method": "doFilter",
+      "line_no": 51,
+      "source_file": "WsFilter.java",
+      "raw_line": "\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 164,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 140,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.filter.RequestContextFilter",
+      "method": "doFilterInternal",
+      "line_no": 100,
+      "source_file": "RequestContextFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.filter.OncePerRequestFilter",
+      "method": "doFilter",
+      "line_no": 116,
+      "source_file": "OncePerRequestFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 164,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 140,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.filter.FormContentFilter",
+      "method": "doFilterInternal",
+      "line_no": 93,
+      "source_file": "FormContentFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.filter.OncePerRequestFilter",
+      "method": "doFilter",
+      "line_no": 116,
+      "source_file": "OncePerRequestFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 164,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 140,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.filter.CharacterEncodingFilter",
+      "method": "doFilterInternal",
+      "line_no": 201,
+      "source_file": "CharacterEncodingFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.filter.OncePerRequestFilter",
+      "method": "doFilter",
+      "line_no": 116,
+      "source_file": "OncePerRequestFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 164,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 140,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.StandardWrapperValve",
+      "method": "invoke",
+      "line_no": 167,
+      "source_file": "StandardWrapperValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.StandardContextValve",
+      "method": "invoke",
+      "line_no": 90,
+      "source_file": "StandardContextValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.authenticator.AuthenticatorBase",
+      "method": "invoke",
+      "line_no": 483,
+      "source_file": "AuthenticatorBase.java",
+      "raw_line": "\tat org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.StandardHostValve",
+      "method": "invoke",
+      "line_no": 115,
+      "source_file": "StandardHostValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.valves.ErrorReportValve",
+      "method": "invoke",
+      "line_no": 93,
+      "source_file": "ErrorReportValve.java",
+      "raw_line": "\tat org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.StandardEngineValve",
+      "method": "invoke",
+      "line_no": 74,
+      "source_file": "StandardEngineValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.connector.CoyoteAdapter",
+      "method": "service",
+      "line_no": 344,
+      "source_file": "CoyoteAdapter.java",
+      "raw_line": "\tat org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.coyote.http11.Http11Processor",
+      "method": "service",
+      "line_no": 384,
+      "source_file": "Http11Processor.java",
+      "raw_line": "\tat org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:384)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.coyote.AbstractProcessorLight",
+      "method": "process",
+      "line_no": 63,
+      "source_file": "AbstractProcessorLight.java",
+      "raw_line": "\tat org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.coyote.AbstractProtocol$ConnectionHandler",
+      "method": "process",
+      "line_no": 905,
+      "source_file": "AbstractProtocol.java",
+      "raw_line": "\tat org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.tomcat.util.net.NioEndpoint$SocketProcessor",
+      "method": "doRun",
+      "line_no": 1741,
+      "source_file": "NioEndpoint.java",
+      "raw_line": "\tat org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.tomcat.util.net.SocketProcessorBase",
+      "method": "run",
+      "line_no": 52,
+      "source_file": "SocketProcessorBase.java",
+      "raw_line": "\tat org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.tomcat.util.threads.ThreadPoolExecutor",
+      "method": "runWorker",
+      "line_no": 1190,
+      "source_file": "ThreadPoolExecutor.java",
+      "raw_line": "\tat org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker",
+      "method": "run",
+      "line_no": 659,
+      "source_file": "ThreadPoolExecutor.java",
+      "raw_line": "\tat org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.tomcat.util.threads.TaskThread$WrappingRunnable",
+      "method": "run",
+      "line_no": 63,
+      "source_file": "TaskThread.java",
+      "raw_line": "\tat org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)"
+    }
+  ],
+  "located_files": [
+    {
+      "class_name": "MallController",
+      "method": "getOrder",
+      "line_no": 41,
+      "context_snippet": "\n@RestController\n@RequestMapping(\"/api\")\npublic class MallController {\n\n    private final UserService userService;\n    private final OrderService orderService;\n",
+      "full_source": "package com.fixflow.mall.api;\n\nimport com.fixflow.mall.api.dto.CreateOrderRequest;\nimport com.fixflow.mall.domain.MallOrder;\nimport com.fixflow.mall.service.OrderService;\nimport com.fixflow.mall.service.UserService;\nimport org.springframework.web.bind.annotation.GetMapping;\nimport org.springframework.web.bind.annotation.PathVariable;\nimport org.springframework.web.bind.annotation.PostMapping;\nimport org.springframework.web.bind.annotation.RequestBody;\nimport org.springframework.web.bind.annotation.RequestMapping;\nimport org.springframework.web.bind.annotation.RestController;\n\n@RestController\n@RequestMapping(\"/api\")\npublic class MallController {\n\n    private final UserService userService;\n    private final OrderService orderService;\n\n    public MallController(UserService userService, OrderService orderService) {\n        this.userService = userService;\n        this.orderService = orderService;\n    }\n\n    @GetMapping(\"/users/{userId}/nickname\")\n    public String nickname(@PathVariable Long userId) {\n        return userService.getNickname(userId);\n    }\n\n    @PostMapping(\"/orders\")\n    public MallOrder createOrder(@RequestBody CreateOrderRequest request) {\n        return orderService.createOrder(request);\n    }\n\n    @GetMapping(\"/orders/{orderId}\")\n    public MallOrder getOrder(@PathVariable(\"orderId\") Long orderId) {\n        // BUG-005: @PathVariable name mismatch, binding fails.\n        return orderService.findOrder(orderId);\n    }\n\n    @GetMapping(\"/orders/{orderId}/first-item\")\n    public Long firstItem(@PathVariable Long orderId) {\n        return orderService.firstItemId(orderId);\n    }\n}\n",
+      "repo_relative_path": "src/main/java/com/fixflow/mall/api/MallController.java",
+      "source_path": "D:\\workspace-repo\\mall-service\\src\\main\\java\\com\\fixflow\\mall\\api\\MallController.java"
+    }
+  ],
+  "prompt": "",
+  "patch_text": "--- a/src/main/java/com/fixflow/mall/api/MallController.java\n+++ b/src/main/java/com/fixflow/mall/api/MallController.java\n@@ -36,4 +36,4 @@\n     @GetMapping(\"/orders/{orderId}\")\n-    public MallOrder getOrder(@PathVariable(\"id\") Long orderId) {\n+    public MallOrder getOrder(@PathVariable(\"orderId\") Long orderId) {\n         // BUG-005: @PathVariable name mismatch, binding fails.\n         return orderService.findOrder(orderId);",
+  "branch_name": "fix/auto-20260523-151731",
+  "apply_result": {
+    "applied": true,
+    "files": [
+      "src/main/java/com/fixflow/mall/api/MallController.java"
+    ],
+    "errors": [],
+    "dry_run": false,
+    "committed": true
+  },
+  "build_result": null,
+  "ci_result": {
+    "compile_result": {
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "test_result": {
+      "code": 0,
+      "stdout": "",
+      "stderr": "WARNING: A Java agent has been loaded dynamically (D:\\Maven\\apache-maven-3.6.1\\mvn_repo\\net\\bytebuddy\\byte-buddy-agent\\1.14.19\\byte-buddy-agent-1.14.19.jar)\nWARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning\nWARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information\nWARNING: Dynamic loading of agents will be disallowed by default in a future release\nJava HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended\n"
+    },
+    "retries_used": 0,
+    "patch_history": [],
+    "stages_passed": [
+      "compile",
+      "tests"
+    ],
+    "stages_failed": []
+  },
+  "test_gen_result": {
+    "generated": true,
+    "test_path": "src/test/java/com/fixflow/mall/api/MallControllerTest.java",
+    "committed": true,
+    "error": null
+  },
+  "pr_result": {
+    "pr_created": true,
+    "pr_url": "https://gitee.com/zhao-haoyuan4353/mall-service/pulls/13",
+    "pr_number": 13,
+    "error": null
+  },
+  "error": null,
+  "agent_iterations": 5,
+  "agent_thoughts": [
+    "异常是 `MissingPathVariableException: Required URI template variable 'id' for method parameter type Long is not present`。整个堆栈全是 Spring MVC 和 Tomcat 框架代码，没有应用层代码帧。这是场景B，需要使用 `infer_source` 通过代码图谱推断哪个应用 Controller 类的映射路径缺少 `{id}` 变量。",
+    "`infer_source` 成功定位到 `MallController.java`。查看源码，第41行的问题一目了然：URL路径定义的是 `{orderId}`，但 `@PathVariable(\"id\")` 绑定的名称是 `\"id\"`，导致 Spring 无法找到名为 `id` 的路径变量，抛出 `MissingPathVariableException`。修复方法是将 `@PathVariable(\"id\")` 改为 `@PathVariable(\"orderId\")`，使其与 URL 中的路径变量名一致。\n\n现在使用 `edit_code` 生成修复补丁。",
+    "`edit_code` 生成了一个精准的补丁，将 `@PathVariable(\"id\")` 修正为 `@PathVariable(\"orderId\")`，与 URL 模板 `{orderId}` 一致。现在使用 `validate_patch` 校验补丁安全性。",
+    "补丁验证通过，无错误。现在生成 JUnit 5 单元测试来验证修复后的 `getOrder` 方法能正确绑定路径变量。",
+    "测试代码生成成功，覆盖了正向测试和边界测试场景。现在调用 `final_patch` 提交最终修复补丁和测试代码。"
+  ],
+  "agent_tool_calls": [
+    {
+      "tool": "infer_source",
+      "args": {
+        "raw_stack": "org.springframework.web.bind.MissingPathVariableException: Required URI template variable 'id' for method parameter type Long is not present\n\tat org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.handleMissingValue(PathVariableMethodArgumentResolver.java:101)\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.handleMissingValue(AbstractNamedValueMethodArgumentResolver.java:234)\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:125)\n\tat org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:224)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:178)\n\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)\n\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\n\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)\n\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)\n\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)\n\tat org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)\n\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\n\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)",
+        "parsed_stack": [
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver",
+            "method": "handleMissingValue",
+            "line_no": 101,
+            "source_file": "PathVariableMethodArgumentResolver.java",
+            "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.handleMissingValue(PathVariableMethodArgumentResolver.java:101)"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver",
+            "method": "handleMissingValue",
+            "line_no": 234,
+            "source_file": "AbstractNamedValueMethodArgumentResolver.java",
+            "raw_line": "\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.handleMissingValue(AbstractNamedValueMethodArgumentResolver.java:234)"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver",
+            "method": "resolveArgument",
+            "line_no": 125,
+            "source_file": "AbstractNamedValueMethodArgumentResolver.java",
+            "raw_line": "\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:125)"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.method.support.HandlerMethodArgumentResolverComposite",
+            "method": "resolveArgument",
+            "line_no": 122,
+            "source_file": "HandlerMethodArgumentResolverComposite.java",
+            "raw_line": "\tat org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122)"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.method.support.InvocableHandlerMethod",
+            "method": "getMethodArgumentValues",
+            "line_no": 224,
+            "source_file": "InvocableHandlerMethod.java",
+            "raw_line": "\tat org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:224)"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.method.support.InvocableHandlerMethod",
+            "method": "invokeForRequest",
+            "line_no": 178,
+            "source_file": "InvocableHandlerMethod.java",
+            "raw_line": "\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:178)"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod",
+            "method": "invokeAndHandle",
+            "line_no": 118,
+            "source_file": "ServletInvocableHandlerMethod.java",
+            "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter",
+            "method": "invokeHandlerMethod",
+            "line_no": 926,
+            "source_file": "RequestMappingHandlerAdapter.java",
+            "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter",
+            "method": "handleInternal",
+            "line_no": 831,
+            "source_file": "RequestMappingHandlerAdapter.java",
+            "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter",
+            "method": "handle",
+            "line_no": 87,
+            "source_file": "AbstractHandlerMethodAdapter.java",
+            "raw_line": "\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.servlet.DispatcherServlet",
+            "method": "doDispatch",
+            "line_no": 1089,
+            "source_file": "DispatcherServlet.java",
+            "raw_line": "\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.servlet.DispatcherServlet",
+            "method": "doService",
+            "line_no": 979,
+            "source_file": "DispatcherServlet.java",
+            "raw_line": "\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.servlet.FrameworkServlet",
+            "method": "processRequest",
+            "line_no": 1014,
+            "source_file": "FrameworkServlet.java",
+            "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.servlet.FrameworkServlet",
+            "method": "doGet",
+            "line_no": 903,
+            "source_file": "FrameworkServlet.java",
+            "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "jakarta.servlet.http.HttpServlet",
+            "method": "service",
+            "line_no": 564,
+            "source_file": "HttpServlet.java",
+            "raw_line": "\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.servlet.FrameworkServlet",
+            "method": "service",
+            "line_no": 885,
+            "source_file": "FrameworkServlet.java",
+            "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "jakarta.servlet.http.HttpServlet",
+            "method": "service",
+            "line_no": 658,
+            "source_file": "HttpServlet.java",
+            "raw_line": "\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+            "method": "internalDoFilter",
+            "line_no": 195,
+            "source_file": "ApplicationFilterChain.java",
+            "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+            "method": "doFilter",
+            "line_no": 140,
+            "source_file": "ApplicationFilterChain.java",
+            "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.apache.tomcat.websocket.server.WsFilter",
+            "method": "doFilter",
+            "line_no": 51,
+            "source_file": "WsFilter.java",
+            "raw_line": "\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)"
+          }
+        ]
+      },
+      "result": "{\"source_path\": \"D:\\\\workspace-repo\\\\mall-service\\\\src\\\\main\\\\java\\\\com\\\\fixflow\\\\mall\\\\api\\\\MallController.java\", \"repo_relative_path\": \"src\\\\main\\\\java\\\\com\\\\fixflow\\\\mall\\\\api\\\\MallController.java\", \"class_name\": \"MallController\", \"method\": \"\", \"line_no\": 16, \"context_snippet\": \"\\n@RestController\\n@RequestMapping(\\\"/api\\\")\\npublic class MallController {\\n\\n    private final UserService userService;\\n    private final OrderService orderService;\\n\", \"full_source\": \"package com.fixflow.mall.api;"
+    },
+    {
+      "tool": "edit_code",
+      "args": {
+        "raw_stack": "org.springframework.web.bind.MissingPathVariableException: Required URI template variable 'id' for method parameter type Long is not present\n\tat org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.handleMissingValue(PathVariableMethodArgumentResolver.java:101)\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.handleMissingValue(AbstractNamedValueMethodArgumentResolver.java:234)\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:125)\n\tat org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:224)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:178)\n\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)\n\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\n\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)\n\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)\n\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)\n\tat org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)\n\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\n\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)",
+        "source_info": {
+          "class_name": "MallController",
+          "method": "getOrder",
+          "line_no": 41,
+          "context_snippet": "\n@RestController\n@RequestMapping(\"/api\")\npublic class MallController {\n\n    private final UserService userService;\n    private final OrderService orderService;\n",
+          "full_source": "package com.fixflow.mall.api;\n\nimport com.fixflow.mall.api.dto.CreateOrderRequest;\nimport com.fixflow.mall.domain.MallOrder;\nimport com.fixflow.mall.service.OrderService;\nimport com.fixflow.mall.service.UserService;\nimport org.springframework.web.bind.annotation.GetMapping;\nimport org.springframework.web.bind.annotation.PathVariable;\nimport org.springframework.web.bind.annotation.PostMapping;\nimport org.springframework.web.bind.annotation.RequestBody;\nimport org.springframework.web.bind.annotation.RequestMapping;\nimport org.springframework.web.bind.annotation.RestController;\n\n@RestController\n@RequestMapping(\"/api\")\npublic class MallController {\n\n    private final UserService userService;\n    private final OrderService orderService;\n\n    public MallController(UserService userService, OrderService orderService) {\n        this.userService = userService;\n        this.orderService = orderService;\n    }\n\n    @GetMapping(\"/users/{userId}/nickname\")\n    public String nickname(@PathVariable Long userId) {\n        return userService.getNickname(userId);\n    }\n\n    @PostMapping(\"/orders\")\n    public MallOrder createOrder(@RequestBody CreateOrderRequest request) {\n        return orderService.createOrder(request);\n    }\n\n    @GetMapping(\"/orders/{orderId}\")\n    public MallOrder getOrder(@PathVariable(\"id\") Long orderId) {\n        // BUG-005: @PathVariable name mismatch, binding fails.\n        return orderService.findOrder(orderId);\n    }\n\n    @GetMapping(\"/orders/{orderId}/first-item\")\n    public Long firstItem(@PathVariable Long orderId) {\n        return orderService.firstItemId(orderId);\n    }\n}\n",
+          "repo_relative_path": "src/main/java/com/fixflow/mall/api/MallController.java",
+          "source_path": "D:\\workspace-repo\\mall-service\\src\\main\\java\\com\\fixflow\\mall\\api\\MallController.java"
+        }
+      },
+      "result": "{\"patch_text\": \"--- a/src/main/java/com/fixflow/mall/api/MallController.java\\n+++ b/src/main/java/com/fixflow/mall/api/MallController.java\\n@@ -36,4 +36,4 @@\\n     @GetMapping(\\\"/orders/{orderId}\\\")\\n-    public MallOrder getOrder(@PathVariable(\\\"id\\\") Long orderId) {\\n+    public MallOrder getOrder(@PathVariable(\\\"orderId\\\") Long orderId) {\\n         // BUG-005: @PathVariable name mismatch, binding fails.\\n         return orderService.findOrder(orderId);\", \"prompt\": \"## 任务\\n根据以下 Java 异常堆栈和源码，生成"
+    },
+    {
+      "tool": "validate_patch",
+      "args": {
+        "patch_text": "--- a/src/main/java/com/fixflow/mall/api/MallController.java\n+++ b/src/main/java/com/fixflow/mall/api/MallController.java\n@@ -36,4 +36,4 @@\n     @GetMapping(\"/orders/{orderId}\")\n-    public MallOrder getOrder(@PathVariable(\"id\") Long orderId) {\n+    public MallOrder getOrder(@PathVariable(\"orderId\") Long orderId) {\n         // BUG-005: @PathVariable name mismatch, binding fails.\n         return orderService.findOrder(orderId);",
+        "source_info": {
+          "class_name": "MallController",
+          "method": "getOrder",
+          "line_no": 41,
+          "context_snippet": "\n@RestController\n@RequestMapping(\"/api\")\npublic class MallController {\n\n    private final UserService userService;\n    private final OrderService orderService;\n",
+          "full_source": "package com.fixflow.mall.api;\n\nimport com.fixflow.mall.api.dto.CreateOrderRequest;\nimport com.fixflow.mall.domain.MallOrder;\nimport com.fixflow.mall.service.OrderService;\nimport com.fixflow.mall.service.UserService;\nimport org.springframework.web.bind.annotation.GetMapping;\nimport org.springframework.web.bind.annotation.PathVariable;\nimport org.springframework.web.bind.annotation.PostMapping;\nimport org.springframework.web.bind.annotation.RequestBody;\nimport org.springframework.web.bind.annotation.RequestMapping;\nimport org.springframework.web.bind.annotation.RestController;\n\n@RestController\n@RequestMapping(\"/api\")\npublic class MallController {\n\n    private final UserService userService;\n    private final OrderService orderService;\n\n    public MallController(UserService userService, OrderService orderService) {\n        this.userService = userService;\n        this.orderService = orderService;\n    }\n\n    @GetMapping(\"/users/{userId}/nickname\")\n    public String nickname(@PathVariable Long userId) {\n        return userService.getNickname(userId);\n    }\n\n    @PostMapping(\"/orders\")\n    public MallOrder createOrder(@RequestBody CreateOrderRequest request) {\n        return orderService.createOrder(request);\n    }\n\n    @GetMapping(\"/orders/{orderId}\")\n    public MallOrder getOrder(@PathVariable(\"id\") Long orderId) {\n        // BUG-005: @PathVariable name mismatch, binding fails.\n        return orderService.findOrder(orderId);\n    }\n\n    @GetMapping(\"/orders/{orderId}/first-item\")\n    public Long firstItem(@PathVariable Long orderId) {\n        return orderService.firstItemId(orderId);\n    }\n}\n",
+          "repo_relative_path": "src/main/java/com/fixflow/mall/api/MallController.java",
+          "source_path": "D:\\workspace-repo\\mall-service\\src\\main\\java\\com\\fixflow\\mall\\api\\MallController.java"
+        }
+      },
+      "result": "{\"valid\": true, \"errors\": [], \"changed_lines\": 2, \"files\": [\"src\\\\main\\\\java\\\\com\\\\fixflow\\\\mall\\\\api\\\\MallController.java\"]}"
+    },
+    {
+      "tool": "generate_test",
+      "args": {
+        "source_info": {
+          "class_name": "MallController",
+          "method": "getOrder",
+          "line_no": 41,
+          "context_snippet": "\n@RestController\n@RequestMapping(\"/api\")\npublic class MallController {\n\n    private final UserService userService;\n    private final OrderService orderService;\n",
+          "full_source": "package com.fixflow.mall.api;\n\nimport com.fixflow.mall.api.dto.CreateOrderRequest;\nimport com.fixflow.mall.domain.MallOrder;\nimport com.fixflow.mall.service.OrderService;\nimport com.fixflow.mall.service.UserService;\nimport org.springframework.web.bind.annotation.GetMapping;\nimport org.springframework.web.bind.annotation.PathVariable;\nimport org.springframework.web.bind.annotation.PostMapping;\nimport org.springframework.web.bind.annotation.RequestBody;\nimport org.springframework.web.bind.annotation.RequestMapping;\nimport org.springframework.web.bind.annotation.RestController;\n\n@RestController\n@RequestMapping(\"/api\")\npublic class MallController {\n\n    private final UserService userService;\n    private final OrderService orderService;\n\n    public MallController(UserService userService, OrderService orderService) {\n        this.userService = userService;\n        this.orderService = orderService;\n    }\n\n    @GetMapping(\"/users/{userId}/nickname\")\n    public String nickname(@PathVariable Long userId) {\n        return userService.getNickname(userId);\n    }\n\n    @PostMapping(\"/orders\")\n    public MallOrder createOrder(@RequestBody CreateOrderRequest request) {\n        return orderService.createOrder(request);\n    }\n\n    @GetMapping(\"/orders/{orderId}\")\n    public MallOrder getOrder(@PathVariable(\"orderId\") Long orderId) {\n        // BUG-005: @PathVariable name mismatch, binding fails.\n        return orderService.findOrder(orderId);\n    }\n\n    @GetMapping(\"/orders/{orderId}/first-item\")\n    public Long firstItem(@PathVariable Long orderId) {\n        return orderService.firstItemId(orderId);\n    }\n}\n",
+          "repo_relative_path": "src/main/java/com/fixflow/mall/api/MallController.java",
+          "source_path": "D:\\workspace-repo\\mall-service\\src\\main\\java\\com\\fixflow\\mall\\api\\MallController.java"
+        },
+        "patch_text": "--- a/src/main/java/com/fixflow/mall/api/MallController.java\n+++ b/src/main/java/com/fixflow/mall/api/MallController.java\n@@ -36,4 +36,4 @@\n     @GetMapping(\"/orders/{orderId}\")\n-    public MallOrder getOrder(@PathVariable(\"id\") Long orderId) {\n+    public MallOrder getOrder(@PathVariable(\"orderId\") Long orderId) {\n         // BUG-005: @PathVariable name mismatch, binding fails.\n         return orderService.findOrder(orderId);",
+        "raw_stack": "org.springframework.web.bind.MissingPathVariableException: Required URI template variable 'id' for method parameter type Long is not present\n\tat org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.handleMissingValue(PathVariableMethodArgumentResolver.java:101)\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.handleMissingValue(AbstractNamedValueMethodArgumentResolver.java:234)\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:125)\n\tat org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:224)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:178)\n\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)\n\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\n\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)\n\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)\n\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)\n\tat org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)\n\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)\n\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)"
+      },
+      "result": "{\"test_code\": \"package com.fixflow.mall.api;\\n\\nimport com.fixflow.mall.domain.MallOrder;\\nimport com.fixflow.mall.service.OrderService;\\nimport com.fixflow.mall.service.UserService;\\nimport org.junit.jupiter.api.BeforeEach;\\nimport org.junit.jupiter.api.DisplayName;\\nimport org.junit.jupiter.api.Test;\\nimport org.junit.jupiter.api.extension.ExtendWith;\\nimport org.mockito.InjectMocks;\\nimport org.mockito.Mock;\\nimport org.mockito.junit.jupiter.MockitoExtension;\\n\\nimport static org.junit.jupite"
+    },
+    {
+      "tool": "final_patch",
+      "args": {
+        "patch_text": "--- a/src/main/java/com/fixflow/mall/api/MallController.java\n+++ b/src/main/java/com/fixflow/mall/api/MallController.java\n@@ -36,4 +36,4 @@\n     @GetMapping(\"/orders/{orderId}\")\n-    public MallOrder getOrder(@PathVariable(\"id\") Long orderId) {\n+    public MallOrder getOrder(@PathVariable(\"orderId\") Long orderId) {\n         // BUG-005: @PathVariable name mismatch, binding fails.\n         return orderService.findOrder(orderId);",
+        "source_info": {
+          "class_name": "MallController",
+          "method": "getOrder",
+          "line_no": 41,
+          "context_snippet": "\n@RestController\n@RequestMapping(\"/api\")\npublic class MallController {\n\n    private final UserService userService;\n    private final OrderService orderService;\n",
+          "full_source": "package com.fixflow.mall.api;\n\nimport com.fixflow.mall.api.dto.CreateOrderRequest;\nimport com.fixflow.mall.domain.MallOrder;\nimport com.fixflow.mall.service.OrderService;\nimport com.fixflow.mall.service.UserService;\nimport org.springframework.web.bind.annotation.GetMapping;\nimport org.springframework.web.bind.annotation.PathVariable;\nimport org.springframework.web.bind.annotation.PostMapping;\nimport org.springframework.web.bind.annotation.RequestBody;\nimport org.springframework.web.bind.annotation.RequestMapping;\nimport org.springframework.web.bind.annotation.RestController;\n\n@RestController\n@RequestMapping(\"/api\")\npublic class MallController {\n\n    private final UserService userService;\n    private final OrderService orderService;\n\n    public MallController(UserService userService, OrderService orderService) {\n        this.userService = userService;\n        this.orderService = orderService;\n    }\n\n    @GetMapping(\"/users/{userId}/nickname\")\n    public String nickname(@PathVariable Long userId) {\n        return userService.getNickname(userId);\n    }\n\n    @PostMapping(\"/orders\")\n    public MallOrder createOrder(@RequestBody CreateOrderRequest request) {\n        return orderService.createOrder(request);\n    }\n\n    @GetMapping(\"/orders/{orderId}\")\n    public MallOrder getOrder(@PathVariable(\"orderId\") Long orderId) {\n        // BUG-005: @PathVariable name mismatch, binding fails.\n        return orderService.findOrder(orderId);\n    }\n\n    @GetMapping(\"/orders/{orderId}/first-item\")\n    public Long firstItem(@PathVariable Long orderId) {\n        return orderService.firstItemId(orderId);\n    }\n}\n",
+          "repo_relative_path": "src/main/java/com/fixflow/mall/api/MallController.java",
+          "source_path": "D:\\workspace-repo\\mall-service\\src\\main\\java\\com\\fixflow\\mall\\api\\MallController.java"
+        },
+        "test_code": "package com.fixflow.mall.api;\n\nimport com.fixflow.mall.domain.MallOrder;\nimport com.fixflow.mall.service.OrderService;\nimport com.fixflow.mall.service.UserService;\nimport org.junit.jupiter.api.BeforeEach;\nimport org.junit.jupiter.api.DisplayName;\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.extension.ExtendWith;\nimport org.mockito.InjectMocks;\nimport org.mockito.Mock;\nimport org.mockito.junit.jupiter.MockitoExtension;\n\nimport static org.junit.jupiter.api.Assertions.assertEquals;\nimport static org.junit.jupiter.api.Assertions.assertNull;\nimport static org.mockito.Mockito.when;\n\n@ExtendWith(MockitoExtension.class)\n@DisplayName(\"MallController 单元测试\")\nclass MallControllerTest {\n\n    @Mock\n    private UserService userService;\n\n    @Mock\n    private OrderService orderService;\n\n    @InjectMocks\n    private MallController mallController;\n\n    private MallOrder testOrder;\n\n    @BeforeEach\n    void setUp() {\n        testOrder = new MallOrder();\n        testOrder.setId(100L);\n        testOrder.setUserId(1L);\n    }\n\n    @Test\n    @DisplayName(\"正向测试: 通过正确的路径变量名查询订单应返回订单对象\")\n    void getOrder_ValidOrderId_ShouldReturnOrder() {\n        // Given\n        Long validOrderId = 100L;\n        when(orderService.findOrder(validOrderId)).thenReturn(testOrder);\n\n        // When\n        MallOrder result = mallController.getOrder(validOrderId);\n\n        // Then\n        assertEquals(testOrder, result);\n        assertEquals(100L, result.getId());\n    }\n\n    @Test\n    @DisplayName(\"边界测试: 查询不存在的订单ID应返回null (修复后不再抛出MissingPathVariableException)\")\n    void getOrder_NonExistingOrderId_ShouldReturnNull() {\n        // Given\n        Long nonExistingOrderId = 999L;\n        when(orderService.findOrder(nonExistingOrderId)).thenReturn(null);\n\n        // When\n        MallOrder result = mallController.getOrder(nonExistingOrderId);\n\n        // Then\n        assertNull(result);\n    }\n\n    @Test\n    @DisplayName(\"边界测试: 查询边界订单ID (最小值) 应正常处理\")\n    void getOrder_MinOrderId_ShouldWork() {\n        // Given\n        Long minOrderId = 1L;\n        when(orderService.findOrder(minOrderId)).thenReturn(testOrder);\n\n        // When\n        MallOrder result = mallController.getOrder(minOrderId);\n\n        // Then\n        assertEquals(testOrder, result);\n    }\n\n    @Test\n    @DisplayName(\"边界测试: 查询边界订单ID (最大值) 应正常处理\")\n    void getOrder_MaxOrderId_ShouldWork() {\n        // Given\n        Long maxOrderId = Long.MAX_VALUE;\n        when(orderService.findOrder(maxOrderId)).thenReturn(testOrder);\n\n        // When\n        MallOrder result = mallController.getOrder(maxOrderId);\n\n        // Then\n        assertEquals(testOrder, result);\n    }\n}"
+      },
+      "result": "success"
+    }
+  ],
+  "detection_method": "agent"
+}
