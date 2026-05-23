@@ -86,20 +86,24 @@ class RepoGraph:
         logger.info(f"图构建完成: {stats}")
 
     def _find_java_files(self, repo_path: Path) -> List[Path]:
-        """查找所有Java源文件"""
+        """查找所有Java源文件，支持多模块Maven/Gradle项目"""
         java_files = []
 
-        # 优先搜索src/main/java和src/test/java
-        for src_dir in ['src/main/java', 'src/test/java']:
-            src_path = repo_path / src_dir
-            if src_path.exists():
-                java_files.extend(src_path.rglob('*.java'))
+        # 搜索根目录和所有子模块的 src/main/java 和 src/test/java
+        for src_dir in repo_path.rglob('src/main/java'):
+            if src_dir.is_dir():
+                java_files.extend(src_dir.rglob('*.java'))
+        for src_dir in repo_path.rglob('src/test/java'):
+            if src_dir.is_dir():
+                java_files.extend(src_dir.rglob('*.java'))
 
-        # 如果没有找到，搜索整个仓库
+        # 如果没有找到，搜索整个仓库（排除构建产物）
         if not java_files:
             java_files = list(repo_path.rglob('*.java'))
-            # 排除target目录和依赖目录
-            java_files = [f for f in java_files if 'target' not in str(f) and '.m2' not in str(f)]
+
+        # 排除target目录和依赖目录
+        java_files = [f for f in java_files
+                      if 'target' not in f.parts and '.m2' not in f.parts]
 
         return java_files
 

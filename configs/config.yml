@@ -1,7 +1,9 @@
 # Demo config – fill your local paths
 # Note: Use forward slashes or double backslashes in YAML paths
-logs_path: "D:/workspace-repo/mall-service/logs/app.log"          # 你的 web 服务日志文件（请修改为真实路径）
-repo_path: "D:/workspace-repo/mall-service"  # 你的 Maven 项目根目录（请修改为真实路径）
+# logs_path: "D:/workspace-repo/mall-service/logs/app.log"          # 你的 web 服务日志文件（请修改为真实路径）
+# repo_path: "D:/workspace-repo/mall-service"  # 你的 Maven 项目根目录（请修改为真实路径）
+logs_path: "D:\\workspace-repo\\sky-take-out\\sky.log"
+repo_path: "D:\\workspace-repo\\sky-take-out"
 java_build: "maven"
 branch_prefix: "fix/"
 llm:
@@ -45,7 +47,8 @@ command_whitelist:
 gitee:
   enabled: true
   owner: "zhao-haoyuan4353"                     # auto-detected from git remote if empty
-  repo: "mall-service"                      # auto-detected from git remote if empty
+  #repo: "mall-service" 
+  repo: "sky-take-out"                     
   access_token_env: "GITEE_ACCESS_TOKEN"  # Set this environment variable to your Gitee personal access token
   api_base_url: "https://gitee.com/api/v5"
   target_branch: "master"

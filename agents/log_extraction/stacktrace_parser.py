@@ -3,7 +3,8 @@
 import re
 
 # Pattern for stack frame lines to skip when searching for exception start
-FRAME_LINE_RE = re.compile(r'^\s*at\s+[\w.$<>/]+\([^)]*\)\s*$')
+# Matches: \tat com.Foo.bar(Foo.java:42) with optional ~[jar:version] suffix
+FRAME_LINE_RE = re.compile(r'^\s*at\s+[\w.$<>/]+\([^)]*\)(\s+~\[[^\]]*\])?\s*$')
 
 
 def extract_latest_exception_block(text):
@@ -57,7 +58,8 @@ def parse_stacktrace(text):
     frames = []
     exception_type = ''
     exception_re = re.compile(r'(?P<type>[A-Za-z_][\w.$]*(?:Exception|Error))(?:[:\s]|$)')
-    frame_re = re.compile(r'^(?:at\s+)?(?P<class>[\w.$<>]+)\.(?P<method>[\w$<>]+)\((?P<source>[^:()]+)(?::(?P<line>\d+))?\)$')
+    # Matches: at com.Foo.bar(Foo.java:42) with optional ~[jar:version] suffix
+    frame_re = re.compile(r'^(?:at\s+)?(?P<class>[\w.$<>]+)\.(?P<method>[\w$<>]+)\((?P<source>[^:()]+)(?::(?P<line>\d+))?\)(\s+~\[[^\]]*\])?$')
 
     for raw_line in text.splitlines():
         line = raw_line.strip()

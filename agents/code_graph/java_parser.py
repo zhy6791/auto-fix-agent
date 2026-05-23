@@ -218,13 +218,26 @@ class JavaParser:
                 # 提取catch子句
                 if stmt.catches:
                     for catch_clause in stmt.catches:
-                        for catch_type in catch_clause.types:
-                            handlers.append({
-                                'class': class_name,
-                                'method': method_name,
-                                'exception_type': catch_type.name,
-                                'handler_line': catch_clause.position.line if catch_clause.position else 0
-                            })
+                        # javalang不同版本CatchClause结构不同
+                        catch_types = getattr(catch_clause, 'types', None)
+                        if catch_types:
+                            for catch_type in catch_types:
+                                handlers.append({
+                                    'class': class_name,
+                                    'method': method_name,
+                                    'exception_type': catch_type.name,
+                                    'handler_line': catch_clause.position.line if catch_clause.position else 0
+                                })
+                        else:
+                            # 单catch: parameter.type
+                            param = getattr(catch_clause, 'parameter', None)
+                            if param and hasattr(param, 'type') and param.type:
+                                handlers.append({
+                                    'class': class_name,
+                                    'method': method_name,
+                                    'exception_type': self._get_type_name(param.type),
+                                    'handler_line': catch_clause.position.line if catch_clause.position else 0
+                                })
 
             # 递归查找嵌套语句
             if hasattr(stmt, 'block'):

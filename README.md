@@ -5,7 +5,8 @@
 **核心特性：**
 - 📋 自动提取日志中的异常堆栈信息
 - 🧠 **Agent 决策循环**：LLM 自主调用 9 个工具（定位、搜索、阅读、推断、编辑、校验、测试生成）完成定位与修复，循环轮次可配置
-- 🔍 智能定位 Java 源码文件和问题行号（堆栈帧定位 + LLM 推断，由 Agent 自主选择）
+- 🔍 智能定位 Java 源码文件和问题行号（堆栈帧定位 + **OrcaLoca 代码图谱搜索** + LLM 推断，由 Agent 自主选择）
+- 🕸️ **OrcaLoca 代码图谱**：基于 AST 解析构建知识图谱 + 倒排索引，支持按异常类型、注解、调用链等多策略搜索定位
 - 🤖 使用 OpenAI 兼容 LLM 生成最小化补丁（含指数退避重试）
 - 🔀 在本地仓库创建修复分支并提交
 - 🔨 自动编译检查 + 单元测试（`mvn compile` / `mvn test`）
@@ -30,11 +31,18 @@ auto-fix-agent/
 │   ├── log_extraction/              # 日志提取 + 源码定位
 │   │   ├── stacktrace_parser.py     # Java 堆栈解析（正则提取帧信息）
 │   │   ├── source_locator.py        # 源码定位（按类名/路径查找 .java 文件）
-│   │   └── exception_inference.py   # LLM 推断定位（堆栈全为框架代码时使用）
+│   │   ├── exception_inference.py   # LLM 推断定位（堆栈全为框架代码时使用）
+│   │   ├── search_manager.py        # OrcaLoca 结构化搜索（6种策略：异常类型/类名/方法名/注解/import/堆栈上下文）
+│   │   └── code_scorer.py           # OrcaLoca LLM 相关性评分（批量候选评分）
+│   │
+│   ├── code_graph/                  # OrcaLoca 代码图谱（知识图谱 + 倒排索引）
+│   │   ├── java_parser.py           # Java AST 解析适配器（javalang，提取类/方法/字段/注解/异常）
+│   │   ├── repo_graph.py            # 仓库知识图谱（networkx 有向图：节点=类/方法/字段，边=调用/继承/导入）
+│   │   └── inverted_index.py        # 倒排索引（异常类型→类/方法，注解→类，类名→文件路径）
 │   │
 │   ├── agent_loop/                  # Agent 决策循环
 │   │   ├── react_agent.py           # ReAct 决策循环引擎
-│   │   ├── tool_registry.py         # 工具注册表：8 个工具的定义与分发
+│   │   ├── tool_registry.py         # 工具注册表：9 个工具的定义与分发
 │   │   └── prompt_builder.py        # LLM Prompt 构建（补丁生成、重试）
 │   │
 │   ├── post_processing/             # 后处理：补丁校验 + 测试生成
@@ -132,7 +140,7 @@ Agent 的主入口是 `main.py`：先读取 `configs/config.yml`，校验 `logs_
 | 工具 | 说明 |
 |------|------|
 | `locate_from_stack` | 从堆栈帧定位源文件，返回路径、行号、上下文片段、完整源码 |
-| `infer_source` | 当堆栈全是框架代码时，用 LLM 推断应用层源码位置 |
+| `infer_source` | 当堆栈全是框架代码时，优先用 OrcaLoca 代码图谱搜索定位，失败则回退到 LLM 推断 |
 | `search_code` | 按类名或文件路径在仓库中查找 Java 源文件 |
 | `read_code` | 读取仓库内任意文件内容 |
 | `edit_code` | 调用 LLM 生成最小化 unified diff 补丁（不直接写文件） |
@@ -242,7 +250,7 @@ Agent 循环退出后，`agents/patch_validator.py` 会在应用前做多层检�
 │  │     ├─ locate_from_stack → 返回源文件路径/行号/上下文    │ │
 │  │     ├─ search_code       → 按类名查找 Java 文件         │ │
 │  │     ├─ read_code         → 读取文件内容                 │ │
-│  │     ├─ infer_source      → LLM 推断应用层源码位置       │ │
+│  │     ├─ infer_source      → 代码图谱搜索 + LLM 推断回退  │ │
 │  │     ├─ edit_code         → LLM 生成 unified diff 补丁  │ │
 │  │     ├─ validate_patch    → 校验格式/路径/结构/粒度      │ │
 │  │     ├─ generate_test     → 生成 JUnit 5 单元测试       │ │
@@ -329,7 +337,11 @@ main.py
         │           ├── ToolRegistry.execute("read_code")
         │           │     └── file_io.read_file()
         │           ├── ToolRegistry.execute("infer_source")
-        │           │     └── exception_inference.infer_from_exception_message()
+        │           │     ├── _try_graph_search()  [OrcaLoca 优先]
+        │           │     │     ├── RepoGraph.build() → 构建知识图谱
+        │           │     │     ├── SearchManager.search_by_exception_type()
+        │           │     │     └── SearchManager.search_by_annotation()
+        │           │     └── exception_inference.infer_from_exception_message()  [LLM 回退]
         │           ├── ToolRegistry.execute("edit_code")
         │           │     ├── prompt_builder.build_prompt()
         │           │     └── llm_client.generate_patch()
@@ -375,8 +387,28 @@ main.py
 - [x] ~~自动生成 JUnit 5 单元测试验证修复~~ — 已实现
 - [ ] 支持 Gradle 和 TestNG
 - [ ] 修复质量评分
+- [x] ~~OrcaLoca 代码图谱集成（AST 知识图谱 + 倒排索引 + 多策略搜索定位）~~ — 已实现
 - [ ] 支持更多框架异常（Quarkus、Micronaut、etc）
 - [ ] 历史修复记录和学习反馈
+
+## 配置说明
+
+### OrcaLoca 代码图谱配置（`configs/config.yml`）
+
+```yaml
+orcaloca:
+  enabled: true                # 启用代码图谱搜索（infer_source 优先使用）
+  build_timeout: 60            # 图构建超时（秒）
+  max_files: 10000             # 最大扫描文件数
+```
+
+当 `enabled: true` 时，`infer_source` 工具会优先通过 OrcaLoca 代码图谱搜索定位源码：
+1. 构建知识图谱（AST 解析 → networkx 有向图）
+2. 按异常类型在倒排索引中查找相关类/方法
+3. 回退到按 Spring 注解（`@RestController`、`@Controller` 等）搜索
+4. 以上均失败时，回退到 LLM 推断
+
+---
 
 ## 安全性与防护考量
 

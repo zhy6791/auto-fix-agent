@@ -30,6 +30,13 @@ def find_source_location(repo_path, frame, file_io, repo_graph=None):
         os.path.join(repo_root, rel_candidate),
     ]
 
+    # 多模块项目：在子模块的 src 目录中搜索
+    for src_dir in ['src/main/java', 'src/test/java']:
+        for module_dir in os.listdir(repo_root):
+            module_src = os.path.join(repo_root, module_dir, src_dir)
+            if os.path.isdir(module_src):
+                candidates.append(os.path.join(module_src, rel_candidate))
+
     source_path = None
     for candidate in candidates:
         if os.path.exists(candidate):
@@ -209,7 +216,7 @@ def _is_framework_class(class_name):
 
 
 def locate_file_by_class_or_path(repo_path, class_name, file_path):
-    """Locate file by class name or file path."""
+    """Locate file by class name or file path. Supports multi-module projects."""
     repo_root = os.path.abspath(repo_path)
 
     # Try file path first
@@ -221,6 +228,7 @@ def locate_file_by_class_or_path(repo_path, class_name, file_path):
     # Try class name
     if class_name:
         rel_candidate = class_name.replace('.', os.sep) + '.java'
+        # 根目录 src/main/java 和 src/test/java
         candidates = [
             os.path.join(repo_root, 'src', 'main', 'java', rel_candidate),
             os.path.join(repo_root, 'src', 'test', 'java', rel_candidate),
@@ -228,6 +236,21 @@ def locate_file_by_class_or_path(repo_path, class_name, file_path):
         for cand in candidates:
             if os.path.exists(cand):
                 return cand
+
+        # 多模块项目：在子模块的 src/main/java 和 src/test/java 中搜索
+        for src_dir in ['src/main/java', 'src/test/java']:
+            for module_dir in os.listdir(repo_root):
+                module_src = os.path.join(repo_root, module_dir, src_dir)
+                if os.path.isdir(module_src):
+                    candidate = os.path.join(module_src, rel_candidate)
+                    if os.path.exists(candidate):
+                        return candidate
+
+        # 最终回退：按类名简单搜索
+        simple_name = class_name.split('.')[-1] + '.java'
+        for root, _, files in os.walk(repo_root):
+            if simple_name in files:
+                return os.path.join(root, simple_name)
 
     return None
 

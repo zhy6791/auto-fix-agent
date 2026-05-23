@@ -295,7 +295,7 @@ def _infer_source(repo_path, config, llm_client, file_io_mod, kw):
     parsed_stack = kw.get('parsed_stack', [])
 
     # 优先使用代码图谱搜索（比LLM推断更可靠）
-    graph_result = _try_graph_search(repo_path, config, parsed_stack, file_io_mod)
+    graph_result = _try_graph_search(repo_path, config, parsed_stack, file_io_mod, raw_stack=raw_stack)
     if graph_result:
         logger.info('infer_source: 代码图谱搜索成功定位到 %s', graph_result.get('class_name', ''))
         return graph_result
@@ -310,7 +310,7 @@ def _infer_source(repo_path, config, llm_client, file_io_mod, kw):
     return {'error': 'Could not infer source from exception message'}
 
 
-def _try_graph_search(repo_path, config, parsed_stack, file_io_mod):
+def _try_graph_search(repo_path, config, parsed_stack, file_io_mod, raw_stack=''):
     """使用代码图谱搜索定位源码，成功返回source_info，失败返回None"""
     try:
         orcaloca_config = config.get('orcaloca', {})
@@ -332,9 +332,14 @@ def _try_graph_search(repo_path, config, parsed_stack, file_io_mod):
         exception_type = ''
         if parsed_stack:
             exception_type = parsed_stack[0].get('exception_type', '')
-            # 取简单类名
             if '.' in exception_type:
                 exception_type = exception_type.split('.')[-1]
+
+        # 策略0: MissingPathVariableException 专项 - 从异常消息中提取变量名，搜索不匹配的方法
+        if exception_type == 'MissingPathVariableException':
+            result = _search_path_variable_mismatch(repo_path, search_manager, graph, raw_stack, file_io_mod)
+            if result:
+                return result
 
         # 策略1: exception_type搜索
         if exception_type:
@@ -352,6 +357,58 @@ def _try_graph_search(repo_path, config, parsed_stack, file_io_mod):
     except Exception as e:
         logger.debug('图搜索回退失败: %s', e)
         return None
+
+
+import re
+
+_PATH_VAR_RE = re.compile(r"Required URI template variable '(\w+)'")
+_PATH_TEMPLATE_RE = re.compile(r'\{(\w+)\}')
+_PATHVAR_ANNOTATION_RE = re.compile(r'@PathVariable\s*(?:\(\s*(?:value\s*=\s*)?["\']?(\w+)["\']?\s*\))?\s+(?:\w+\s+)?(\w+)')
+
+
+def _search_path_variable_mismatch(repo_path, search_manager, graph, raw_stack, file_io_mod):
+    """针对 MissingPathVariableException：从异常消息提取变量名，搜索 URL 模板与 @PathVariable 不匹配的方法"""
+    m = _PATH_VAR_RE.search(raw_stack or '')
+    if not m:
+        return None
+    missing_var = m.group(1)
+    logger.info('MissingPathVariable: 搜索缺失变量 "%s"', missing_var)
+
+    # 获取所有 Controller 类
+    controllers = search_manager.search_by_annotation('@RestController')
+    controllers += search_manager.search_by_annotation('@Controller')
+
+    for ctrl in controllers:
+        file_path = ctrl.file_path
+        if not os.path.isabs(file_path):
+            file_path = os.path.join(repo_path, file_path)
+        try:
+            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                source = f.read()
+        except OSError:
+            continue
+
+        # 检查该文件中是否有 URL 模板含 missing_var 但 @PathVariable 参数名不匹配的情况
+        lines = source.splitlines()
+        for i, line in enumerate(lines):
+            # 找 @Mapping 系列注解中的 URL 模板
+            if any(ann in line for ann in ['@GetMapping', '@PostMapping', '@PutMapping', '@DeleteMapping', '@RequestMapping']):
+                template_vars = set(_PATH_TEMPLATE_RE.findall(line))
+                # 往后找方法签名行（通常在 1-3 行内）
+                for j in range(i, min(i + 4, len(lines))):
+                    method_line = lines[j]
+                    # 提取所有 @PathVariable 的绑定名和参数名
+                    for pm in _PATHVAR_ANNOTATION_RE.finditer(method_line):
+                        bound_name = pm.group(1)  # @PathVariable("xxx") 中的 xxx
+                        param_name = pm.group(2)  # 参数变量名
+                        # 如果没有显式绑定名，Spring 用参数名
+                        effective_name = bound_name if bound_name else param_name
+                        if effective_name not in template_vars:
+                            logger.info('发现路径变量不匹配: %s (参数名: %s) 不在模板 %s 中，文件: %s',
+                                        effective_name, param_name, template_vars, ctrl.class_name)
+                            return _search_result_to_source_info(ctrl, repo_path, file_io_mod)
+
+    return None
 
 
 def _search_result_to_source_info(search_result, repo_path, file_io_mod):

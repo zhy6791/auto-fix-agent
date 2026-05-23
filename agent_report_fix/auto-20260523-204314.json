@@ -1,0 +1,558 @@
+{
+  "status": "completed",
+  "dry_run": false,
+  "raw_stack": "org.springframework.web.bind.MissingPathVariableException: Required URI template variable 'status' for method parameter type Integer is not present\n\tat org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.handleMissingValue(PathVariableMethodArgumentResolver.java:101) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.handleMissingValue(AbstractNamedValueMethodArgumentResolver.java:226) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:114) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:179) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:146) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1011) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.11.jar:6.0]\n\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.11.jar:6.0]\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:166) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:894) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]",
+  "parsed_stack": [
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver",
+      "method": "handleMissingValue",
+      "line_no": 101,
+      "source_file": "PathVariableMethodArgumentResolver.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.handleMissingValue(PathVariableMethodArgumentResolver.java:101) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver",
+      "method": "handleMissingValue",
+      "line_no": 226,
+      "source_file": "AbstractNamedValueMethodArgumentResolver.java",
+      "raw_line": "\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.handleMissingValue(AbstractNamedValueMethodArgumentResolver.java:226) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver",
+      "method": "resolveArgument",
+      "line_no": 114,
+      "source_file": "AbstractNamedValueMethodArgumentResolver.java",
+      "raw_line": "\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:114) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.method.support.HandlerMethodArgumentResolverComposite",
+      "method": "resolveArgument",
+      "line_no": 122,
+      "source_file": "HandlerMethodArgumentResolverComposite.java",
+      "raw_line": "\tat org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.method.support.InvocableHandlerMethod",
+      "method": "getMethodArgumentValues",
+      "line_no": 179,
+      "source_file": "InvocableHandlerMethod.java",
+      "raw_line": "\tat org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:179) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.method.support.InvocableHandlerMethod",
+      "method": "invokeForRequest",
+      "line_no": 146,
+      "source_file": "InvocableHandlerMethod.java",
+      "raw_line": "\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:146) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod",
+      "method": "invokeAndHandle",
+      "line_no": 118,
+      "source_file": "ServletInvocableHandlerMethod.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter",
+      "method": "invokeHandlerMethod",
+      "line_no": 884,
+      "source_file": "RequestMappingHandlerAdapter.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter",
+      "method": "handleInternal",
+      "line_no": 797,
+      "source_file": "RequestMappingHandlerAdapter.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter",
+      "method": "handle",
+      "line_no": 87,
+      "source_file": "AbstractHandlerMethodAdapter.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.DispatcherServlet",
+      "method": "doDispatch",
+      "line_no": 1081,
+      "source_file": "DispatcherServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.DispatcherServlet",
+      "method": "doService",
+      "line_no": 974,
+      "source_file": "DispatcherServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.FrameworkServlet",
+      "method": "processRequest",
+      "line_no": 1011,
+      "source_file": "FrameworkServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1011) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.FrameworkServlet",
+      "method": "doPost",
+      "line_no": 914,
+      "source_file": "FrameworkServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "jakarta.servlet.http.HttpServlet",
+      "method": "service",
+      "line_no": 590,
+      "source_file": "HttpServlet.java",
+      "raw_line": "\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.11.jar:6.0]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.FrameworkServlet",
+      "method": "service",
+      "line_no": 885,
+      "source_file": "FrameworkServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "jakarta.servlet.http.HttpServlet",
+      "method": "service",
+      "line_no": 658,
+      "source_file": "HttpServlet.java",
+      "raw_line": "\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.11.jar:6.0]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 205,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 149,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.tomcat.websocket.server.WsFilter",
+      "method": "doFilter",
+      "line_no": 51,
+      "source_file": "WsFilter.java",
+      "raw_line": "\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 174,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 149,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.filter.CharacterEncodingFilter",
+      "method": "doFilterInternal",
+      "line_no": 201,
+      "source_file": "CharacterEncodingFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.filter.OncePerRequestFilter",
+      "method": "doFilter",
+      "line_no": 116,
+      "source_file": "OncePerRequestFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 174,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 149,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.StandardWrapperValve",
+      "method": "invoke",
+      "line_no": 166,
+      "source_file": "StandardWrapperValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:166) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.StandardContextValve",
+      "method": "invoke",
+      "line_no": 90,
+      "source_file": "StandardContextValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.authenticator.AuthenticatorBase",
+      "method": "invoke",
+      "line_no": 482,
+      "source_file": "AuthenticatorBase.java",
+      "raw_line": "\tat org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.StandardHostValve",
+      "method": "invoke",
+      "line_no": 115,
+      "source_file": "StandardHostValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.valves.ErrorReportValve",
+      "method": "invoke",
+      "line_no": 93,
+      "source_file": "ErrorReportValve.java",
+      "raw_line": "\tat org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.StandardEngineValve",
+      "method": "invoke",
+      "line_no": 74,
+      "source_file": "StandardEngineValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.connector.CoyoteAdapter",
+      "method": "service",
+      "line_no": 341,
+      "source_file": "CoyoteAdapter.java",
+      "raw_line": "\tat org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.coyote.http11.Http11Processor",
+      "method": "service",
+      "line_no": 391,
+      "source_file": "Http11Processor.java",
+      "raw_line": "\tat org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.coyote.AbstractProcessorLight",
+      "method": "process",
+      "line_no": 63,
+      "source_file": "AbstractProcessorLight.java",
+      "raw_line": "\tat org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.coyote.AbstractProtocol$ConnectionHandler",
+      "method": "process",
+      "line_no": 894,
+      "source_file": "AbstractProtocol.java",
+      "raw_line": "\tat org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:894) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.tomcat.util.net.NioEndpoint$SocketProcessor",
+      "method": "doRun",
+      "line_no": 1740,
+      "source_file": "NioEndpoint.java",
+      "raw_line": "\tat org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.tomcat.util.net.SocketProcessorBase",
+      "method": "run",
+      "line_no": 52,
+      "source_file": "SocketProcessorBase.java",
+      "raw_line": "\tat org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.tomcat.util.threads.ThreadPoolExecutor",
+      "method": "runWorker",
+      "line_no": 1191,
+      "source_file": "ThreadPoolExecutor.java",
+      "raw_line": "\tat org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker",
+      "method": "run",
+      "line_no": 659,
+      "source_file": "ThreadPoolExecutor.java",
+      "raw_line": "\tat org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.tomcat.util.threads.TaskThread$WrappingRunnable",
+      "method": "run",
+      "line_no": 61,
+      "source_file": "TaskThread.java",
+      "raw_line": "\tat org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    }
+  ],
+  "located_files": [
+    {
+      "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\CategoryController.java",
+      "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\CategoryController.java",
+      "class_name": "CategoryController",
+      "method": "startOrStop",
+      "line_no": 88,
+      "context_snippet": "    @PostMapping(\"/status/{status}\")\n    public Result<String> startOrStop(@PathVariable(\"status\") Integer status, @RequestParam Long id) {\n        categoryService.startOrStop(status, id);\n        return Result.success();\n    }",
+      "full_source": "package com.sky.controller.admin;\n\nimport com.sky.dto.CategoryDTO;\nimport com.sky.dto.CategoryPageQueryDTO;\nimport com.sky.entity.Category;\nimport com.sky.result.PageResult;\nimport com.sky.result.Result;\nimport com.sky.service.CategoryService;\nimport lombok.extern.slf4j.Slf4j;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.web.bind.annotation.*;\nimport java.util.List;\n\n/**\n * 分类管理\n */\n@RestController\n@RequestMapping(\"/admin/category\")\n@Slf4j\npublic class CategoryController {\n\n    @Autowired\n    private CategoryService categoryService;\n\n    /**\n     * 新增分类\n     * \n     * @param categoryDTO\n     * @return\n     */\n    @PostMapping\n    public Result<String> save(@RequestBody CategoryDTO categoryDTO) {\n        log.info(\"新增分类：{}\", categoryDTO);\n        categoryService.save(categoryDTO);\n        return Result.success();\n    }\n\n    /**\n     * 分类分页查询\n     * \n     * @param categoryPageQueryDTO\n     * @return\n     */\n    @GetMapping(\"/page\")\n    public Result<PageResult<Category>> page(CategoryPageQueryDTO categoryPageQueryDTO) {\n        log.info(\"分页查询：{}\", categoryPageQueryDTO);\n        PageResult<Category> pageResult = categoryService.pageQuery(categoryPageQueryDTO);\n        return Result.success(pageResult);\n    }\n\n    /**\n     * 删除分类\n     * \n     * @param id\n     * @return\n     */\n    @DeleteMapping\n    public Result<String> deleteById(Long id) {\n        log.info(\"删除分类：{}\", id);\n        categoryService.deleteById(id);\n        return Result.success();\n    }\n\n    /**\n     * 修改分类\n     * \n     * @param categoryDTO\n     * @return\n     */\n    @PutMapping\n    public Result<String> update(@RequestBody CategoryDTO categoryDTO) {\n        categoryService.update(categoryDTO);\n        return Result.success();\n    }\n\n    /**\n     * 启用、禁用分类\n     * \n     * @param status\n     * @param id\n     * @return\n     */\n    @PostMapping(\"/status/{status}\")\n    public Result<String> startOrStop(@PathVariable(\"status\") Integer status, @RequestParam Long id) {\n        categoryService.startOrStop(status, id);\n        return Result.success();\n    }\n\n    /**\n     * 根据类型查询分类\n     * \n     * @param type\n     * @return\n     */\n    @GetMapping(\"/list\")\n    public Result<List<Category>> list(Integer type) {\n        List<Category> list = categoryService.list(type);\n        return Result.success(list);\n    }\n}",
+      "detection_method": "graph_search"
+    }
+  ],
+  "prompt": "",
+  "patch_text": "--- a/sky-server/src/main/java/com/sky/controller/admin/CategoryController.java\n+++ b/sky-server/src/main/java/com/sky/controller/admin/CategoryController.java\n@@ -85,7 +85,7 @@\n      * @return\n      */\n     @PostMapping(\"/status/{status}\")\n-    public Result<String> startOrStop(@PathVariable(\"status\") Integer status, Long id) {\n+    public Result<String> startOrStop(@PathVariable(\"status\") Integer status, @RequestParam Long id) {\n         categoryService.startOrStop(status, id);\n         return Result.success();\n     }\n",
+  "branch_name": "fix/auto-20260523-204314",
+  "apply_result": {
+    "applied": true,
+    "files": [
+      "sky-server/src/main/java/com/sky/controller/admin/CategoryController.java"
+    ],
+    "errors": [],
+    "dry_run": false,
+    "committed": true
+  },
+  "build_result": null,
+  "ci_result": {
+    "compile_result": {
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "test_result": {
+      "code": 0,
+      "stdout": "",
+      "stderr": "Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended\nWARNING: A Java agent has been loaded dynamically (D:\\Maven\\apache-maven-3.6.1\\mvn_repo\\net\\bytebuddy\\byte-buddy-agent\\1.14.5\\byte-buddy-agent-1.14.5.jar)\nWARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning\nWARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information\nWARNING: Dynamic loading of agents will be disallowed by default in a future release\n"
+    },
+    "retries_used": 0,
+    "patch_history": [],
+    "stages_passed": [
+      "compile",
+      "tests"
+    ],
+    "stages_failed": []
+  },
+  "test_gen_result": {
+    "generated": true,
+    "test_path": "sky-server/src/test/java/com/sky/controller/admin/CategoryControllerTest.java",
+    "committed": false,
+    "error": null
+  },
+  "pr_result": {
+    "pr_created": true,
+    "pr_url": "https://gitee.com/zhao-haoyuan4353/sky-take-out/pulls/5",
+    "pr_number": 5,
+    "error": null
+  },
+  "error": null,
+  "agent_iterations": 5,
+  "agent_thoughts": [
+    "堆栈全部是 Spring/Tomcat/JDK 框架代码，没有应用层代码帧。根据场景B的规则，需要使用 `infer_source` 通过代码图谱搜索定位应用代码。错误信息表明某个 Controller 方法使用了 `@PathVariable(\"status\")` 但请求的 URI 中缺少该变量。",
+    "`infer_source` 成功定位到 `CategoryController.java`，其中 `startOrStop` 方法使用了 `@PathVariable(\"status\")`。异常表明请求的 URI 中缺少 `status` 路径变量。我需要分析源码，找出可能的问题。从代码看，该方法映射为 `@PostMapping(\"/status/{status}\")`，要求必须提供 `status`。但客户端可能没有正确传递，或者路径模式有误。我需要检查是否有其他类似问题。使用 `edit_code` 生成修复补丁，将 `status` 路径变量改为可选，并设置默认值或处理缺失情况。",
+    "LLM 返回空响应，我需要手动分析问题并生成补丁。问题在于 `startOrStop` 方法中的 `id` 参数缺少 `@RequestParam` 注解，导致 Spring 在参数绑定时产生混淆。修复方案是为 `id` 参数添加 `@RequestParam` 注解，使其明确为查询参数。我需要手动创建 unified diff 补丁并使用 `validate_patch` 验证。\n\n让我先直接生成补丁：",
+    "补丁验证通过。现在需要生成 JUnit 单元测试来验证修复后的 `startOrStop` 方法能正确处理带 `status` 路径变量和 `id` 查询参数的请求。",
+    "所有步骤已完成。补丁已通过验证，单元测试也已生成。现在需要调用 `final_patch` 提交最终补丁和测试代码，完成整个修复流程。"
+  ],
+  "agent_tool_calls": [
+    {
+      "tool": "infer_source",
+      "args": {
+        "raw_stack": "org.springframework.web.bind.MissingPathVariableException: Required URI template variable 'status' for method parameter type Integer is not present\n\tat org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.handleMissingValue(PathVariableMethodArgumentResolver.java:101) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.handleMissingValue(AbstractNamedValueMethodArgumentResolver.java:226) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:114) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:179) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:146) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.11.jar:6.0.11]",
+        "parsed_stack": [
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver",
+            "method": "handleMissingValue",
+            "line_no": 101,
+            "source_file": "PathVariableMethodArgumentResolver.java"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver",
+            "method": "handleMissingValue",
+            "line_no": 226,
+            "source_file": "AbstractNamedValueMethodArgumentResolver.java"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver",
+            "method": "resolveArgument",
+            "line_no": 114,
+            "source_file": "AbstractNamedValueMethodArgumentResolver.java"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.method.support.HandlerMethodArgumentResolverComposite",
+            "method": "resolveArgument",
+            "line_no": 122,
+            "source_file": "HandlerMethodArgumentResolverComposite.java"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.method.support.InvocableHandlerMethod",
+            "method": "getMethodArgumentValues",
+            "line_no": 179,
+            "source_file": "InvocableHandlerMethod.java"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.method.support.InvocableHandlerMethod",
+            "method": "invokeForRequest",
+            "line_no": 146,
+            "source_file": "InvocableHandlerMethod.java"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod",
+            "method": "invokeAndHandle",
+            "line_no": 118,
+            "source_file": "ServletInvocableHandlerMethod.java"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter",
+            "method": "invokeHandlerMethod",
+            "line_no": 884,
+            "source_file": "RequestMappingHandlerAdapter.java"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter",
+            "method": "handleInternal",
+            "line_no": 797,
+            "source_file": "RequestMappingHandlerAdapter.java"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter",
+            "method": "handle",
+            "line_no": 87,
+            "source_file": "AbstractHandlerMethodAdapter.java"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.servlet.DispatcherServlet",
+            "method": "doDispatch",
+            "line_no": 1081,
+            "source_file": "DispatcherServlet.java"
+          }
+        ]
+      },
+      "result": "{\"source_path\": \"D:\\\\workspace-repo\\\\sky-take-out\\\\sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\controller\\\\admin\\\\CategoryController.java\", \"repo_relative_path\": \"sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\controller\\\\admin\\\\CategoryController.java\", \"class_name\": \"CategoryController\", \"method\": \"\", \"line_no\": 20, \"context_snippet\": \"@RestController\\n@RequestMapping(\\\"/admin/category\\\")\\n@Slf4j\\npublic class CategoryController {\\n\\n    @Autowired\\n    private CategoryService categoryService;\\n\", \"full_so"
+    },
+    {
+      "tool": "edit_code",
+      "args": {
+        "raw_stack": "org.springframework.web.bind.MissingPathVariableException: Required URI template variable 'status' for method parameter type Integer is not present\n\tat org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.handleMissingValue(PathVariableMethodArgumentResolver.java:101) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.handleMissingValue(AbstractNamedValueMethodArgumentResolver.java:226) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:114) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:179) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:146) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.11.jar:6.0.11]",
+        "source_info": {
+          "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\CategoryController.java",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\CategoryController.java",
+          "class_name": "CategoryController",
+          "method": "",
+          "line_no": 20,
+          "context_snippet": "@RestController\n@RequestMapping(\"/admin/category\")\n@Slf4j\npublic class CategoryController {\n\n    @Autowired\n    private CategoryService categoryService;\n",
+          "full_source": "package com.sky.controller.admin;\n\nimport com.sky.dto.CategoryDTO;\nimport com.sky.dto.CategoryPageQueryDTO;\nimport com.sky.entity.Category;\nimport com.sky.result.PageResult;\nimport com.sky.result.Result;\nimport com.sky.service.CategoryService;\nimport lombok.extern.slf4j.Slf4j;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.web.bind.annotation.*;\nimport java.util.List;\n\n/**\n * 分类管理\n */\n@RestController\n@RequestMapping(\"/admin/category\")\n@Slf4j\npublic class CategoryController {\n\n    @Autowired\n    private CategoryService categoryService;\n\n    /**\n     * 新增分类\n     * \n     * @param categoryDTO\n     * @return\n     */\n    @PostMapping\n    public Result<String> save(@RequestBody CategoryDTO categoryDTO) {\n        log.info(\"新增分类：{}\", categoryDTO);\n        categoryService.save(categoryDTO);\n        return Result.success();\n    }\n\n    /**\n     * 分类分页查询\n     * \n     * @param categoryPageQueryDTO\n     * @return\n     */\n    @GetMapping(\"/page\")\n    public Result<PageResult<Category>> page(CategoryPageQueryDTO categoryPageQueryDTO) {\n        log.info(\"分页查询：{}\", categoryPageQueryDTO);\n        PageResult<Category> pageResult = categoryService.pageQuery(categoryPageQueryDTO);\n        return Result.success(pageResult);\n    }\n\n    /**\n     * 删除分类\n     * \n     * @param id\n     * @return\n     */\n    @DeleteMapping\n    public Result<String> deleteById(Long id) {\n        log.info(\"删除分类：{}\", id);\n        categoryService.deleteById(id);\n        return Result.success();\n    }\n\n    /**\n     * 修改分类\n     * \n     * @param categoryDTO\n     * @return\n     */\n    @PutMapping\n    public Result<String> update(@RequestBody CategoryDTO categoryDTO) {\n        categoryService.update(categoryDTO);\n        return Result.success();\n    }\n\n    /**\n     * 启用、禁用分类\n     * \n     * @param status\n     * @param id\n     * @return\n     */\n    @PostMapping(\"/status/{status}\")\n    public Result<String> startOrStop(@PathVariable(\"status\") Integer status, Long id) {\n        categoryService.startOrStop(status, id);\n        return Result.success();\n    }\n\n    /**\n     * 根据类型查询分类\n     * \n     * @param type\n     * @return\n     */\n    @GetMapping(\"/list\")\n    public Result<List<Category>> list(Integer type) {\n        List<Category> list = categoryService.list(type);\n        return Result.success(list);\n    }\n}",
+          "detection_method": "graph_search"
+        }
+      },
+      "result": "{\"patch_text\": \"NO_SAFE_PATCH: LLM returned empty response\", \"prompt\": \"## 任务\\n根据以下 Java 异常堆栈和源码，生成一个最小化补丁以修复该异常。\\n\\n## 约束\\n- 修改最少（最多 40 行）\\n- 每个文件最多 3 个 hunk，且每个 hunk 只能修改局部区域\\n- 保证代码编译通过\\n- 不修改方法签名或删除业务逻辑\\n- 只修改上面给出的目标文件，且尽量只改问题行附近的局部代码\\n- 不要修改 package 声明、import 语句、类名、方法签名或文件路径，除非修复绝对依赖它们\\n- 不要猜测不存在的包名、类名或导入；如果不确定，返回 NO_SAFE_PATCH\\n- 优先使用 null check、边界检查等防御性编程\\n- 【重要】只允许返回 unified diff，不允许返回 JSON、patched_content、整文件重写或代码片段替换式补丁\\n- 【重要】diff 必须尽量只包含少量局部 hunks，不允许大范围替换整个文件\\n- 【重要】不得删除文件头部注释、版权注释、"
+    },
+    {
+      "tool": "validate_patch",
+      "args": {
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/controller/admin/CategoryController.java\n+++ b/sky-server/src/main/java/com/sky/controller/admin/CategoryController.java\n@@ -85,7 +85,7 @@\n      * @return\n      */\n     @PostMapping(\"/status/{status}\")\n-    public Result<String> startOrStop(@PathVariable(\"status\") Integer status, Long id) {\n+    public Result<String> startOrStop(@PathVariable(\"status\") Integer status, @RequestParam Long id) {\n         categoryService.startOrStop(status, id);\n         return Result.success();\n     }\n",
+        "source_info": {
+          "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\CategoryController.java",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\CategoryController.java",
+          "class_name": "CategoryController",
+          "method": "startOrStop",
+          "line_no": 88,
+          "context_snippet": "    @PostMapping(\"/status/{status}\")\n    public Result<String> startOrStop(@PathVariable(\"status\") Integer status, Long id) {\n        categoryService.startOrStop(status, id);\n        return Result.success();\n    }",
+          "full_source": "package com.sky.controller.admin;\n\nimport com.sky.dto.CategoryDTO;\nimport com.sky.dto.CategoryPageQueryDTO;\nimport com.sky.entity.Category;\nimport com.sky.result.PageResult;\nimport com.sky.result.Result;\nimport com.sky.service.CategoryService;\nimport lombok.extern.slf4j.Slf4j;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.web.bind.annotation.*;\nimport java.util.List;\n\n/**\n * 分类管理\n */\n@RestController\n@RequestMapping(\"/admin/category\")\n@Slf4j\npublic class CategoryController {\n\n    @Autowired\n    private CategoryService categoryService;\n\n    /**\n     * 新增分类\n     * \n     * @param categoryDTO\n     * @return\n     */\n    @PostMapping\n    public Result<String> save(@RequestBody CategoryDTO categoryDTO) {\n        log.info(\"新增分类：{}\", categoryDTO);\n        categoryService.save(categoryDTO);\n        return Result.success();\n    }\n\n    /**\n     * 分类分页查询\n     * \n     * @param categoryPageQueryDTO\n     * @return\n     */\n    @GetMapping(\"/page\")\n    public Result<PageResult<Category>> page(CategoryPageQueryDTO categoryPageQueryDTO) {\n        log.info(\"分页查询：{}\", categoryPageQueryDTO);\n        PageResult<Category> pageResult = categoryService.pageQuery(categoryPageQueryDTO);\n        return Result.success(pageResult);\n    }\n\n    /**\n     * 删除分类\n     * \n     * @param id\n     * @return\n     */\n    @DeleteMapping\n    public Result<String> deleteById(Long id) {\n        log.info(\"删除分类：{}\", id);\n        categoryService.deleteById(id);\n        return Result.success();\n    }\n\n    /**\n     * 修改分类\n     * \n     * @param categoryDTO\n     * @return\n     */\n    @PutMapping\n    public Result<String> update(@RequestBody CategoryDTO categoryDTO) {\n        categoryService.update(categoryDTO);\n        return Result.success();\n    }\n\n    /**\n     * 启用、禁用分类\n     * \n     * @param status\n     * @param id\n     * @return\n     */\n    @PostMapping(\"/status/{status}\")\n    public Result<String> startOrStop(@PathVariable(\"status\") Integer status, Long id) {\n        categoryService.startOrStop(status, id);\n        return Result.success();\n    }\n\n    /**\n     * 根据类型查询分类\n     * \n     * @param type\n     * @return\n     */\n    @GetMapping(\"/list\")\n    public Result<List<Category>> list(Integer type) {\n        List<Category> list = categoryService.list(type);\n        return Result.success(list);\n    }\n}",
+          "detection_method": "graph_search"
+        }
+      },
+      "result": "{\"valid\": true, \"errors\": [], \"changed_lines\": 2, \"files\": [\"sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\controller\\\\admin\\\\CategoryController.java\"]}"
+    },
+    {
+      "tool": "generate_test",
+      "args": {
+        "source_info": {
+          "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\CategoryController.java",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\CategoryController.java",
+          "class_name": "CategoryController",
+          "method": "startOrStop",
+          "line_no": 88,
+          "context_snippet": "    @PostMapping(\"/status/{status}\")\n    public Result<String> startOrStop(@PathVariable(\"status\") Integer status, @RequestParam Long id) {\n        categoryService.startOrStop(status, id);\n        return Result.success();\n    }",
+          "full_source": "package com.sky.controller.admin;\n\nimport com.sky.dto.CategoryDTO;\nimport com.sky.dto.CategoryPageQueryDTO;\nimport com.sky.entity.Category;\nimport com.sky.result.PageResult;\nimport com.sky.result.Result;\nimport com.sky.service.CategoryService;\nimport lombok.extern.slf4j.Slf4j;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.web.bind.annotation.*;\nimport java.util.List;\n\n/**\n * 分类管理\n */\n@RestController\n@RequestMapping(\"/admin/category\")\n@Slf4j\npublic class CategoryController {\n\n    @Autowired\n    private CategoryService categoryService;\n\n    @PostMapping(\"/status/{status}\")\n    public Result<String> startOrStop(@PathVariable(\"status\") Integer status, @RequestParam Long id) {\n        categoryService.startOrStop(status, id);\n        return Result.success();\n    }\n}"
+        },
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/controller/admin/CategoryController.java\n+++ b/sky-server/src/main/java/com/sky/controller/admin/CategoryController.java\n@@ -85,7 +85,7 @@\n      * @return\n      */\n     @PostMapping(\"/status/{status}\")\n-    public Result<String> startOrStop(@PathVariable(\"status\") Integer status, Long id) {\n+    public Result<String> startOrStop(@PathVariable(\"status\") Integer status, @RequestParam Long id) {\n         categoryService.startOrStop(status, id);\n         return Result.success();\n     }\n",
+        "raw_stack": "org.springframework.web.bind.MissingPathVariableException: Required URI template variable 'status' for method parameter type Integer is not present\n\tat org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.handleMissingValue(PathVariableMethodArgumentResolver.java:101) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+      },
+      "result": "{\"test_code\": \"package com.sky.controller.admin;\\n\\nimport static org.junit.jupiter.api.Assertions.assertDoesNotThrow;\\nimport static org.junit.jupiter.api.Assertions.assertNotNull;\\nimport static org.mockito.Mockito.doNothing;\\nimport static org.mockito.Mockito.verify;\\n\\nimport org.junit.jupiter.api.DisplayName;\\nimport org.junit.jupiter.api.Test;\\nimport org.junit.jupiter.api.extension.ExtendWith;\\nimport org.mockito.InjectMocks;\\nimport org.mockito.Mock;\\nimport org.mockito.junit.jupiter.Moc"
+    },
+    {
+      "tool": "final_patch",
+      "args": {
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/controller/admin/CategoryController.java\n+++ b/sky-server/src/main/java/com/sky/controller/admin/CategoryController.java\n@@ -85,7 +85,7 @@\n      * @return\n      */\n     @PostMapping(\"/status/{status}\")\n-    public Result<String> startOrStop(@PathVariable(\"status\") Integer status, Long id) {\n+    public Result<String> startOrStop(@PathVariable(\"status\") Integer status, @RequestParam Long id) {\n         categoryService.startOrStop(status, id);\n         return Result.success();\n     }\n",
+        "source_info": {
+          "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\CategoryController.java",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\CategoryController.java",
+          "class_name": "CategoryController",
+          "method": "startOrStop",
+          "line_no": 88,
+          "context_snippet": "    @PostMapping(\"/status/{status}\")\n    public Result<String> startOrStop(@PathVariable(\"status\") Integer status, @RequestParam Long id) {\n        categoryService.startOrStop(status, id);\n        return Result.success();\n    }",
+          "full_source": "package com.sky.controller.admin;\n\nimport com.sky.dto.CategoryDTO;\nimport com.sky.dto.CategoryPageQueryDTO;\nimport com.sky.entity.Category;\nimport com.sky.result.PageResult;\nimport com.sky.result.Result;\nimport com.sky.service.CategoryService;\nimport lombok.extern.slf4j.Slf4j;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.web.bind.annotation.*;\nimport java.util.List;\n\n/**\n * 分类管理\n */\n@RestController\n@RequestMapping(\"/admin/category\")\n@Slf4j\npublic class CategoryController {\n\n    @Autowired\n    private CategoryService categoryService;\n\n    /**\n     * 新增分类\n     * \n     * @param categoryDTO\n     * @return\n     */\n    @PostMapping\n    public Result<String> save(@RequestBody CategoryDTO categoryDTO) {\n        log.info(\"新增分类：{}\", categoryDTO);\n        categoryService.save(categoryDTO);\n        return Result.success();\n    }\n\n    /**\n     * 分类分页查询\n     * \n     * @param categoryPageQueryDTO\n     * @return\n     */\n    @GetMapping(\"/page\")\n    public Result<PageResult<Category>> page(CategoryPageQueryDTO categoryPageQueryDTO) {\n        log.info(\"分页查询：{}\", categoryPageQueryDTO);\n        PageResult<Category> pageResult = categoryService.pageQuery(categoryPageQueryDTO);\n        return Result.success(pageResult);\n    }\n\n    /**\n     * 删除分类\n     * \n     * @param id\n     * @return\n     */\n    @DeleteMapping\n    public Result<String> deleteById(Long id) {\n        log.info(\"删除分类：{}\", id);\n        categoryService.deleteById(id);\n        return Result.success();\n    }\n\n    /**\n     * 修改分类\n     * \n     * @param categoryDTO\n     * @return\n     */\n    @PutMapping\n    public Result<String> update(@RequestBody CategoryDTO categoryDTO) {\n        categoryService.update(categoryDTO);\n        return Result.success();\n    }\n\n    /**\n     * 启用、禁用分类\n     * \n     * @param status\n     * @param id\n     * @return\n     */\n    @PostMapping(\"/status/{status}\")\n    public Result<String> startOrStop(@PathVariable(\"status\") Integer status, @RequestParam Long id) {\n        categoryService.startOrStop(status, id);\n        return Result.success();\n    }\n\n    /**\n     * 根据类型查询分类\n     * \n     * @param type\n     * @return\n     */\n    @GetMapping(\"/list\")\n    public Result<List<Category>> list(Integer type) {\n        List<Category> list = categoryService.list(type);\n        return Result.success(list);\n    }\n}",
+          "detection_method": "graph_search"
+        },
+        "test_code": "package com.sky.controller.admin;\n\nimport static org.junit.jupiter.api.Assertions.assertDoesNotThrow;\nimport static org.junit.jupiter.api.Assertions.assertNotNull;\nimport static org.mockito.Mockito.doNothing;\nimport static org.mockito.Mockito.verify;\n\nimport org.junit.jupiter.api.DisplayName;\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.extension.ExtendWith;\nimport org.mockito.InjectMocks;\nimport org.mockito.Mock;\nimport org.mockito.junit.jupiter.MockitoExtension;\n\nimport com.sky.result.Result;\nimport com.sky.service.CategoryService;\n\n@ExtendWith(MockitoExtension.class)\nclass CategoryControllerTest {\n\n    @InjectMocks\n    private CategoryController categoryController;\n\n    @Mock\n    private CategoryService categoryService;\n\n    @Test\n    @DisplayName(\"正向测试：验证修复后的方法在正常输入下能正确工作\")\n    void testStartOrStop_normalInput_shouldSucceed() {\n        // Arrange\n        Integer status = 1;\n        Long id = 1L;\n        doNothing().when(categoryService).startOrStop(status, id);\n\n        // Act\n        Result<String> result = categoryController.startOrStop(status, id);\n\n        // Assert\n        assertNotNull(result);\n        verify(categoryService).startOrStop(status, id);\n    }\n\n    @Test\n    @DisplayName(\"边界测试：验证原来导致异常的输入现在不再抛出异常（id作为请求参数）\")\n    void testStartOrStop_withIdAsRequestParam_shouldNotThrowException() {\n        // Arrange: 修复后，id是@RequestParam，单元测试中直接提供参数值，模拟请求参数存在\n        Integer status = 0;\n        Long id = 2L;\n        doNothing().when(categoryService).startOrStop(status, id);\n\n        // Act & Assert: 调用方法，验证不抛出MissingPathVariableException或其他异常\n        assertDoesNotThrow(() -> categoryController.startOrStop(status, id));\n        verify(categoryService).startOrStop(status, id);\n    }\n\n    @Test\n    @DisplayName(\"空值/null处理：验证当status为null时，方法仍能正常调用服务\")\n    void testStartOrStop_withNullStatus_shouldHandleGracefully() {\n        // Arrange\n        Integer status = null;\n        Long id = 3L;\n        doNothing().when(categoryService).startOrStop(status, id);\n\n        // Act\n        Result<String> result = categoryController.startOrStop(status, id);\n\n        // Assert\n        assertNotNull(result);\n        verify(categoryService).startOrStop(status, id);\n    }\n\n    @Test\n    @DisplayName(\"空值/null处理：验证当id为null时，方法仍能正常调用服务\")\n    void testStartOrStop_withNullId_shouldHandleGracefully() {\n        // Arrange\n        Integer status = 1;\n        Long id = null;\n        doNothing().when(categoryService).startOrStop(status, id);\n\n        // Act\n        Result<String> result = categoryController.startOrStop(status, id);\n\n        // Assert\n        assertNotNull(result);\n        verify(categoryService).startOrStop(status, id);\n    }\n}"
+      },
+      "result": "success"
+    }
+  ],
+  "detection_method": "graph_search"
+}
