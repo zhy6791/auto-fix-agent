@@ -1,6 +1,6 @@
 # Auto-Fix Agent for Java Web Services
 
-一个用 Python 实现的自动修复 Java Web 服务异常的 demo agent。通过读取日志、分析堆栈、定位源码、调用 LLM 生成补丁、以及在本地创建修复分支，快速定位和修复常见异常。
+一个用 Python 实现的自动修复 [Java Web 服务](https://gitee.com/zhao-haoyuan4353/sky-take-out) 异常的 demo agent。通过读取日志、分析堆栈、定位源码、调用 LLM 生成补丁、以及在本地创建修复分支，快速定位和修复常见异常。
 
 **核心特性：**
 - 📋 自动提取日志中的异常堆栈信息
@@ -10,6 +10,7 @@
 - 🤖 使用 OpenAI 兼容 LLM 生成最小化补丁（含指数退避重试）
 - 🔀 在本地仓库创建修复分支并提交
 - 🔨 自动编译检查 + 单元测试（`mvn compile` / `mvn test`）
+- 🧪 测试生成含编译验证：生成的 JUnit 测试会先编译验证，失败时自动反馈 LLM 重试修正
 - 🔄 编译/测试失败时自动反馈 LLM 重试修复（失败时自动还原文件状态）
 - 🚀 通过后自动推送并创建 Gitee Pull Request
 - ✅ 支持 dry-run 模式（仅分析不修改）
@@ -280,7 +281,12 @@ Agent 循环退出后，`agents/patch_validator.py` 会在应用前做多层检�
                 报告错误   生成 JUnit 测试
                                │
                                ▼
-                          写入测试文件 → commit
+                     写入测试文件 → 编译验证
+                               │
+                         ┌─────┴─────┐
+                     编译失败 ▼       ▼ 编译通过
+                     反馈LLM重试    commit
+                     (最多1次)
                                │
                                ▼
                          CI 管道（含重试）
@@ -358,8 +364,11 @@ main.py
         ├── 阶段 4: 自动生成测试 [post_processing/]
         │     └── test_generator.run_test_generation()
         │           ├── test_generator.collect_project_context()
+        │           │     └── 读取依赖类源码（正则匹配任意层级包名）
         │           ├── test_generator.generate_test()
         │           ├── test_generator.write_test_file()
+        │           ├── ci_pipeline.run_compile()  # 编译验证
+        │           │     └── 编译失败 → 将错误反馈给 LLM 重试（最多 1 次）
         │           └── git_manager.commit_changes()
         │
         ├── 阶段 5: CI 管道 [ci/]
