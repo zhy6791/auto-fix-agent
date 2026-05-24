@@ -1,0 +1,320 @@
+{
+  "status": "completed",
+  "dry_run": false,
+  "raw_stack": "Caused by: java.lang.NumberFormatException: For input string: \"abc\"\n\tat java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67) ~[na:na]\n\tat java.base/java.lang.Long.parseLong(Long.java:711) ~[na:na]\n\tat java.base/java.lang.Long.valueOf(Long.java:1163) ~[na:na]\n\tat org.springframework.util.NumberUtils.parseNumber(NumberUtils.java:206) ~[spring-core-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.propertyeditors.CustomNumberEditor.setAsText(CustomNumberEditor.java:115) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterDelegate.doConvertTextValue(TypeConverterDelegate.java:425) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterDelegate.doConvertValue(TypeConverterDelegate.java:398) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterDelegate.convertIfNecessary(TypeConverterDelegate.java:155) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:73) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:53) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.validation.DataBinder.convertIfNecessary(DataBinder.java:729) ~[spring-context-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:125) ~[spring-web-6.0.11.jar:6.0.11]\n\t... 39 common frames omitted",
+  "parsed_stack": [
+    {
+      "exception_type": "java.lang.NumberFormatException",
+      "class_name": "org.springframework.util.NumberUtils",
+      "method": "parseNumber",
+      "line_no": 206,
+      "source_file": "NumberUtils.java",
+      "raw_line": "\tat org.springframework.util.NumberUtils.parseNumber(NumberUtils.java:206) ~[spring-core-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NumberFormatException",
+      "class_name": "org.springframework.beans.propertyeditors.CustomNumberEditor",
+      "method": "setAsText",
+      "line_no": 115,
+      "source_file": "CustomNumberEditor.java",
+      "raw_line": "\tat org.springframework.beans.propertyeditors.CustomNumberEditor.setAsText(CustomNumberEditor.java:115) ~[spring-beans-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NumberFormatException",
+      "class_name": "org.springframework.beans.TypeConverterDelegate",
+      "method": "doConvertTextValue",
+      "line_no": 425,
+      "source_file": "TypeConverterDelegate.java",
+      "raw_line": "\tat org.springframework.beans.TypeConverterDelegate.doConvertTextValue(TypeConverterDelegate.java:425) ~[spring-beans-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NumberFormatException",
+      "class_name": "org.springframework.beans.TypeConverterDelegate",
+      "method": "doConvertValue",
+      "line_no": 398,
+      "source_file": "TypeConverterDelegate.java",
+      "raw_line": "\tat org.springframework.beans.TypeConverterDelegate.doConvertValue(TypeConverterDelegate.java:398) ~[spring-beans-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NumberFormatException",
+      "class_name": "org.springframework.beans.TypeConverterDelegate",
+      "method": "convertIfNecessary",
+      "line_no": 155,
+      "source_file": "TypeConverterDelegate.java",
+      "raw_line": "\tat org.springframework.beans.TypeConverterDelegate.convertIfNecessary(TypeConverterDelegate.java:155) ~[spring-beans-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NumberFormatException",
+      "class_name": "org.springframework.beans.TypeConverterSupport",
+      "method": "convertIfNecessary",
+      "line_no": 73,
+      "source_file": "TypeConverterSupport.java",
+      "raw_line": "\tat org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:73) ~[spring-beans-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NumberFormatException",
+      "class_name": "org.springframework.beans.TypeConverterSupport",
+      "method": "convertIfNecessary",
+      "line_no": 53,
+      "source_file": "TypeConverterSupport.java",
+      "raw_line": "\tat org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:53) ~[spring-beans-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NumberFormatException",
+      "class_name": "org.springframework.validation.DataBinder",
+      "method": "convertIfNecessary",
+      "line_no": 729,
+      "source_file": "DataBinder.java",
+      "raw_line": "\tat org.springframework.validation.DataBinder.convertIfNecessary(DataBinder.java:729) ~[spring-context-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NumberFormatException",
+      "class_name": "org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver",
+      "method": "resolveArgument",
+      "line_no": 125,
+      "source_file": "AbstractNamedValueMethodArgumentResolver.java",
+      "raw_line": "\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:125) ~[spring-web-6.0.11.jar:6.0.11]"
+    }
+  ],
+  "located_files": [
+    {
+      "class_name": "com.sky.handler.GlobalExceptionHandler",
+      "method": "",
+      "line_no": 0,
+      "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\handler\\GlobalExceptionHandler.java"
+    }
+  ],
+  "prompt": "",
+  "patch_text": "--- a/sky-server/src/main/java/com/sky/handler/GlobalExceptionHandler.java\n+++ b/sky-server/src/main/java/com/sky/handler/GlobalExceptionHandler.java\n@@ -10,6 +10,7 @@\n import org.springframework.http.converter.HttpMessageNotReadableException;\n import org.springframework.web.bind.MissingPathVariableException;\n import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;\n+import org.springframework.beans.TypeMismatchException;\n import org.springframework.web.bind.annotation.ExceptionHandler;\n import org.springframework.web.bind.annotation.RestControllerAdvice;\n \n@@ -55,5 +56,11 @@\n         return Result.error(\"请求参数类型错误\");\n     }\n \n+    @ExceptionHandler\n+    public Result<String> exceptionHandler(TypeMismatchException ex) {\n+        log.error(\"类型转换异常：\", ex);\n+        return Result.error(\"请求参数类型错误\");\n+    }\n+\n }",
+  "branch_name": "fix/auto-20260524-160713",
+  "apply_result": {
+    "applied": true,
+    "files": [
+      "sky-server/src/main/java/com/sky/handler/GlobalExceptionHandler.java"
+    ],
+    "errors": [],
+    "dry_run": false,
+    "committed": true
+  },
+  "build_result": null,
+  "ci_result": {
+    "compile_result": {
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "test_result": {
+      "code": 0,
+      "stdout": "16:07:29.454 [main] INFO com.sky.controller.admin.DishController -- 启用或停用菜品：2\n16:07:29.498 [main] INFO com.sky.controller.admin.DishController -- 启用或停用菜品：1\n16:07:29.507 [main] INFO com.sky.controller.admin.DishController -- 启用或停用菜品：null\n16:07:29.514 [main] INFO com.sky.controller.admin.DishController -- 启用或停用菜品：3\n16:07:29.549 [main] ERROR com.sky.handler.GlobalExceptionHandler -- 类型转换异常：\norg.springframework.beans.TypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'\n\tat com.sky.handler.GlobalExceptionHandlerTest.testTypeMismatchExceptionHandler(GlobalExceptionHandlerTest.java:23)\n\tat java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)\n\tat org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)\n\tat org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)\n\tat org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:156)\n\tat org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:147)\n\tat org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86)\n\tat org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:103)\n\tat org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:93)\n\tat org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)\n\tat org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)\n\tat org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)\n\tat org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)\n\tat org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:92)\n\tat org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:86)\n\tat org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:217)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:213)\n\tat org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:138)\n\tat org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:68)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:151)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)\n\tat org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)\n\tat org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)\n\tat org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)\n\tat org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)\n\tat org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)\n\tat org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)\n\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)\n\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)\n\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)\n\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)\n\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)\n\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)\n\tat org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)\n\tat org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:86)\n\tat org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:86)\n\tat org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:50)\n\tat org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)\n\tat org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)\n\tat org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)\n\tat org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)\n\tat org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)\n\tat org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)\n\tat org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)\n16:07:29.560 [main] ERROR com.sky.handler.GlobalExceptionHandler -- 类型转换异常：\norg.springframework.beans.TypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'\n\tat com.sky.handler.GlobalExceptionHandlerTest.testOriginalExceptionNowHandled(GlobalExceptionHandlerTest.java:37)\n\tat java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)\n\tat org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)\n\tat org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)\n\tat org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:156)\n\tat org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:147)\n\tat org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86)\n\tat org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:103)\n\tat org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:93)\n\tat org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)\n\tat org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)\n\tat org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)\n\tat org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)\n\tat org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:92)\n\tat org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:86)\n\tat org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:217)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:213)\n\tat org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:138)\n\tat org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:68)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:151)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)\n\tat org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)\n\tat org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)\n\tat org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)\n\tat org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)\n\tat org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)\n\tat org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)\n\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)\n\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)\n\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)\n\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)\n\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)\n\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)\n\tat org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)\n\tat org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:86)\n\tat org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:86)\n\tat org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:50)\n\tat org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)\n\tat org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)\n\tat org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)\n\tat org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)\n\tat org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)\n\tat org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)\n\tat org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)\n",
+      "stderr": "Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended\nWARNING: A Java agent has been loaded dynamically (D:\\Maven\\apache-maven-3.6.1\\mvn_repo\\net\\bytebuddy\\byte-buddy-agent\\1.14.5\\byte-buddy-agent-1.14.5.jar)\nWARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning\nWARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information\nWARNING: Dynamic loading of agents will be disallowed by default in a future release\n"
+    },
+    "retries_used": 0,
+    "patch_history": [],
+    "stages_passed": [
+      "compile",
+      "tests"
+    ],
+    "stages_failed": []
+  },
+  "test_gen_result": {
+    "generated": true,
+    "test_path": "sky-server/src/test/java/com/sky/handler/GlobalExceptionHandlerTest.java",
+    "committed": false,
+    "error": null
+  },
+  "pr_result": {
+    "pr_created": true,
+    "pr_url": "https://gitee.com/zhao-haoyuan4353/sky-take-out/pulls/13",
+    "pr_number": 13,
+    "error": null
+  },
+  "error": null,
+  "agent_iterations": 10,
+  "agent_thoughts": [
+    "堆栈全是 Spring 框架和 JDK 代码，没有应用层帧。这是因为 \"abc\" 字符串被传给了一个期望 Long 类型的请求参数，Spring 在参数绑定时抛出了 NumberFormatException。堆栈末尾有 \"... 39 common frames omitted\"，说明应用代码被省略了。这是场景B，需要使用 infer_source 来推断应用代码。",
+    "从 infer_source 返回的 source_info 来看，推断出的源文件是 `OrderServiceImpl.java`，但异常发生在 Spring 参数绑定时（AbstractNamedValueMethodArgumentResolver.resolveArgument），这表明问题可能在于 Controller 层接收参数时，将字符串 \"abc\" 传递给了期望 Long 类型的参数。让我先读取 OrderServiceImpl 的源码，分析其中是否有接收 Long 类型参数的方法，并查看可能关联的 Controller。",
+    "异常发生在 Spring 参数绑定阶段（AbstractNamedValueMethodArgumentResolver.resolveArgument），说明是 Controller 层接收 Long 类型参数时，用户传入了 \"abc\"。OrderServiceImpl 中有多个接收 `Long id` 参数的方法（如 details、delivery、complete、reminder 等）。需要找到对应的 Controller 来定位问题。",
+    "找到了问题所在。`OrderController.details` 方法使用 `@PathVariable` 接收 Long 类型的 id 参数，当用户传入 \"abc\" 这样的非数字字符串时，Spring 会在参数绑定阶段抛出 `NumberFormatException`。代码中的注释也确认了这一点（Bug 8）。最佳修复方式是创建全局异常处理器来统一处理此类参数类型不匹配的异常。让我先搜索是否已有全局异常处理器。",
+    "从异常堆栈来看，`NumberFormatException` 在 Spring 参数绑定过程中被抛出，但没有被包装为 `MethodArgumentTypeMismatchException`（可能是因为 `Caused by` 关系导致异常未被正确捕获）。全局异常处理器中已有 `MethodArgumentTypeMismatchException` 处理，但缺少对 `NumberFormatException` 的处理。需要在 `GlobalExceptionHandler` 中添加对 `NumberFormatException` 的异常处理。",
+    "编辑工具生成了一个补丁，在 GlobalExceptionHandler 中添加了对 `TypeMismatchException` 的异常处理。`NumberFormatException` 是 Spring 参数绑定过程中 `TypeMismatchException` 的根因，Spring 会在 `AbstractNamedValueMethodArgumentResolver.resolveArgument` 中将 `NumberFormatException` 包装为 `MethodArgumentTypeMismatchException`（它是 `TypeMismatchException` 的子类）。但观察堆栈，实际上异常可能没有被正确包装，所以添加 `TypeMismatchException` 处理器是合理的防御策略。让我先验证补丁。",
+    "补丁验证通过，变更了7行代码。现在生成单元测试来验证修复。",
+    "测试代码生成成功，但被截断了。让我补全测试代码并提交最终补丁。"
+  ],
+  "agent_tool_calls": [
+    {
+      "tool": "infer_source",
+      "args": {
+        "raw_stack": "Caused by: java.lang.NumberFormatException: For input string: \"abc\"\n\tat java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67) ~[na:na]\n\tat java.base/java.lang.Long.parseLong(Long.java:711) ~[na:na]\n\tat java.base/java.lang.Long.valueOf(Long.java:1163) ~[na:na]\n\tat org.springframework.util.NumberUtils.parseNumber(NumberUtils.java:206) ~[spring-core-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.propertyeditors.CustomNumberEditor.setAsText(CustomNumberEditor.java:115) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterDelegate.doConvertTextValue(TypeConverterDelegate.java:425) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterDelegate.doConvertValue(TypeConverterDelegate.java:398) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterDelegate.convertIfNecessary(TypeConverterDelegate.java:155) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:73) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:53) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.validation.DataBinder.convertIfNecessary(DataBinder.java:729) ~[spring-context-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:125) ~[spring-web-6.0.11.jar:6.0.11]\n\t... 39 common frames omitted",
+        "parsed_stack": [
+          {
+            "exception_type": "java.lang.NumberFormatException",
+            "class_name": "org.springframework.util.NumberUtils",
+            "method": "parseNumber",
+            "line_no": 206,
+            "source_file": "NumberUtils.java",
+            "raw_line": "\tat org.springframework.util.NumberUtils.parseNumber(NumberUtils.java:206) ~[spring-core-6.0.11.jar:6.0.11]"
+          },
+          {
+            "exception_type": "java.lang.NumberFormatException",
+            "class_name": "org.springframework.beans.propertyeditors.CustomNumberEditor",
+            "method": "setAsText",
+            "line_no": 115,
+            "source_file": "CustomNumberEditor.java",
+            "raw_line": "\tat org.springframework.beans.propertyeditors.CustomNumberEditor.setAsText(CustomNumberEditor.java:115) ~[spring-beans-6.0.11.jar:6.0.11]"
+          },
+          {
+            "exception_type": "java.lang.NumberFormatException",
+            "class_name": "org.springframework.beans.TypeConverterDelegate",
+            "method": "doConvertTextValue",
+            "line_no": 425,
+            "source_file": "TypeConverterDelegate.java",
+            "raw_line": "\tat org.springframework.beans.TypeConverterDelegate.doConvertTextValue(TypeConverterDelegate.java:425) ~[spring-beans-6.0.11.jar:6.0.11]"
+          },
+          {
+            "exception_type": "java.lang.NumberFormatException",
+            "class_name": "org.springframework.beans.TypeConverterDelegate",
+            "method": "doConvertValue",
+            "line_no": 398,
+            "source_file": "TypeConverterDelegate.java",
+            "raw_line": "\tat org.springframework.beans.TypeConverterDelegate.doConvertValue(TypeConverterDelegate.java:398) ~[spring-beans-6.0.11.jar:6.0.11]"
+          },
+          {
+            "exception_type": "java.lang.NumberFormatException",
+            "class_name": "org.springframework.beans.TypeConverterDelegate",
+            "method": "convertIfNecessary",
+            "line_no": 155,
+            "source_file": "TypeConverterDelegate.java",
+            "raw_line": "\tat org.springframework.beans.TypeConverterDelegate.convertIfNecessary(TypeConverterDelegate.java:155) ~[spring-beans-6.0.11.jar:6.0.11]"
+          },
+          {
+            "exception_type": "java.lang.NumberFormatException",
+            "class_name": "org.springframework.beans.TypeConverterSupport",
+            "method": "convertIfNecessary",
+            "line_no": 73,
+            "source_file": "TypeConverterSupport.java",
+            "raw_line": "\tat org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:73) ~[spring-beans-6.0.11.jar:6.0.11]"
+          },
+          {
+            "exception_type": "java.lang.NumberFormatException",
+            "class_name": "org.springframework.beans.TypeConverterSupport",
+            "method": "convertIfNecessary",
+            "line_no": 53,
+            "source_file": "TypeConverterSupport.java",
+            "raw_line": "\tat org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:53) ~[spring-beans-6.0.11.jar:6.0.11]"
+          },
+          {
+            "exception_type": "java.lang.NumberFormatException",
+            "class_name": "org.springframework.validation.DataBinder",
+            "method": "convertIfNecessary",
+            "line_no": 729,
+            "source_file": "DataBinder.java",
+            "raw_line": "\tat org.springframework.validation.DataBinder.convertIfNecessary(DataBinder.java:729) ~[spring-context-6.0.11.jar:6.0.11]"
+          },
+          {
+            "exception_type": "java.lang.NumberFormatException",
+            "class_name": "org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver",
+            "method": "resolveArgument",
+            "line_no": 125,
+            "source_file": "AbstractNamedValueMethodArgumentResolver.java",
+            "raw_line": "\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:125) ~[spring-web-6.0.11.jar:6.0.11]"
+          }
+        ]
+      },
+      "result": "{\"source_path\": \"D:\\\\workspace-repo\\\\sky-take-out\\\\sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\service\\\\impl\\\\OrderServiceImpl.java\", \"repo_relative_path\": \"sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\service\\\\impl\\\\OrderServiceImpl.java\", \"class_name\": \"OrderServiceImpl\", \"method\": \"\", \"line_no\": 56, \"context_snippet\": \"\\n@Service\\n@Slf4j\\npublic class OrderServiceImpl implements OrderService {\\n\\n    @Autowired\\n    private OrderMapper orderMapper;\\n\", \"full_source\": \"package com.sky.service.impl;\\n\\nim"
+    },
+    {
+      "tool": "read_code",
+      "args": {
+        "path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\service\\impl\\OrderServiceImpl.java"
+      },
+      "result": "{\"content\": \"package com.sky.service.impl;\\n\\nimport java.math.BigDecimal;\\nimport java.time.LocalDateTime;\\nimport java.util.ArrayList;\\nimport java.util.HashMap;\\nimport java.util.List;\\nimport java.util.Map;\\nimport java.util.Optional;\\nimport java.util.stream.Collectors;\\n\\nimport org.springframework.beans.BeanUtils;\\nimport org.springframework.beans.factory.annotation.Autowired;\\nimport org.springframework.stereotype.Service;\\nimport org.springframework.transaction.annotation.Transactional;"
+    },
+    {
+      "tool": "search_code",
+      "args": {
+        "class_name": "com.sky.controller.user.OrderController"
+      },
+      "result": "{\"found\": true, \"path\": \"D:\\\\workspace-repo\\\\sky-take-out\\\\sky-server\\\\src/main/java\\\\com\\\\sky\\\\controller\\\\user\\\\OrderController.java\"}"
+    },
+    {
+      "tool": "read_code",
+      "args": {
+        "path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\user\\OrderController.java"
+      },
+      "result": "{\"content\": \"package com.sky.controller.user;\\n\\nimport org.springframework.beans.factory.annotation.Autowired;\\nimport org.springframework.web.bind.annotation.GetMapping;\\nimport org.springframework.web.bind.annotation.PathVariable;\\nimport org.springframework.web.bind.annotation.PostMapping;\\nimport org.springframework.web.bind.annotation.PutMapping;\\nimport org.springframework.web.bind.annotation.RequestBody;\\nimport org.springframework.web.bind.annotation.RequestMapping;\\nimport org.springfr"
+    },
+    {
+      "tool": "search_code",
+      "args": {
+        "class_name": "com.sky.exception.GlobalExceptionHandler"
+      },
+      "result": "{\"found\": true, \"path\": \"D:\\\\workspace-repo\\\\sky-take-out\\\\sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\handler\\\\GlobalExceptionHandler.java\"}"
+    },
+    {
+      "tool": "read_code",
+      "args": {
+        "path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\handler\\GlobalExceptionHandler.java"
+      },
+      "result": "{\"content\": \"package com.sky.handler;\\n\\nimport com.sky.constant.MessageConstant;\\nimport com.sky.exception.BaseException;\\nimport com.sky.result.Result;\\nimport lombok.extern.slf4j.Slf4j;\\n\\nimport java.sql.SQLIntegrityConstraintViolationException;\\n\\nimport org.springframework.http.converter.HttpMessageNotReadableException;\\nimport org.springframework.web.bind.MissingPathVariableException;\\nimport org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;\\nimport org.spring"
+    },
+    {
+      "tool": "edit_code",
+      "args": {
+        "raw_stack": "Caused by: java.lang.NumberFormatException: For input string: \"abc\"\n\tat java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67) ~[na:na]\n\tat java.base/java.lang.Long.parseLong(Long.java:711) ~[na:na]\n\tat java.base/java.lang.Long.valueOf(Long.java:1163) ~[na:na]\n\tat org.springframework.util.NumberUtils.parseNumber(NumberUtils.java:206) ~[spring-core-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.propertyeditors.CustomNumberEditor.setAsText(CustomNumberEditor.java:115) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterDelegate.doConvertTextValue(TypeConverterDelegate.java:425) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterDelegate.doConvertValue(TypeConverterDelegate.java:398) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterDelegate.convertIfNecessary(TypeConverterDelegate.java:155) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:73) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:53) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.validation.DataBinder.convertIfNecessary(DataBinder.java:729) ~[spring-context-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:125) ~[spring-web-6.0.11.jar:6.0.11]\n\t... 39 common frames omitted",
+        "source_info": {
+          "class_name": "com.sky.handler.GlobalExceptionHandler",
+          "method": "",
+          "line_no": 0,
+          "context_snippet": "",
+          "full_source": "package com.sky.handler;\n\nimport com.sky.constant.MessageConstant;\nimport com.sky.exception.BaseException;\nimport com.sky.result.Result;\nimport lombok.extern.slf4j.Slf4j;\n\nimport java.sql.SQLIntegrityConstraintViolationException;\n\nimport org.springframework.http.converter.HttpMessageNotReadableException;\nimport org.springframework.web.bind.MissingPathVariableException;\nimport org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;\nimport org.springframework.web.bind.annotation.ExceptionHandler;\nimport org.springframework.web.bind.annotation.RestControllerAdvice;\n\n/**\n * 全局异常处理器，处理项目中抛出的业务异常\n */\n@RestControllerAdvice\n@Slf4j\npublic class GlobalExceptionHandler {\n\n    @ExceptionHandler\n    public Result<String> exceptionHandler(BaseException ex) {\n        log.error(\"异常信息：{}\", ex.getMessage());\n        return Result.error(ex.getMessage());\n    }\n\n    @ExceptionHandler\n    public Result<String> exceptionHandler(SQLIntegrityConstraintViolationException ex) {\n        log.error(\"异常信息：{}\", ex.getMessage());\n        String errorMsg = ex.getMessage();\n        if (errorMsg.contains(\"Duplicate entry\")) {\n            String[] errorList = errorMsg.split(\" \");\n            return Result.error(errorList[2] + MessageConstant.ACCOUNT_ALREADY_EXIST);\n        } else {\n            return Result.error(MessageConstant.UNKNOWN_ERROR);\n        }\n    }\n\n    @ExceptionHandler\n    public Result<String> exceptionHandler(MissingPathVariableException ex) {\n        log.error(\"路径变量绑定异常：\", ex);\n        return Result.error(\"请求参数绑定失败\");\n    }\n\n    @ExceptionHandler\n    public Result<String> exceptionHandler(HttpMessageNotReadableException ex) {\n        log.error(\"请求体反序列化异常：\", ex);\n        return Result.error(\"请求数据格式错误\");\n    }\n\n    @ExceptionHandler\n    public Result<String> exceptionHandler(MethodArgumentTypeMismatchException ex) {\n        log.error(\"方法参数类型不匹配异常：\", ex);\n        return Result.error(\"请求参数类型错误\");\n    }\n\n}",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\handler\\GlobalExceptionHandler.java"
+        }
+      },
+      "result": "{\"patch_text\": \"--- a/sky-server/src/main/java/com/sky/handler/GlobalExceptionHandler.java\\n+++ b/sky-server/src/main/java/com/sky/handler/GlobalExceptionHandler.java\\n@@ -10,6 +10,7 @@\\n import org.springframework.http.converter.HttpMessageNotReadableException;\\n import org.springframework.web.bind.MissingPathVariableException;\\n import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;\\n+import org.springframework.beans.TypeMismatchException;\\n import org.springfram"
+    },
+    {
+      "tool": "validate_patch",
+      "args": {
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/handler/GlobalExceptionHandler.java\n+++ b/sky-server/src/main/java/com/sky/handler/GlobalExceptionHandler.java\n@@ -10,6 +10,7 @@\n import org.springframework.http.converter.HttpMessageNotReadableException;\n import org.springframework.web.bind.MissingPathVariableException;\n import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;\n+import org.springframework.beans.TypeMismatchException;\n import org.springframework.web.bind.annotation.ExceptionHandler;\n import org.springframework.web.bind.annotation.RestControllerAdvice;\n \n@@ -55,5 +56,11 @@\n         return Result.error(\"请求参数类型错误\");\n     }\n \n+    @ExceptionHandler\n+    public Result<String> exceptionHandler(TypeMismatchException ex) {\n+        log.error(\"类型转换异常：\", ex);\n+        return Result.error(\"请求参数类型错误\");\n+    }\n+\n }",
+        "source_info": {
+          "class_name": "com.sky.handler.GlobalExceptionHandler",
+          "method": "",
+          "line_no": 0,
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\handler\\GlobalExceptionHandler.java",
+          "full_source": "package com.sky.handler;\n\nimport com.sky.constant.MessageConstant;\nimport com.sky.exception.BaseException;\nimport com.sky.result.Result;\nimport lombok.extern.slf4j.Slf4j;\n\nimport java.sql.SQLIntegrityConstraintViolationException;\n\nimport org.springframework.http.converter.HttpMessageNotReadableException;\nimport org.springframework.web.bind.MissingPathVariableException;\nimport org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;\nimport org.springframework.web.bind.annotation.ExceptionHandler;\nimport org.springframework.web.bind.annotation.RestControllerAdvice;\n\n/**\n * 全局异常处理器，处理项目中抛出的业务异常\n */\n@RestControllerAdvice\n@Slf4j\npublic class GlobalExceptionHandler {\n\n    @ExceptionHandler\n    public Result<String> exceptionHandler(BaseException ex) {\n        log.error(\"异常信息：{}\", ex.getMessage());\n        return Result.error(ex.getMessage());\n    }\n\n    @ExceptionHandler\n    public Result<String> exceptionHandler(SQLIntegrityConstraintViolationException ex) {\n        log.error(\"异常信息：{}\", ex.getMessage());\n        String errorMsg = ex.getMessage();\n        if (errorMsg.contains(\"Duplicate entry\")) {\n            String[] errorList = errorMsg.split(\" \");\n            return Result.error(errorList[2] + MessageConstant.ACCOUNT_ALREADY_EXIST);\n        } else {\n            return Result.error(MessageConstant.UNKNOWN_ERROR);\n        }\n    }\n\n    @ExceptionHandler\n    public Result<String> exceptionHandler(MissingPathVariableException ex) {\n        log.error(\"路径变量绑定异常：\", ex);\n        return Result.error(\"请求参数绑定失败\");\n    }\n\n    @ExceptionHandler\n    public Result<String> exceptionHandler(HttpMessageNotReadableException ex) {\n        log.error(\"请求体反序列化异常：\", ex);\n        return Result.error(\"请求数据格式错误\");\n    }\n\n    @ExceptionHandler\n    public Result<String> exceptionHandler(MethodArgumentTypeMismatchException ex) {\n        log.error(\"方法参数类型不匹配异常：\", ex);\n        return Result.error(\"请求参数类型错误\");\n    }\n\n}"
+        }
+      },
+      "result": "{\"valid\": true, \"errors\": [], \"changed_lines\": 7, \"files\": [\"sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\handler\\\\GlobalExceptionHandler.java\"]}"
+    },
+    {
+      "tool": "generate_test",
+      "args": {
+        "source_info": {
+          "class_name": "com.sky.handler.GlobalExceptionHandler",
+          "method": "",
+          "line_no": 0,
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\handler\\GlobalExceptionHandler.java",
+          "full_source": "package com.sky.handler;\n\nimport com.sky.constant.MessageConstant;\nimport com.sky.exception.BaseException;\nimport com.sky.result.Result;\nimport lombok.extern.slf4j.Slf4j;\n\nimport java.sql.SQLIntegrityConstraintViolationException;\n\nimport org.springframework.http.converter.HttpMessageNotReadableException;\nimport org.springframework.web.bind.MissingPathVariableException;\nimport org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;\nimport org.springframework.web.bind.annotation.ExceptionHandler;\nimport org.springframework.web.bind.annotation.RestControllerAdvice;\n\n/**\n * 全局异常处理器，处理项目中抛出的业务异常\n */\n@RestControllerAdvice\n@Slf4j\npublic class GlobalExceptionHandler {\n\n    @ExceptionHandler\n    public Result<String> exceptionHandler(BaseException ex) {\n        log.error(\"异常信息：{}\", ex.getMessage());\n        return Result.error(ex.getMessage());\n    }\n\n    @ExceptionHandler\n    public Result<String> exceptionHandler(SQLIntegrityConstraintViolationException ex) {\n        log.error(\"异常信息：{}\", ex.getMessage());\n        String errorMsg = ex.getMessage();\n        if (errorMsg.contains(\"Duplicate entry\")) {\n            String[] errorList = errorMsg.split(\" \");\n            return Result.error(errorList[2] + MessageConstant.ACCOUNT_ALREADY_EXIST);\n        } else {\n            return Result.error(MessageConstant.UNKNOWN_ERROR);\n        }\n    }\n\n    @ExceptionHandler\n    public Result<String> exceptionHandler(MissingPathVariableException ex) {\n        log.error(\"路径变量绑定异常：\", ex);\n        return Result.error(\"请求参数绑定失败\");\n    }\n\n    @ExceptionHandler\n    public Result<String> exceptionHandler(HttpMessageNotReadableException ex) {\n        log.error(\"请求体反序列化异常：\", ex);\n        return Result.error(\"请求数据格式错误\");\n    }\n\n    @ExceptionHandler\n    public Result<String> exceptionHandler(MethodArgumentTypeMismatchException ex) {\n        log.error(\"方法参数类型不匹配异常：\", ex);\n        return Result.error(\"请求参数类型错误\");\n    }\n\n}"
+        },
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/handler/GlobalExceptionHandler.java\n+++ b/sky-server/src/main/java/com/sky/handler/GlobalExceptionHandler.java\n@@ -10,6 +10,7 @@\n import org.springframework.http.converter.HttpMessageNotReadableException;\n import org.springframework.web.bind.MissingPathVariableException;\n import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;\n+import org.springframework.beans.TypeMismatchException;\n import org.springframework.web.bind.annotation.ExceptionHandler;\n import org.springframework.web.bind.annotation.RestControllerAdvice;\n \n@@ -55,5 +56,11 @@\n         return Result.error(\"请求参数类型错误\");\n     }\n \n+    @ExceptionHandler\n+    public Result<String> exceptionHandler(TypeMismatchException ex) {\n+        log.error(\"类型转换异常：\", ex);\n+        return Result.error(\"请求参数类型错误\");\n+    }\n+\n }",
+        "raw_stack": "Caused by: java.lang.NumberFormatException: For input string: \"abc\"\n\tat java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67) ~[na:na]\n\tat java.base/java.lang.Long.parseLong(Long.java:711) ~[na:na]\n\tat java.base/java.lang.Long.valueOf(Long.java:1163) ~[na:na]\n\tat org.springframework.util.NumberUtils.parseNumber(NumberUtils.java:206) ~[spring-core-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.propertyeditors.CustomNumberEditor.setAsText(CustomNumberEditor.java:115) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterDelegate.doConvertTextValue(TypeConverterDelegate.java:425) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterDelegate.doConvertValue(TypeConverterDelegate.java:398) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterDelegate.convertIfNecessary(TypeConverterDelegate.java:155) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:73) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:53) ~[spring-beans-6.0.11.jar:6.0.11]\n\tat org.springframework.validation.DataBinder.convertIfNecessary(DataBinder.java:729) ~[spring-context-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:125) ~[spring-web-6.0.11.jar:6.0.11]\n\t... 39 common frames omitted"
+      },
+      "result": "{\"test_code\": \"package com.sky.handler;\\n\\nimport org.junit.jupiter.api.DisplayName;\\nimport org.junit.jupiter.api.Test;\\nimport org.junit.jupiter.api.extension.ExtendWith;\\nimport org.mockito.InjectMocks;\\nimport org.mockito.junit.jupiter.MockitoExtension;\\nimport org.springframework.beans.TypeMismatchException;\\nimport com.sky.result.Result;\\n\\nimport static org.junit.jupiter.api.Assertions.*;\\n\\n@ExtendWith(MockitoExtension.class)\\nclass GlobalExceptionHandlerTest {\\n\\n    @InjectMocks\\n    p"
+    },
+    {
+      "tool": "final_patch",
+      "args": {
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/handler/GlobalExceptionHandler.java\n+++ b/sky-server/src/main/java/com/sky/handler/GlobalExceptionHandler.java\n@@ -10,6 +10,7 @@\n import org.springframework.http.converter.HttpMessageNotReadableException;\n import org.springframework.web.bind.MissingPathVariableException;\n import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;\n+import org.springframework.beans.TypeMismatchException;\n import org.springframework.web.bind.annotation.ExceptionHandler;\n import org.springframework.web.bind.annotation.RestControllerAdvice;\n \n@@ -55,5 +56,11 @@\n         return Result.error(\"请求参数类型错误\");\n     }\n \n+    @ExceptionHandler\n+    public Result<String> exceptionHandler(TypeMismatchException ex) {\n+        log.error(\"类型转换异常：\", ex);\n+        return Result.error(\"请求参数类型错误\");\n+    }\n+\n }",
+        "source_info": {
+          "class_name": "com.sky.handler.GlobalExceptionHandler",
+          "method": "",
+          "line_no": 0,
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\handler\\GlobalExceptionHandler.java"
+        },
+        "test_code": "package com.sky.handler;\n\nimport org.junit.jupiter.api.DisplayName;\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.extension.ExtendWith;\nimport org.mockito.InjectMocks;\nimport org.mockito.junit.jupiter.MockitoExtension;\nimport org.springframework.beans.TypeMismatchException;\nimport com.sky.result.Result;\n\nimport static org.junit.jupiter.api.Assertions.*;\n\n@ExtendWith(MockitoExtension.class)\nclass GlobalExceptionHandlerTest {\n\n    @InjectMocks\n    private GlobalExceptionHandler globalExceptionHandler;\n\n    @Test\n    @DisplayName(\"正向测试：TypeMismatchException处理器正确处理异常并返回预期错误消息\")\n    void testTypeMismatchExceptionHandler() {\n        // Arrange: 创建TypeMismatchException实例，模拟输入\"abc\"导致的类型不匹配\n        TypeMismatchException ex = new TypeMismatchException(\"abc\", Long.class);\n\n        // Act: 调用异常处理器\n        Result<String> result = globalExceptionHandler.exceptionHandler(ex);\n\n        // Assert: 验证返回的Result不为null，错误消息正确\n        assertNotNull(result);\n        assertEquals(\"请求参数类型错误\", result.getMsg());\n    }\n\n    @Test\n    @DisplayName(\"边界测试：修复后，原来导致NumberFormatException的输入现在能被捕获并返回错误响应\")\n    void testOriginalExceptionNowHandled() {\n        // Arrange: 模拟原始异常情况，输入\"abc\"应该导致TypeMismatchException\n        TypeMismatchException ex = new TypeMismatchException(\"abc\", Long.class);\n\n        // Act: 调用处理器，验证不会抛出未捕获异常\n        assertDoesNotThrow(() -> {\n            Result<String> result = globalExceptionHandler.exceptionHandler(ex);\n            assertNotNull(result);\n            assertEquals(\"请求参数类型错误\", result.getMsg());\n        });\n    }\n}"
+      },
+      "result": "success"
+    }
+  ],
+  "detection_method": "agent"
+}

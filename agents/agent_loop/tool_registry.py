@@ -594,10 +594,77 @@ def _search_result_to_source_info(search_result, repo_path, file_io_mod):
 def _edit_code(config, llm_client, kw):
     raw_stack = kw.get('raw_stack', '')
     source_info = kw.get('source_info', {})
+
+    # 验证 full_source 完整性：如果被截断，重新读取文件
+    source_info = _ensure_full_source_complete(source_info, config.get('repo_path', ''))
+
     prompt = prompt_builder.build_prompt(config, raw_stack, source_info)
     max_tokens = int(config.get('max_tokens', 8192))
     patch_text = llm_client.generate_patch(prompt, max_tokens=max_tokens)
     return {'patch_text': patch_text, 'prompt': prompt}
+
+
+def _ensure_full_source_complete(source_info, repo_path):
+    """确保 source_info 中的 full_source 是完整的文件内容。
+
+    如果 full_source 被截断（行数少于预期），重新读取文件获取完整内容。
+    """
+    if not source_info or not repo_path:
+        return source_info
+
+    full_source = source_info.get('full_source', '')
+    if not full_source:
+        return source_info
+
+    # 检查 full_source 是否可能被截断
+    source_lines = full_source.splitlines()
+    if len(source_lines) < 10:
+        # 文件太短，可能是截断的
+        logger.warning('full_source 只有 %d 行，可能被截断', len(source_lines))
+    elif not full_source.rstrip().endswith('}'):
+        # 文件不以 } 结尾，可能被截断
+        logger.warning('full_source 不以 } 结尾，可能被截断')
+    else:
+        # 检查括号平衡
+        open_braces = full_source.count('{')
+        close_braces = full_source.count('}')
+        if open_braces > close_braces:
+            logger.warning('full_source 括号不平衡（开括号 %d > 闭括号 %d），可能被截断',
+                          open_braces, close_braces)
+        else:
+            # 看起来是完整的
+            return source_info
+
+    # 尝试重新读取文件
+    repo_relative_path = source_info.get('repo_relative_path', '')
+    if not repo_relative_path:
+        return source_info
+
+    source_path = os.path.join(repo_path, repo_relative_path.replace('\\', '/'))
+    if not os.path.exists(source_path):
+        logger.warning('源文件不存在: %s', source_path)
+        return source_info
+
+    try:
+        with open(source_path, 'r', encoding='utf-8', errors='replace') as f:
+            fresh_source = f.read()
+
+        fresh_lines = fresh_source.splitlines()
+        if len(fresh_lines) > len(source_lines):
+            logger.info('重新读取源文件成功: %d 行 -> %d 行', len(source_lines), len(fresh_lines))
+            source_info = source_info.copy()
+            source_info['full_source'] = fresh_source
+
+            # 同时更新 context_snippet
+            line_no = source_info.get('line_no', 0)
+            if line_no and line_no > 0:
+                start = max(0, line_no - 4)
+                end = min(len(fresh_lines), line_no + 4)
+                source_info['context_snippet'] = '\n'.join(fresh_lines[start:end])
+    except Exception as e:
+        logger.warning('重新读取源文件失败: %s', e)
+
+    return source_info
 
 
 def _validate_patch(config, repo_path, file_io_mod, kw):

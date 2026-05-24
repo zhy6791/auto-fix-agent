@@ -210,6 +210,32 @@ class AutoFixAgent:
                 apply_result['dry_run'] = False
                 report['apply_result'] = apply_result
 
+                # 验证补丁是否真的被应用了
+                patch_actually_applied = False
+                if apply_result.get('applied') and apply_result.get('files'):
+                    # 检查文件是否真的被修改了
+                    for file_path in apply_result['files']:
+                        full_path = os.path.join(repo_path, file_path)
+                        if os.path.exists(full_path):
+                            # 检查文件是否有未提交的更改
+                            import subprocess
+                            try:
+                                ret = subprocess.run(
+                                    ['git', '-C', repo_path, 'diff', '--quiet', file_path],
+                                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                                )
+                                if ret.returncode != 0:
+                                    # 文件有更改
+                                    patch_actually_applied = True
+                                    break
+                            except Exception:
+                                pass
+
+                if not patch_actually_applied:
+                    logger.warning('  ⚠️ 补丁未能成功应用到文件')
+                    apply_result['applied'] = False
+                    report['apply_result'] = apply_result
+
                 if apply_result.get('applied') and apply_result.get('files'):
                     commit_msg = 'fix: auto-fix %s in %s.%s' % (
                         parsed_stack[0].get('exception_type', 'Exception'),

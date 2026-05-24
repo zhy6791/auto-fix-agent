@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class ReActAgent:
     """LLM-driven decision loop for the locate-and-fix phase."""
 
-    def __init__(self, config, tool_registry, llm_client, max_iterations=10):
+    def __init__(self, config, tool_registry, llm_client, max_iterations=15):
         self.config = config
         self.tool_registry = tool_registry
         self.llm_client = llm_client

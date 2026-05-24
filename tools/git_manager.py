@@ -145,18 +145,21 @@ def _apply_unified_diff(repo_path, patch_text, logger):
     """Apply unified-diff. Try 'git apply' first, then 'patch' CLI, fall back to internal parser."""
     applied_files = []
 
+    # 将 patch_text 编码为 UTF-8 bytes，避免 Windows 上的 GBK 编码问题
+    patch_bytes = patch_text.encode('utf-8')
+
     # Strategy 1: Try git apply (more strict but better error messages)
     try:
         res = subprocess.run(['git', 'apply', '--check', '--verbose'],
-                             cwd=repo_path, input=patch_text,
+                             cwd=repo_path, input=patch_bytes,
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                             universal_newlines=True, timeout=30)
+                             timeout=30)
         if res.returncode == 0:
             # Apply for real
             res = subprocess.run(['git', 'apply', '--verbose'],
-                                 cwd=repo_path, input=patch_text,
+                                 cwd=repo_path, input=patch_bytes,
                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                 universal_newlines=True, timeout=30)
+                                 timeout=30)
             if res.returncode == 0:
                 for fpath in _extract_patch_paths(patch_text):
                     corrected = _correct_patch_path(repo_path, fpath)
@@ -165,7 +168,7 @@ def _apply_unified_diff(repo_path, patch_text, logger):
                 logger.info("Applied unified-diff via 'git apply' to %d files", len(applied_files))
                 return applied_files
         else:
-            logger.info("git apply --check failed: %s", (res.stderr or '').strip()[:200])
+            logger.info("git apply --check failed: %s", res.stderr.decode('utf-8', errors='replace').strip()[:200])
     except (subprocess.TimeoutExpired, FileNotFoundError, OSError) as e:
         logger.info("git apply not available: %s", e)
 
@@ -173,16 +176,29 @@ def _apply_unified_diff(repo_path, patch_text, logger):
     patch_stderr = ''
     try:
         res = subprocess.run(['patch', '-p1', '--batch', '--fuzz=3'],
-                             cwd=repo_path, input=patch_text, stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE, universal_newlines=True, timeout=30)
-        patch_stderr = (res.stderr or '').strip()
-        if res.returncode in (0, 1):
+                             cwd=repo_path, input=patch_bytes, stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE, timeout=30)
+        patch_stderr = res.stderr.decode('utf-8', errors='replace').strip()
+        if res.returncode == 0:
+            # 完全成功
             for fpath in _extract_patch_paths(patch_text):
                 corrected = _correct_patch_path(repo_path, fpath)
                 if corrected not in applied_files:
                     applied_files.append(corrected)
             logger.info("Applied unified-diff via 'patch' to %d files", len(applied_files))
             return applied_files
+        elif res.returncode == 1:
+            # 部分成功：有些 hunk 被拒绝，生成了 .rej 文件
+            # 检查是否真的有文件被修改
+            logger.warning("patch -p1 partially applied (exit 1): %s", patch_stderr[:300])
+            # 尝试使用内部 fallback 解析器重新应用
+            applied_files = _apply_diff_fallback(repo_path, patch_text, logger)
+            if applied_files:
+                logger.info("Fallback parser applied to %d files", len(applied_files))
+                return applied_files
+            # 如果 fallback 也失败，返回空列表
+            logger.warning("Both patch CLI and fallback parser failed to apply changes")
+            return []
         else:
             logger.warning("patch -p1 failed (exit %d): %s", res.returncode, patch_stderr[:300])
     except (subprocess.TimeoutExpired, FileNotFoundError, OSError) as e:
@@ -198,17 +214,36 @@ def _correct_patch_path(repo_path, fpath):
 
     Handles cases where the LLM generated an extra directory prefix
     (e.g. 'mall-service/src/Main.java' when the real path is 'src/Main.java').
+    Also handles multi-module Maven projects where LLM omits module prefix.
     """
     parts = fpath.replace('\\', '/').split('/')
-    # Try the path as-is first
+
+    # Strategy 1: Try the path as-is
+    if os.path.isfile(os.path.join(repo_path, fpath.replace('\\', '/'))):
+        return fpath.replace('\\', '/')
+
+    # Strategy 2: If path starts with src/main or src/test, try prepending module directories
+    # This handles multi-module Maven projects (e.g., sky-server/src/main/java/...)
+    if parts[0] in ('src', 'main', 'test'):
+        # Look for directories in repo_path that contain this src path
+        try:
+            for entry in os.listdir(repo_path):
+                module_path = os.path.join(repo_path, entry, fpath.replace('\\', '/'))
+                if os.path.isfile(module_path):
+                    return entry + '/' + fpath.replace('\\', '/')
+        except OSError:
+            pass
+
+    # Strategy 3: Try stripping directory levels from the front
     for i in range(len(parts)):
         candidate = '/'.join(parts[i:])
         if os.path.isfile(os.path.join(repo_path, candidate)):
             return candidate
-        # Stop stripping once we hit a common source root
+        # Stop stripping once we hit a common source root (but only if we've tried module prefix)
         if parts[i] in ('src', 'main', 'test', 'java', 'resources', 'pom.xml', 'build.gradle'):
             return candidate
-    return fpath
+
+    return fpath.replace('\\', '/')
 
 
 _HUNK_HEADER_RE = re.compile(r'^@@\s+-(\d+)(?:,(\d+))?\s+\+(\d+)(?:,(\d+))?\s+@@')
@@ -290,6 +325,26 @@ def _apply_diff_fallback(repo_path, patch_text, logger):
             for hunk in reversed(hunks):
                 old_start = hunk['old_start'] - 1  # 0-indexed
                 old_count = hunk['old_count']
+
+                # Verify context lines match actual file content
+                context_lines = [ln for ln in hunk.get('lines', []) if ln.startswith(' ')]
+                if context_lines and old_start >= 0:
+                    # Check if context lines match actual file content
+                    mismatch = False
+                    for ctx_line in context_lines:
+                        expected = ctx_line[1:]  # Remove leading space
+                        # Find a matching line in the target region
+                        found = False
+                        for i in range(max(0, old_start - 2), min(len(original_lines), old_start + old_count + 2)):
+                            if original_lines[i].rstrip() == expected.rstrip():
+                                found = True
+                                break
+                        if not found:
+                            mismatch = True
+                            break
+                    if mismatch:
+                        logger.warning("Hunk context mismatch at line %d in %s, skipping hunk", old_start + 1, file_path)
+                        continue
 
                 new_hunk_lines = []
                 for hunk_line in hunk['lines']:
