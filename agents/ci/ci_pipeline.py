@@ -115,10 +115,12 @@ def _verify_patch_applicable(repo_path, patch_text):
     """Verify that a patch can be applied cleanly using git apply --check."""
     import subprocess
     try:
+        if patch_text and not patch_text.endswith('\n'):
+            patch_text = patch_text + '\n'
         res = subprocess.run(['git', 'apply', '--check'],
-                             cwd=repo_path, input=patch_text,
+                             cwd=repo_path, input=patch_text.encode('utf-8'),
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                             universal_newlines=True, timeout=30)
+                             timeout=30)
         return res.returncode == 0
     except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
         # If git is not available, skip this check

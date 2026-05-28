@@ -321,6 +321,8 @@ def _apply_diff_fallback(repo_path, patch_text, logger):
             with open(abs_path, 'r', encoding='utf-8') as f:
                 original_lines = f.read().splitlines()
 
+            any_hunk_applied = False
+
             # Apply hunks in reverse order to keep line numbers valid
             for hunk in reversed(hunks):
                 old_start = hunk['old_start'] - 1  # 0-indexed
@@ -360,6 +362,12 @@ def _apply_diff_fallback(repo_path, patch_text, logger):
                         new_hunk_lines.append(hunk_line)
 
                 original_lines[old_start:old_start + old_count] = new_hunk_lines
+                any_hunk_applied = True
+
+            # 所有 hunk 都被跳过时不写入文件
+            if not any_hunk_applied:
+                logger.warning("All hunks skipped for %s, no changes applied", file_path)
+                continue
 
             content = '\n'.join(original_lines)
             d = os.path.dirname(abs_path)

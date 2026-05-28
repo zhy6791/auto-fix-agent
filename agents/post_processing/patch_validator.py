@@ -292,6 +292,106 @@ def validate_java_structure(old_text, new_text, line_no, window=8):
     if code_lines_with_prefix > 0:
         errors.append('CRITICAL: Patched code contains line-number prefixes (LLM copied snippet format). %d lines with prefix detected. This is NOT valid Java code.' % code_lines_with_prefix)
 
+    # 7) Detect functional statements deleted inside the fix window
+    #    (e.g. method calls like clearRedis("dish_*") removed without replacement)
+    if line_no:
+        errors.extend(_check_functional_deletions(old_lines, new_lines, line_no, window))
+
+    return errors
+
+
+# Matches method call statements: obj.method(...), method(...), or assignments
+# Excludes: comments, annotations, package/import declarations, log/logger calls
+_METHOD_CALL_RE = re.compile(
+    r'(?:=\s*)?\s*'             # optional assignment
+    r'(?:[\w$]+\.)*[\w$]+\s*\(' # qualified or simple method call: foo.bar.method(
+)
+_LOG_CALL_RE = re.compile(r'\b(?:log|logger)\.\w+\s*\(')
+_FLOW_KEYWORDS = re.compile(
+    r'^\s*(?:if|else|for|while|do|switch|return|throw|try|catch|finally|break|continue)\b'
+)
+
+
+def _check_functional_deletions(old_lines, new_lines, line_no, window=8):
+    """Detect functional method calls removed from the fix window without replacement."""
+    errors = []
+    lower = max(0, line_no - 1 - window)
+    upper = min(len(old_lines), line_no + window)
+
+    # Build a set of method call identifiers from the new text
+    new_text_full = '\n'.join(new_lines)
+    new_window_text = '\n'.join(new_lines[lower:min(len(new_lines), upper)])
+
+    # Find removed lines within the window by diffing
+    matcher = difflib.SequenceMatcher(a=old_lines, b=new_lines)
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        if tag not in ('delete', 'replace'):
+            continue
+        for line_idx in range(i1, i2):
+            # Only check within the problem window
+            line_num = line_idx + 1
+            if line_num < (line_no - window) or line_num > (line_no + window):
+                continue
+            old_line = old_lines[line_idx].rstrip()
+
+            # Skip comments, blanks, annotations, simple braces
+            stripped = old_line.strip()
+            if not stripped or stripped.startswith('//') or stripped.startswith('/*') or stripped.startswith('*'):
+                continue
+            if stripped.startswith('@') or stripped.startswith('package ') or stripped.startswith('import '):
+                continue
+            if stripped in ('{', '}', '};'):
+                continue
+            if _FLOW_KEYWORDS.match(stripped):
+                continue
+            # Skip log/logger calls (these are informational, not functional)
+            if _LOG_CALL_RE.search(stripped):
+                continue
+
+            # Check if this is a method-call-like statement
+            m = _METHOD_CALL_RE.search(stripped)
+            if not m:
+                continue
+
+            method_expr = m.group(0).strip()
+
+            # Extract the core method name for comparison
+            core_match = re.search(r'([\w$]+)\s*\($', method_expr)
+            if not core_match:
+                continue
+            method_name = core_match.group(1)
+
+            # Skip simple getters/setters (they're often part of a fix)
+            if method_name.startswith(('get', 'set', 'is', 'has')):
+                continue
+
+            # Check if this method CALL still exists in the new text
+            # (exclude method definitions: lines with return type before method name)
+            call_found = False
+            call_pattern = re.compile(
+                r'(?:\.|\s)' + re.escape(method_name) + r'\s*\(|'  # obj.method( or  method(
+                r'^' + re.escape(method_name) + r'\s*\('            # method( at line start
+            )
+            for new_line in new_lines:
+                if call_pattern.search(new_line):
+                    # Distinguish method call from method definition
+                    # Method definitions have modifiers/return type before the name
+                    if not re.match(
+                        r'^\s*(?:public|protected|private|static|final|abstract|synchronized|'
+                        r'[\w<>,.\s\[\]]+\s+)' + re.escape(method_name) + r'\s*\(',
+                        new_line
+                    ):
+                        call_found = True
+                        break
+            if call_found:
+                continue
+
+            errors.append(
+                'Functional statement removed near line %d: "%s". '
+                'This method call no longer exists in the patched code and may have been accidentally deleted.'
+                % (line_num, stripped[:60])
+            )
+
     return errors
 
 
@@ -363,8 +463,20 @@ def validate_patch(config, repo_path, patch_text, source_info, file_io):
                     result['errors'].append('Patch for %s has too many hunks: %d > %d' % (rel_path, len(hunks), max_patch_hunks))
 
                 for hunk in hunks:
-                    hunk_changed = sum(1 for ln in hunk.get('lines', []) if ln.startswith(('+', '-')) and not ln.startswith(('+++', '---')))
+                    hunk_lines = hunk.get('lines', [])
+                    hunk_changed = sum(1 for ln in hunk_lines if ln.startswith(('+', '-')) and not ln.startswith(('+++', '---')))
                     hunk_span = max(int(hunk.get('old_count', 0)), int(hunk.get('new_count', 0)))
+
+                    # Require context lines: without them, patch relies on absolute line numbers
+                    # which are often wrong in LLM-generated patches
+                    context_lines = [ln for ln in hunk_lines if ln.startswith(' ')]
+                    if not context_lines:
+                        result['errors'].append(
+                            'Hunk in %s has no context lines. '
+                            'Context lines are required to correctly locate the change position.'
+                            % rel_path)
+                        continue  # Skip further hunk checks since this hunk is structurally invalid
+
                     if hunk_changed > max_hunk_lines:
                         result['errors'].append('Hunk in %s changes too many lines: %d > %d' % (rel_path, hunk_changed, max_hunk_lines))
                     if hunk_span > max_hunk_span:
@@ -384,6 +496,26 @@ def validate_patch(config, repo_path, patch_text, source_info, file_io):
 
                     if changed_lines > old_non_empty * effective_ratio:
                         result['errors'].append('Patch changes too much of %s: %d changed lines over %d non-empty lines (ratio limit: %.0f%%)' % (rel_path, changed_lines, old_non_empty, effective_ratio * 100))
+
+                # 验证补丁上下文行是否与实际文件内容匹配
+                old_lines = old_text.splitlines()
+                for hunk_idx, hunk in enumerate(hunks):
+                    old_start = int(hunk.get('old_start', 1)) - 1  # 0-indexed
+                    if old_start < 0:
+                        continue
+                    context_lines = [ln for ln in hunk.get('lines', []) if ln.startswith(' ')]
+                    for ctx_line in context_lines:
+                        expected = ctx_line[1:]  # 去掉前导空格
+                        found = False
+                        for i in range(max(0, old_start - 2), min(len(old_lines), old_start + int(hunk.get('old_count', 0)) + 2)):
+                            if old_lines[i].rstrip() == expected.rstrip():
+                                found = True
+                                break
+                        if not found:
+                            result['errors'].append(
+                                'Hunk %d in %s context mismatch: "%s" not found near line %d'
+                                % (hunk_idx + 1, rel_path, expected.strip()[:50], old_start + 1))
+                            break  # 每个 hunk 只报告第一个不匹配行
 
                 if source_info:
                     target_rel = os.path.normpath(str(source_info.get('repo_relative_path', '')))

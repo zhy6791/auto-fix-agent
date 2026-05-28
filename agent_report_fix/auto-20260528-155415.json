@@ -1,0 +1,472 @@
+{
+  "status": "completed",
+  "dry_run": false,
+  "raw_stack": "java.lang.NullPointerException: Cannot invoke \"com.sky.entity.Orders.getId()\" because \"orders\" is null\n\tat com.sky.service.impl.OrderServiceImpl.details(OrderServiceImpl.java:255) ~[classes/:na]\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]\n\tat org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343) ~[spring-aop-6.0.11.jar:6.0.11]\n\tat org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:704) ~[spring-aop-6.0.11.jar:6.0.11]\n\tat com.sky.service.impl.OrderServiceImpl$$SpringCGLIB$$0.details(<generated>) ~[classes/:na]\n\tat com.sky.controller.admin.OrderController.details(OrderController.java:59) ~[classes/:na]\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]\n\tat org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1011) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.11.jar:6.0]\n\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.11.jar:6.0]\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:166) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:894) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]",
+  "parsed_stack": [
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "com.sky.service.impl.OrderServiceImpl",
+      "method": "details",
+      "line_no": 255,
+      "source_file": "OrderServiceImpl.java",
+      "raw_line": "\tat com.sky.service.impl.OrderServiceImpl.details(OrderServiceImpl.java:255) ~[classes/:na]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.aop.support.AopUtils",
+      "method": "invokeJoinpointUsingReflection",
+      "line_no": 343,
+      "source_file": "AopUtils.java",
+      "raw_line": "\tat org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343) ~[spring-aop-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor",
+      "method": "intercept",
+      "line_no": 704,
+      "source_file": "CglibAopProxy.java",
+      "raw_line": "\tat org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:704) ~[spring-aop-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "com.sky.service.impl.OrderServiceImpl$$SpringCGLIB$$0",
+      "method": "details",
+      "line_no": null,
+      "source_file": "<generated>",
+      "raw_line": "\tat com.sky.service.impl.OrderServiceImpl$$SpringCGLIB$$0.details(<generated>) ~[classes/:na]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "com.sky.controller.admin.OrderController",
+      "method": "details",
+      "line_no": 59,
+      "source_file": "OrderController.java",
+      "raw_line": "\tat com.sky.controller.admin.OrderController.details(OrderController.java:59) ~[classes/:na]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.method.support.InvocableHandlerMethod",
+      "method": "doInvoke",
+      "line_no": 205,
+      "source_file": "InvocableHandlerMethod.java",
+      "raw_line": "\tat org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.method.support.InvocableHandlerMethod",
+      "method": "invokeForRequest",
+      "line_no": 150,
+      "source_file": "InvocableHandlerMethod.java",
+      "raw_line": "\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod",
+      "method": "invokeAndHandle",
+      "line_no": 118,
+      "source_file": "ServletInvocableHandlerMethod.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter",
+      "method": "invokeHandlerMethod",
+      "line_no": 884,
+      "source_file": "RequestMappingHandlerAdapter.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter",
+      "method": "handleInternal",
+      "line_no": 797,
+      "source_file": "RequestMappingHandlerAdapter.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter",
+      "method": "handle",
+      "line_no": 87,
+      "source_file": "AbstractHandlerMethodAdapter.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.DispatcherServlet",
+      "method": "doDispatch",
+      "line_no": 1081,
+      "source_file": "DispatcherServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.DispatcherServlet",
+      "method": "doService",
+      "line_no": 974,
+      "source_file": "DispatcherServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.FrameworkServlet",
+      "method": "processRequest",
+      "line_no": 1011,
+      "source_file": "FrameworkServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1011) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.FrameworkServlet",
+      "method": "doGet",
+      "line_no": 903,
+      "source_file": "FrameworkServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "jakarta.servlet.http.HttpServlet",
+      "method": "service",
+      "line_no": 564,
+      "source_file": "HttpServlet.java",
+      "raw_line": "\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.11.jar:6.0]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.FrameworkServlet",
+      "method": "service",
+      "line_no": 885,
+      "source_file": "FrameworkServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "jakarta.servlet.http.HttpServlet",
+      "method": "service",
+      "line_no": 658,
+      "source_file": "HttpServlet.java",
+      "raw_line": "\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.11.jar:6.0]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 205,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 149,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.tomcat.websocket.server.WsFilter",
+      "method": "doFilter",
+      "line_no": 51,
+      "source_file": "WsFilter.java",
+      "raw_line": "\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 174,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 149,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.filter.CharacterEncodingFilter",
+      "method": "doFilterInternal",
+      "line_no": 201,
+      "source_file": "CharacterEncodingFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.filter.OncePerRequestFilter",
+      "method": "doFilter",
+      "line_no": 116,
+      "source_file": "OncePerRequestFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 174,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 149,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.StandardWrapperValve",
+      "method": "invoke",
+      "line_no": 166,
+      "source_file": "StandardWrapperValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:166) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.StandardContextValve",
+      "method": "invoke",
+      "line_no": 90,
+      "source_file": "StandardContextValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.authenticator.AuthenticatorBase",
+      "method": "invoke",
+      "line_no": 482,
+      "source_file": "AuthenticatorBase.java",
+      "raw_line": "\tat org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.StandardHostValve",
+      "method": "invoke",
+      "line_no": 115,
+      "source_file": "StandardHostValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.valves.ErrorReportValve",
+      "method": "invoke",
+      "line_no": 93,
+      "source_file": "ErrorReportValve.java",
+      "raw_line": "\tat org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.StandardEngineValve",
+      "method": "invoke",
+      "line_no": 74,
+      "source_file": "StandardEngineValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.connector.CoyoteAdapter",
+      "method": "service",
+      "line_no": 341,
+      "source_file": "CoyoteAdapter.java",
+      "raw_line": "\tat org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.coyote.http11.Http11Processor",
+      "method": "service",
+      "line_no": 391,
+      "source_file": "Http11Processor.java",
+      "raw_line": "\tat org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.coyote.AbstractProcessorLight",
+      "method": "process",
+      "line_no": 63,
+      "source_file": "AbstractProcessorLight.java",
+      "raw_line": "\tat org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.coyote.AbstractProtocol$ConnectionHandler",
+      "method": "process",
+      "line_no": 894,
+      "source_file": "AbstractProtocol.java",
+      "raw_line": "\tat org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:894) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.tomcat.util.net.NioEndpoint$SocketProcessor",
+      "method": "doRun",
+      "line_no": 1740,
+      "source_file": "NioEndpoint.java",
+      "raw_line": "\tat org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.tomcat.util.net.SocketProcessorBase",
+      "method": "run",
+      "line_no": 52,
+      "source_file": "SocketProcessorBase.java",
+      "raw_line": "\tat org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.tomcat.util.threads.ThreadPoolExecutor",
+      "method": "runWorker",
+      "line_no": 1191,
+      "source_file": "ThreadPoolExecutor.java",
+      "raw_line": "\tat org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker",
+      "method": "run",
+      "line_no": 659,
+      "source_file": "ThreadPoolExecutor.java",
+      "raw_line": "\tat org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.tomcat.util.threads.TaskThread$WrappingRunnable",
+      "method": "run",
+      "line_no": 61,
+      "source_file": "TaskThread.java",
+      "raw_line": "\tat org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    }
+  ],
+  "located_files": [
+    {
+      "class_name": "com.sky.service.impl.OrderServiceImpl",
+      "method": "details",
+      "line_no": 255,
+      "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\service\\impl\\OrderServiceImpl.java"
+    }
+  ],
+  "prompt": "",
+  "patch_text": "--- a/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\n+++ b/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\n@@ -251,6 +251,11 @@\n     public OrderVO details(Long id) {\n         // 根据id查询订单\n         Orders orders = orderMapper.getById(id);\n \n+        // 校验订单是否存在\n+        if (orders == null) {\n+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);\n+        }\n+\n         // 查询该订单对应的菜品/套餐明细\n         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());",
+  "branch_name": "fix/auto-20260528-155415",
+  "apply_result": {
+    "applied": true,
+    "files": [
+      "sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java"
+    ],
+    "errors": [],
+    "dry_run": false,
+    "committed": true
+  },
+  "build_result": null,
+  "ci_result": {
+    "compile_result": {
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "test_result": {
+      "code": 0,
+      "stdout": "Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts\n",
+      "stderr": "WARNING: A Java agent has been loaded dynamically (D:\\Maven\\apache-maven-3.6.1\\mvn_repo\\net\\bytebuddy\\byte-buddy-agent\\1.14.5\\byte-buddy-agent-1.14.5.jar)\nWARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning\nWARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information\nWARNING: Dynamic loading of agents will be disallowed by default in a future release\nJava HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended\n"
+    },
+    "retries_used": 0,
+    "patch_history": [],
+    "stages_passed": [
+      "compile",
+      "tests"
+    ],
+    "stages_failed": []
+  },
+  "test_gen_result": {
+    "generated": true,
+    "test_path": "sky-server/src/test/java/com/sky/service/impl/OrderServiceImplTest.java",
+    "committed": false,
+    "error": null
+  },
+  "pr_result": {
+    "pr_created": true,
+    "pr_url": "https://gitee.com/zhao-haoyuan4353/sky-take-out/pulls/21",
+    "pr_number": 21,
+    "error": null
+  },
+  "error": null,
+  "agent_iterations": 5,
+  "agent_thoughts": [
+    "堆栈显示异常发生在 `OrderServiceImpl.details` 方法第255行。从上下文代码可以看出：\n\n```java\nOrders orders = orderMapper.getById(id);\n// 下一行直接调用 orders.getId()，但 orders 可能为 null\nList<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());\n```\n\n问题根因：当传入的 `id` 对应的订单不存在时，`orderMapper.getById(id)` 返回 `null`，但代码没有对返回值做空值检查就直接调用 `orders.getId()`，导致 NPE。\n\n观察其他方法（如 `userCancelById`、`rejection`、`delivery`、`complete`、`reminder`）都有类似的空值校验逻辑，会抛出 `OrderBusinessException`。`details` 方法缺失了这个校验。\n\n现在生成修复补丁：",
+    "edit_code 工具返回了修复说明而非标准的 unified diff。我需要根据分析结果手动构造正确的 unified diff 补丁。从源码分析可知，`details` 方法在第255行调用 `orders.getId()` 时 `orders` 为 null。需要在 `orderMapper.getById(id)` 之后添加空值检查。让我先验证补丁格式。\n\n```diff\n--- a/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\n+++ b/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\n@@ -251,6 +251,11 @@\n     public OrderVO details(Long id) {\n         // 根据id查询订单\n         Orders orders = orderMapper.getById(id);\n \n+        // 校验订单是否存在\n+        if (orders == null) {\n+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);\n+        }\n+\n         // 查询该订单对应的菜品/套餐明细\n         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());\n```",
+    "补丁验证通过，没有错误。现在生成 JUnit 单元测试。",
+    "补丁验证通过，单元测试也已生成。现在提交最终的修复补丁和测试代码。"
+  ],
+  "agent_tool_calls": [
+    {
+      "tool": "locate_from_stack",
+      "args": {
+        "class_name": "com.sky.service.impl.OrderServiceImpl",
+        "method": "details",
+        "line_no": 255
+      },
+      "result": "{\"source_path\": \"D:\\\\workspace-repo\\\\sky-take-out\\\\sky-server\\\\src/main/java\\\\com\\\\sky\\\\service\\\\impl\\\\OrderServiceImpl.java\", \"repo_relative_path\": \"sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\service\\\\impl\\\\OrderServiceImpl.java\", \"class_name\": \"com.sky.service.impl.OrderServiceImpl\", \"method\": \"details\", \"line_no\": 255, \"context_snippet\": \"        Orders orders = orderMapper.getById(id);\\n\\n        // 查询该订单对应的菜品/套餐明细\\n        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(order"
+    },
+    {
+      "tool": "edit_code",
+      "args": {
+        "raw_stack": "java.lang.NullPointerException: Cannot invoke \"com.sky.entity.Orders.getId()\" because \"orders\" is null\n\tat com.sky.service.impl.OrderServiceImpl.details(OrderServiceImpl.java:255) ~[classes/:na]",
+        "source_info": {
+          "class_name": "com.sky.service.impl.OrderServiceImpl",
+          "method": "details",
+          "line_no": 255,
+          "source_file": "OrderServiceImpl.java",
+          "context_snippet": "        Orders orders = orderMapper.getById(id);\n\n        // 查询该订单对应的菜品/套餐明细\n        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());\n\n        // 将该订单及其详情封装到OrderVO并返回\n        OrderVO orderVO = new OrderVO();",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\service\\impl\\OrderServiceImpl.java",
+          "full_source": "..."
+        }
+      },
+      "result": "{\"patch_text\": \"根据异常堆栈，`orders` 对象在调用 `getId()` 时为 `null`，导致 `NullPointerException`。修复方法是在调用 `orders.getId()` 前添加 null 检查，如果 `orders` 为 `null`，则抛出 `OrderBusinessException`（与 `OrderServiceImpl` 中其他方法的错误处理方式一致）。\\n\\n由于无法从提供的源码中获取完整文件以精确计算行号，但基于异常堆栈的行号信息（255）和问题行附近代码，可以安全地修改局部代码。以下是生成的最小化补丁：\\n\\n```diff\\n--- a/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\\n+++ b/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\\n@@ -253,5 +253,9 @@\\n         Orders orders = ord"
+    },
+    {
+      "tool": "validate_patch",
+      "args": {
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\n+++ b/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\n@@ -251,6 +251,11 @@\n     public OrderVO details(Long id) {\n         // 根据id查询订单\n         Orders orders = orderMapper.getById(id);\n \n+        // 校验订单是否存在\n+        if (orders == null) {\n+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);\n+        }\n+\n         // 查询该订单对应的菜品/套餐明细\n         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());",
+        "source_info": {
+          "class_name": "com.sky.service.impl.OrderServiceImpl",
+          "method": "details",
+          "line_no": 255,
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\service\\impl\\OrderServiceImpl.java"
+        }
+      },
+      "result": "{\"valid\": true, \"errors\": [], \"changed_lines\": 5, \"files\": [\"sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\service\\\\impl\\\\OrderServiceImpl.java\"]}"
+    },
+    {
+      "tool": "generate_test",
+      "args": {
+        "source_info": {
+          "class_name": "com.sky.service.impl.OrderServiceImpl",
+          "method": "details",
+          "line_no": 255,
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\service\\impl\\OrderServiceImpl.java"
+        },
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\n+++ b/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\n@@ -251,6 +251,11 @@\n     public OrderVO details(Long id) {\n         // 根据id查询订单\n         Orders orders = orderMapper.getById(id);\n \n+        // 校验订单是否存在\n+        if (orders == null) {\n+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);\n+        }\n+\n         // 查询该订单对应的菜品/套餐明细\n         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());",
+        "raw_stack": "java.lang.NullPointerException: Cannot invoke \"com.sky.entity.Orders.getId()\" because \"orders\" is null\n\tat com.sky.service.impl.OrderServiceImpl.details(OrderServiceImpl.java:255) ~[classes/:na]"
+      },
+      "result": "{\"test_code\": \"package com.sky.service.impl;\\n\\nimport com.sky.constant.MessageConstant;\\nimport com.sky.entity.OrderDetail;\\nimport com.sky.entity.Orders;\\nimport com.sky.exception.OrderBusinessException;\\nimport com.sky.mapper.OrderDetailMapper;\\nimport com.sky.mapper.OrderMapper;\\nimport org.junit.jupiter.api.DisplayName;\\nimport org.junit.jupiter.api.Test;\\nimport org.junit.jupiter.api.extension.ExtendWith;\\nimport org.mockito.InjectMocks;\\nimport org.mockito.Mock;\\nimport org.mockito.junit."
+    },
+    {
+      "tool": "final_patch",
+      "args": {
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\n+++ b/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\n@@ -251,6 +251,11 @@\n     public OrderVO details(Long id) {\n         // 根据id查询订单\n         Orders orders = orderMapper.getById(id);\n \n+        // 校验订单是否存在\n+        if (orders == null) {\n+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);\n+        }\n+\n         // 查询该订单对应的菜品/套餐明细\n         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());",
+        "source_info": {
+          "class_name": "com.sky.service.impl.OrderServiceImpl",
+          "method": "details",
+          "line_no": 255,
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\service\\impl\\OrderServiceImpl.java"
+        },
+        "test_code": "package com.sky.service.impl;\n\nimport com.sky.constant.MessageConstant;\nimport com.sky.entity.OrderDetail;\nimport com.sky.entity.Orders;\nimport com.sky.exception.OrderBusinessException;\nimport com.sky.mapper.OrderDetailMapper;\nimport com.sky.mapper.OrderMapper;\nimport org.junit.jupiter.api.DisplayName;\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.extension.ExtendWith;\nimport org.mockito.InjectMocks;\nimport org.mockito.Mock;\nimport org.mockito.junit.jupiter.MockitoExtension;\n\nimport java.util.Collections;\nimport java.util.List;\n\nimport static org.junit.jupiter.api.Assertions.*;\nimport static org.mockito.Mockito.*;\n\n@ExtendWith(MockitoExtension.class)\nclass OrderServiceImplTest {\n\n    @InjectMocks\n    private OrderServiceImpl orderService;\n\n    @Mock\n    private OrderMapper orderMapper;\n\n    @Mock\n    private OrderDetailMapper orderDetailMapper;\n\n    @Test\n    @DisplayName(\"正向测试：当订单存在时，details方法应正常工作并返回非空结果\")\n    void testDetails_SuccessfulRetrieval() {\n        Long orderId = 1L;\n        Orders orders = new Orders();\n        orders.setId(orderId);\n        List<OrderDetail> orderDetails = Collections.emptyList();\n\n        when(orderMapper.getById(orderId)).thenReturn(orders);\n        when(orderDetailMapper.getByOrderId(orderId)).thenReturn(orderDetails);\n\n        assertDoesNotThrow(() -> orderService.details(orderId));\n\n        verify(orderMapper).getById(orderId);\n        verify(orderDetailMapper).getByOrderId(orderId);\n    }\n\n    @Test\n    @DisplayName(\"边界测试：修复后当订单不存在时，details方法应抛出OrderBusinessException而非NullPointerException\")\n    void testDetails_OrdersNotFound_ThrowsOrderBusinessException() {\n        Long invalidOrderId = 999L;\n        when(orderMapper.getById(invalidOrderId)).thenReturn(null);\n\n        OrderBusinessException exception = assertThrows(OrderBusinessException.class, \n            () -> orderService.details(invalidOrderId));\n\n        assertEquals(MessageConstant.ORDER_NOT_FOUND, exception.getMessage());\n\n        verify(orderMapper).getById(invalidOrderId);\n        verify(orderDetailMapper, never()).getByOrderId(any());\n    }\n\n    @Test\n    @DisplayName(\"空值处理验证：修复后orders为null时方法不会抛出NullPointerException\")\n    void testDetails_NullOrdersHandling() {\n        Long anyOrderId = 123L;\n        when(orderMapper.getById(anyOrderId)).thenReturn(null);\n\n        assertThrows(OrderBusinessException.class, () -> orderService.details(anyOrderId));\n    }\n}"
+      },
+      "result": "success"
+    }
+  ],
+  "detection_method": "agent"
+}

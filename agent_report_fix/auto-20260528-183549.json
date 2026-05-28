@@ -1,0 +1,394 @@
+{
+  "status": "completed",
+  "dry_run": false,
+  "raw_stack": "Caused by: com.fasterxml.jackson.core.JsonParseException: Unexpected character ('i' (code 105)): was expecting double-quote to start field name\n at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 1, column: 3]\n\tat com.fasterxml.jackson.core.JsonParser._constructError(JsonParser.java:2477) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.base.ParserMinimalBase._reportError(ParserMinimalBase.java:750) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.base.ParserMinimalBase._reportUnexpectedChar(ParserMinimalBase.java:674) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.json.UTF8StreamJsonParser._handleOddName(UTF8StreamJsonParser.java:2144) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.json.UTF8StreamJsonParser._parseName(UTF8StreamJsonParser.java:1794) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.json.UTF8StreamJsonParser.nextToken(UTF8StreamJsonParser.java:798) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:177) ~[jackson-databind-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:323) ~[jackson-databind-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.databind.ObjectReader._bindAndClose(ObjectReader.java:2105) ~[jackson-databind-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.databind.ObjectReader.readValue(ObjectReader.java:1481) ~[jackson-databind-2.15.2.jar:2.15.2]\n\tat org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter.readJavaType(AbstractJackson2HttpMessageConverter.java:395) ~[spring-web-6.0.11.jar:6.0.11]\n\t... 43 common frames omitted",
+  "parsed_stack": [
+    {
+      "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+      "class_name": "com.fasterxml.jackson.core.JsonParser",
+      "method": "_constructError",
+      "line_no": 2477,
+      "source_file": "JsonParser.java",
+      "raw_line": "\tat com.fasterxml.jackson.core.JsonParser._constructError(JsonParser.java:2477) ~[jackson-core-2.15.2.jar:2.15.2]"
+    },
+    {
+      "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+      "class_name": "com.fasterxml.jackson.core.base.ParserMinimalBase",
+      "method": "_reportError",
+      "line_no": 750,
+      "source_file": "ParserMinimalBase.java",
+      "raw_line": "\tat com.fasterxml.jackson.core.base.ParserMinimalBase._reportError(ParserMinimalBase.java:750) ~[jackson-core-2.15.2.jar:2.15.2]"
+    },
+    {
+      "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+      "class_name": "com.fasterxml.jackson.core.base.ParserMinimalBase",
+      "method": "_reportUnexpectedChar",
+      "line_no": 674,
+      "source_file": "ParserMinimalBase.java",
+      "raw_line": "\tat com.fasterxml.jackson.core.base.ParserMinimalBase._reportUnexpectedChar(ParserMinimalBase.java:674) ~[jackson-core-2.15.2.jar:2.15.2]"
+    },
+    {
+      "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+      "class_name": "com.fasterxml.jackson.core.json.UTF8StreamJsonParser",
+      "method": "_handleOddName",
+      "line_no": 2144,
+      "source_file": "UTF8StreamJsonParser.java",
+      "raw_line": "\tat com.fasterxml.jackson.core.json.UTF8StreamJsonParser._handleOddName(UTF8StreamJsonParser.java:2144) ~[jackson-core-2.15.2.jar:2.15.2]"
+    },
+    {
+      "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+      "class_name": "com.fasterxml.jackson.core.json.UTF8StreamJsonParser",
+      "method": "_parseName",
+      "line_no": 1794,
+      "source_file": "UTF8StreamJsonParser.java",
+      "raw_line": "\tat com.fasterxml.jackson.core.json.UTF8StreamJsonParser._parseName(UTF8StreamJsonParser.java:1794) ~[jackson-core-2.15.2.jar:2.15.2]"
+    },
+    {
+      "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+      "class_name": "com.fasterxml.jackson.core.json.UTF8StreamJsonParser",
+      "method": "nextToken",
+      "line_no": 798,
+      "source_file": "UTF8StreamJsonParser.java",
+      "raw_line": "\tat com.fasterxml.jackson.core.json.UTF8StreamJsonParser.nextToken(UTF8StreamJsonParser.java:798) ~[jackson-core-2.15.2.jar:2.15.2]"
+    },
+    {
+      "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+      "class_name": "com.fasterxml.jackson.databind.deser.BeanDeserializer",
+      "method": "deserialize",
+      "line_no": 177,
+      "source_file": "BeanDeserializer.java",
+      "raw_line": "\tat com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:177) ~[jackson-databind-2.15.2.jar:2.15.2]"
+    },
+    {
+      "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+      "class_name": "com.fasterxml.jackson.databind.deser.DefaultDeserializationContext",
+      "method": "readRootValue",
+      "line_no": 323,
+      "source_file": "DefaultDeserializationContext.java",
+      "raw_line": "\tat com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:323) ~[jackson-databind-2.15.2.jar:2.15.2]"
+    },
+    {
+      "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+      "class_name": "com.fasterxml.jackson.databind.ObjectReader",
+      "method": "_bindAndClose",
+      "line_no": 2105,
+      "source_file": "ObjectReader.java",
+      "raw_line": "\tat com.fasterxml.jackson.databind.ObjectReader._bindAndClose(ObjectReader.java:2105) ~[jackson-databind-2.15.2.jar:2.15.2]"
+    },
+    {
+      "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+      "class_name": "com.fasterxml.jackson.databind.ObjectReader",
+      "method": "readValue",
+      "line_no": 1481,
+      "source_file": "ObjectReader.java",
+      "raw_line": "\tat com.fasterxml.jackson.databind.ObjectReader.readValue(ObjectReader.java:1481) ~[jackson-databind-2.15.2.jar:2.15.2]"
+    },
+    {
+      "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+      "class_name": "org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter",
+      "method": "readJavaType",
+      "line_no": 395,
+      "source_file": "AbstractJackson2HttpMessageConverter.java",
+      "raw_line": "\tat org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter.readJavaType(AbstractJackson2HttpMessageConverter.java:395) ~[spring-web-6.0.11.jar:6.0.11]"
+    }
+  ],
+  "located_files": [
+    {
+      "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+      "repo_relative_path": "sky-server/src/main/java/com/sky/controller/admin/DishController.java",
+      "class_name": "DishController",
+      "method": "startOrStop",
+      "line_no": 115
+    }
+  ],
+  "prompt": "",
+  "patch_text": "--- a/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n+++ b/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n@@ -113,4 +113,4 @@\n      * @return\n      */\n-    @PostMapping(\"/status/{status1}\")\n+    @PostMapping(\"/status/{status}\")\n     public Result<String> startOrStop(@PathVariable Integer status, Long id) {",
+  "branch_name": "fix/auto-20260528-183549",
+  "apply_result": {
+    "applied": true,
+    "files": [
+      "sky-server/src/main/java/com/sky/controller/admin/DishController.java"
+    ],
+    "errors": [],
+    "dry_run": false,
+    "committed": true
+  },
+  "build_result": null,
+  "ci_result": {
+    "compile_result": {
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "test_result": {
+      "code": 0,
+      "stdout": "18:36:16.036 [main] INFO com.sky.controller.admin.DishController -- 启用或停用菜品：200\n18:36:16.113 [main] INFO com.sky.controller.admin.DishController -- 启用或停用菜品：500\n18:36:16.126 [main] INFO com.sky.controller.admin.DishController -- 启用或停用菜品：null\n18:36:16.145 [main] INFO com.sky.controller.admin.DishController -- 启用或停用菜品：400\n18:36:16.166 [main] INFO com.sky.controller.admin.DishController -- 启用或停用菜品：300\n18:36:16.179 [main] INFO com.sky.controller.admin.DishController -- 启用或停用菜品：100\n",
+      "stderr": "WARNING: A Java agent has been loaded dynamically (D:\\Maven\\apache-maven-3.6.1\\mvn_repo\\net\\bytebuddy\\byte-buddy-agent\\1.14.5\\byte-buddy-agent-1.14.5.jar)\nWARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning\nWARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information\nWARNING: Dynamic loading of agents will be disallowed by default in a future release\nJava HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended\n"
+    },
+    "retries_used": 0,
+    "patch_history": [],
+    "stages_passed": [
+      "compile",
+      "tests"
+    ],
+    "stages_failed": []
+  },
+  "test_gen_result": {
+    "generated": true,
+    "test_path": "sky-server/src/test/java/com/sky/controller/admin/DishControllerTest.java",
+    "committed": false,
+    "error": null
+  },
+  "pr_result": {
+    "pr_created": true,
+    "pr_url": "https://gitee.com/zhao-haoyuan4353/sky-take-out/pulls/24",
+    "pr_number": 24,
+    "error": null
+  },
+  "error": null,
+  "agent_iterations": 11,
+  "agent_thoughts": [
+    "堆栈全部是 Jackson/Spring 框架代码，没有任何应用层代码帧。这是场景B，需要使用 `infer_source` 通过代码图谱搜索来定位应用代码。错误信息显示 JSON 解析失败，第一个字段名位置处遇到了 'i' 字符而非双引号，说明客户端发送了格式不正确的 JSON（可能使用了无引号的键名或非JSON格式数据）。",
+    "`infer_source` 找到了 `DishController.java`。让我分析源码中的问题。\n\n查看 `startOrStop` 方法：\n```java\n@PostMapping(\"/status/{status1}\")\npublic Result<String> startOrStop(@PathVariable Integer status, Long id) {\n```\n\n问题很明显：路径变量名是 `{status1}`，但 `@PathVariable` 注解绑定的是 `status`，名称不匹配！这导致 Spring 无法从路径中绑定 `status` 参数，转而尝试从请求体反序列化，当客户端发送了格式不正确的 JSON（如无引号的键名 `{id:1, status:0}`）时，就会抛出 `JsonParseException`。\n\n修复方案：将路径变量 `{status1}` 改为 `{status}` 以匹配方法参数名。",
+    "补丁已生成，将 `@PostMapping(\"/status/{status1}\")` 改为 `@PostMapping(\"/status/{status}\")`，使路径变量名与方法参数名匹配。现在需要验证补丁格式是否正确。",
+    "补丁验证失败，hunk 行号不正确。让我重新仔细计算行号。从完整源码看，`@PostMapping(\"/status/{status1}\")` 在第 114 行。需要修正 hunk 的行号。",
+    "LLM 生成的补丁不正确，它修改了方法签名（添加了 `@RequestParam`），这违反了约束。正确的修复方案是将 `{status1}` 改为 `{status}`。让我手动构造正确的补丁。通过仔细计数行号，`@PostMapping(\"/status/{status1}\")` 在第 113 行。",
+    "补丁需要包含上下文行。让我添加正确的上下文行。`@PostMapping(\"/status/{status1}\")` 在第 112 行（前面有 `*/` 在第 111 行，后面是方法签名在第 113 行）。",
+    "让我仔细数一下行号。通过逐行计数，`@PostMapping(\"/status/{status1}\")` 在第 115 行，`*/` 在第 114 行，方法签名在第 116 行。让我重新构建正确的补丁。",
+    "让我直接读取源文件来确认准确的行号。",
+    "现在我准确计数了行号。`@PostMapping(\"/status/{status1}\")` 在第 115 行，`@return` 在第 113 行，方法签名在第 116 行。\n\nAction: validate_patch({\"patch_text\": \"--- a/sky-server/src/main/java/com/sky/controller/admin/DishController.java\\n+++ b/sky-server/src/main/java/com/sky/controller/admin/DishController.java\\n@@ -113,4 +113,4 @@\\n      * @return\\n      */\\n-    @PostMapping(\\\"/status/{status1}\\\")\\n+    @PostMapping(\\\"/status/{status}\\\")\\n     public Result<String> startOrStop(@PathVariable Integer status, Long id) {\", \"source_info\": {\"source_path\": \"D:\\\\workspace-repo\\\\sky-take-out\\\\sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\controller\\\\admin\\\\DishController.java\", \"repo_relative_path\": \"sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\controller\\\\admin\\\\DishController.java\", \"class_name\": \"DishController\", \"method\": \"startOrStop\", \"line_no\": 115}})",
+    "补丁验证通过了。现在需要生成单元测试，然后调用 final_patch 提交最终修复。",
+    "补丁已验证通过，测试代码已生成。现在调用 final_patch 提交最终修复。\n\n**BUG 根因分析：**\n- `DishController.java` 中 `startOrStop` 方法的路径变量名 `{status1}` 与方法参数名 `status` 不匹配\n- Spring 无法从路径中正确绑定 `status` 参数，转而尝试从请求体反序列化\n- 当客户端发送格式不正确的 JSON 时（如无引号的键名 `{id:1, status:0}`），Jackson 抛出 `JsonParseException`\n\n**修复方案：** 将 `@PostMapping(\"/status/{status1}\")` 改为 `@PostMapping(\"/status/{status}\")`，使路径变量名与方法参数名一致。"
+  ],
+  "agent_tool_calls": [
+    {
+      "tool": "infer_source",
+      "args": {
+        "raw_stack": "Caused by: com.fasterxml.jackson.core.JsonParseException: Unexpected character ('i' (code 105)): was expecting double-quote to start field name\n at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 1, column: 3]\n\tat com.fasterxml.jackson.core.JsonParser._constructError(JsonParser.java:2477) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.base.ParserMinimalBase._reportError(ParserMinimalBase.java:750) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.base.ParserMinimalBase._reportUnexpectedChar(ParserMinimalBase.java:674) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.json.UTF8StreamJsonParser._handleOddName(UTF8StreamJsonParser.java:2144) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.json.UTF8StreamJsonParser._parseName(UTF8StreamJsonParser.java:1794) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.json.UTF8StreamJsonParser.nextToken(UTF8StreamJsonParser.java:798) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:177) ~[jackson-databind-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:323) ~[jackson-databind-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.databind.ObjectReader._bindAndClose(ObjectReader.java:2105) ~[jackson-databind-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.databind.ObjectReader.readValue(ObjectReader.java:1481) ~[jackson-databind-2.15.2.jar:2.15.2]\n\tat org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter.readJavaType(AbstractJackson2HttpMessageConverter.java:395) ~[spring-web-6.0.11.jar:6.0.11]\n\t... 43 common frames omitted",
+        "parsed_stack": [
+          {
+            "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+            "class_name": "com.fasterxml.jackson.core.JsonParser",
+            "method": "_constructError",
+            "line_no": 2477,
+            "source_file": "JsonParser.java"
+          },
+          {
+            "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+            "class_name": "com.fasterxml.jackson.core.base.ParserMinimalBase",
+            "method": "_reportError",
+            "line_no": 750,
+            "source_file": "ParserMinimalBase.java"
+          },
+          {
+            "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+            "class_name": "com.fasterxml.jackson.core.base.ParserMinimalBase",
+            "method": "_reportUnexpectedChar",
+            "line_no": 674,
+            "source_file": "ParserMinimalBase.java"
+          },
+          {
+            "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+            "class_name": "com.fasterxml.jackson.core.json.UTF8StreamJsonParser",
+            "method": "_handleOddName",
+            "line_no": 2144,
+            "source_file": "UTF8StreamJsonParser.java"
+          },
+          {
+            "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+            "class_name": "com.fasterxml.jackson.core.json.UTF8StreamJsonParser",
+            "method": "_parseName",
+            "line_no": 1794,
+            "source_file": "UTF8StreamJsonParser.java"
+          },
+          {
+            "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+            "class_name": "com.fasterxml.jackson.core.json.UTF8StreamJsonParser",
+            "method": "nextToken",
+            "line_no": 798,
+            "source_file": "UTF8StreamJsonParser.java"
+          },
+          {
+            "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+            "class_name": "com.fasterxml.jackson.databind.deser.BeanDeserializer",
+            "method": "deserialize",
+            "line_no": 177,
+            "source_file": "BeanDeserializer.java"
+          },
+          {
+            "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+            "class_name": "com.fasterxml.jackson.databind.deser.DefaultDeserializationContext",
+            "method": "readRootValue",
+            "line_no": 323,
+            "source_file": "DefaultDeserializationContext.java"
+          },
+          {
+            "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+            "class_name": "com.fasterxml.jackson.databind.ObjectReader",
+            "method": "_bindAndClose",
+            "line_no": 2105,
+            "source_file": "ObjectReader.java"
+          },
+          {
+            "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+            "class_name": "com.fasterxml.jackson.databind.ObjectReader",
+            "method": "readValue",
+            "line_no": 1481,
+            "source_file": "ObjectReader.java"
+          },
+          {
+            "exception_type": "com.fasterxml.jackson.core.JsonParseException",
+            "class_name": "org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter",
+            "method": "readJavaType",
+            "line_no": 395,
+            "source_file": "AbstractJackson2HttpMessageConverter.java"
+          }
+        ]
+      },
+      "result": "{\"source_path\": \"D:\\\\workspace-repo\\\\sky-take-out\\\\sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\controller\\\\admin\\\\DishController.java\", \"repo_relative_path\": \"sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\controller\\\\admin\\\\DishController.java\", \"class_name\": \"DishController\", \"method\": \"\", \"line_no\": 31, \"context_snippet\": \"@RestController\\n@RequestMapping(\\\"/admin/dish\\\")\\n@Slf4j\\npublic class DishController {\\n\\n    @Autowired\\n    private DishService dishService;\\n\", \"full_source\": \"package com.sky.cont"
+    },
+    {
+      "tool": "edit_code",
+      "args": {
+        "raw_stack": "Caused by: com.fasterxml.jackson.core.JsonParseException: Unexpected character ('i' (code 105)): was expecting double-quote to start field name\n at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 1, column: 3]\n\tat com.fasterxml.jackson.core.JsonParser._constructError(JsonParser.java:2477) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.base.ParserMinimalBase._reportError(ParserMinimalBase.java:750) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.base.ParserMinimalBase._reportUnexpectedChar(ParserMinimalBase.java:674) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.json.UTF8StreamJsonParser._handleOddName(UTF8StreamJsonParser.java:2144) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.json.UTF8StreamJsonParser._parseName(UTF8StreamJsonParser.java:1794) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.json.UTF8StreamJsonParser.nextToken(UTF8StreamJsonParser.java:798) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:177) ~[jackson-databind-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:323) ~[jackson-databind-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.databind.ObjectReader._bindAndClose(ObjectReader.java:2105) ~[jackson-databind-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.databind.ObjectReader.readValue(ObjectReader.java:1481) ~[jackson-databind-2.15.2.jar:2.15.2]\n\tat org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter.readJavaType(AbstractJackson2HttpMessageConverter.java:395) ~[spring-web-6.0.11.jar:6.0.11]\n\t... 43 common frames omitted",
+        "source_info": {
+          "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "class_name": "DishController",
+          "method": "startOrStop",
+          "line_no": 113,
+          "context_snippet": "@PostMapping(\"/status/{status1}\")\n    public Result<String> startOrStop(@PathVariable Integer status, Long id) {\n        // 1. 启用 0. 停用\n        log.info(\"启用或停用菜品：{}\", id);\n        dishService.startOrStop(status, id);\n        clearRedis(\"dish_*\");\n        return Result.success();",
+          "full_source": "package com.sky.controller.admin;\n\nimport java.util.List;\nimport java.util.Set;\n\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.data.redis.core.RedisTemplate;\nimport org.springframework.web.bind.annotation.DeleteMapping;\nimport org.springframework.web.bind.annotation.GetMapping;\nimport org.springframework.web.bind.annotation.PathVariable;\nimport org.springframework.web.bind.annotation.PostMapping;\nimport org.springframework.web.bind.annotation.PutMapping;\nimport org.springframework.web.bind.annotation.RequestBody;\nimport org.springframework.web.bind.annotation.RequestMapping;\nimport org.springframework.web.bind.annotation.RequestParam;\nimport org.springframework.web.bind.annotation.RestController;\n\nimport com.sky.dto.DishDTO;\nimport com.sky.dto.DishPageQueryDTO;\nimport com.sky.entity.Dish;\nimport com.sky.result.PageResult;\nimport com.sky.result.Result;\nimport com.sky.service.DishService;\nimport com.sky.vo.DishVO;\n\nimport lombok.extern.slf4j.Slf4j;\n\n@RestController\n@RequestMapping(\"/admin/dish\")\n@Slf4j\npublic class DishController {\n\n    @Autowired\n    private DishService dishService;\n\n    @Autowired\n    private RedisTemplate<String, Object> redisTemplate;\n\n    /**\n     * 新增菜品\n     *\n     * @param dishDTO\n     * @return\n     */\n    @PostMapping\n    public Result<String> save(@RequestBody DishDTO dishDTO) {\n        log.info(\"新增菜品：{}\", dishDTO);\n        dishService.saveWithFlavor(dishDTO);\n        String key = \"dish_\" + dishDTO.getCategoryId();\n        clearRedis(key);\n        return Result.success();\n    }\n\n    /**\n     * 分页查询菜品\n     *\n     * @param dishPageQueryDTO\n     * @return\n     */\n    @GetMapping(\"/page\") // query\n    public Result<PageResult<DishVO>> page(DishPageQueryDTO dishPageQueryDTO) {\n        log.info(\"分页查询菜品：{}\", dishPageQueryDTO);\n        PageResult<DishVO> querySet = dishService.queryPage(dishPageQueryDTO);\n        return Result.success(querySet);\n    }\n\n    /**\n     * 删除菜品\n     *\n     * @param ids\n     * @return\n     */\n    @DeleteMapping\n    public Result<String> delete(@RequestParam List<Long> ids) {\n        log.info(\"删除菜品：{}\", ids);\n        dishService.deleteBatch(ids);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }\n\n    /**\n     * 根据id查询菜品\n     *\n     * @param id\n     * @return\n     */\n    @GetMapping(\"/{id}\")\n    public Result<DishVO> getById(@PathVariable Long id) {\n        log.info(\"根据id查询菜品：{}\", id);\n        DishVO dishVO = dishService.getByIdWithFlavor(id);\n        return Result.success(dishVO);\n    }\n\n    /**\n     * 更新菜品\n     *\n     * @param dishDTO\n     * @return\n     */\n    @PutMapping\n    public Result<String> update(@RequestBody DishDTO dishDTO) {\n        log.info(\"更新菜品：{}\", dishDTO);\n        dishService.updateWithFlavor(dishDTO);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }\n\n    /**\n     * 启用或停用菜品\n     *\n     * @param status\n     * @param id\n     * @return\n     */\n    @PostMapping(\"/status/{status1}\")\n    public Result<String> startOrStop(@PathVariable Integer status, Long id) {\n        // 1. 启用 0. 停用\n        log.info(\"启用或停用菜品：{}\", id);\n        dishService.startOrStop(status, id);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }\n\n    /**\n     * 根据分类id查询菜品\n     *\n     * @param categoryId\n     * @return\n     */\n    @GetMapping(\"/list\")\n    public Result<List<Dish>> list(Long categoryId) {\n        String key = \"dish_\" + categoryId;\n        List<Dish> dishList = dishService.list(categoryId);\n        return Result.success(dishList);\n    }\n\n    private void clearRedis(String keys) {\n        Set<String> cacheKeys = redisTemplate.keys(keys);\n        redisTemplate.delete(cacheKeys);\n    }\n}"
+        }
+      },
+      "result": "{\"patch_text\": \"--- a/sky-server/src/main/java/com/sky/controller/admin/DishController.java\\n+++ b/sky-server/src/main/java/com/sky/controller/admin/DishController.java\\n@@ -102,3 +102,3 @@\\n     */\\n-    @PostMapping(\\\"/status/{status1}\\\")\\n+    @PostMapping(\\\"/status/{status}\\\")\\n     public Result<String> startOrStop(@PathVariable Integer status, Long id) {\", \"prompt\": \"## 任务\\n根据以下 Java 异常堆栈和源码，生成一个最小化补丁以修复该异常。\\n\\n## 约束\\n- 修改最少（最多 40 行）\\n- 每个文件最多 3 个 hunk，且每个 hunk 只能修改局部区域\\n- 保证代码编译通过\\n- 不修改方"
+    },
+    {
+      "tool": "validate_patch",
+      "args": {
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n+++ b/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n@@ -102,3 +102,3 @@\n     */\n-    @PostMapping(\"/status/{status1}\")\n+    @PostMapping(\"/status/{status}\")\n     public Result<String> startOrStop(@PathVariable Integer status, Long id) {",
+        "source_info": {
+          "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "class_name": "DishController",
+          "method": "startOrStop",
+          "line_no": 113,
+          "context_snippet": "@PostMapping(\"/status/{status1}\")\n    public Result<String> startOrStop(@PathVariable Integer status, Long id) {\n        // 1. 启用 0. 停用\n        log.info(\"启用或停用菜品：{}\", id);\n        dishService.startOrStop(status, id);\n        clearRedis(\"dish_*\");\n        return Result.success();",
+          "full_source": "package com.sky.controller.admin;\n\nimport java.util.List;\nimport java.util.Set;\n\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.data.redis.core.RedisTemplate;\nimport org.springframework.web.bind.annotation.DeleteMapping;\nimport org.springframework.web.bind.annotation.GetMapping;\nimport org.springframework.web.bind.annotation.PathVariable;\nimport org.springframework.web.bind.annotation.PostMapping;\nimport org.springframework.web.bind.annotation.PutMapping;\nimport org.springframework.web.bind.annotation.RequestBody;\nimport org.springframework.web.bind.annotation.RequestMapping;\nimport org.springframework.web.bind.annotation.RequestParam;\nimport org.springframework.web.bind.annotation.RestController;\n\nimport com.sky.dto.DishDTO;\nimport com.sky.dto.DishPageQueryDTO;\nimport com.sky.entity.Dish;\nimport com.sky.result.PageResult;\nimport com.sky.result.Result;\nimport com.sky.service.DishService;\nimport com.sky.vo.DishVO;\n\nimport lombok.extern.slf4j.Slf4j;\n\n@RestController\n@RequestMapping(\"/admin/dish\")\n@Slf4j\npublic class DishController {\n\n    @Autowired\n    private DishService dishService;\n\n    @Autowired\n    private RedisTemplate<String, Object> redisTemplate;\n\n    /**\n     * 新增菜品\n     *\n     * @param dishDTO\n     * @return\n     */\n    @PostMapping\n    public Result<String> save(@RequestBody DishDTO dishDTO) {\n        log.info(\"新增菜品：{}\", dishDTO);\n        dishService.saveWithFlavor(dishDTO);\n        String key = \"dish_\" + dishDTO.getCategoryId();\n        clearRedis(key);\n        return Result.success();\n    }\n\n    /**\n     * 分页查询菜品\n     *\n     * @param dishPageQueryDTO\n     * @return\n     */\n    @GetMapping(\"/page\") // query\n    public Result<PageResult<DishVO>> page(DishPageQueryDTO dishPageQueryDTO) {\n        log.info(\"分页查询菜品：{}\", dishPageQueryDTO);\n        PageResult<DishVO> querySet = dishService.queryPage(dishPageQueryDTO);\n        return Result.success(querySet);\n    }\n\n    /**\n     * 删除菜品\n     *\n     * @param ids\n     * @return\n     */\n    @DeleteMapping\n    public Result<String> delete(@RequestParam List<Long> ids) {\n        log.info(\"删除菜品：{}\", ids);\n        dishService.deleteBatch(ids);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }\n\n    /**\n     * 根据id查询菜品\n     *\n     * @param id\n     * @return\n     */\n    @GetMapping(\"/{id}\")\n    public Result<DishVO> getById(@PathVariable Long id) {\n        log.info(\"根据id查询菜品：{}\", id);\n        DishVO dishVO = dishService.getByIdWithFlavor(id);\n        return Result.success(dishVO);\n    }\n\n    /**\n     * 更新菜品\n     *\n     * @param dishDTO\n     * @return\n     */\n    @PutMapping\n    public Result<String> update(@RequestBody DishDTO dishDTO) {\n        log.info(\"更新菜品：{}\", dishDTO);\n        dishService.updateWithFlavor(dishDTO);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }\n\n    /**\n     * 启用或停用菜品\n     *\n     * @param status\n     * @param id\n     * @return\n     */\n    @PostMapping(\"/status/{status1}\")\n    public Result<String> startOrStop(@PathVariable Integer status, Long id) {\n        // 1. 启用 0. 停用\n        log.info(\"启用或停用菜品：{}\", id);\n        dishService.startOrStop(status, id);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }\n\n    /**\n     * 根据分类id查询菜品\n     *\n     * @param categoryId\n     * @return\n     */\n    @GetMapping(\"/list\")\n    public Result<List<Dish>> list(Long categoryId) {\n        String key = \"dish_\" + categoryId;\n        List<Dish> dishList = dishService.list(categoryId);\n        return Result.success(dishList);\n    }\n\n    private void clearRedis(String keys) {\n        Set<String> cacheKeys = redisTemplate.keys(keys);\n        redisTemplate.delete(cacheKeys);\n    }\n}"
+        }
+      },
+      "result": "{\"valid\": false, \"errors\": [\"Hunk 1 in sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\controller\\\\admin\\\\DishController.java context mismatch: \\\"*/\\\" not found near line 102\"], \"changed_lines\": 2, \"files\": [\"sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\controller\\\\admin\\\\DishController.java\"]}"
+    },
+    {
+      "tool": "edit_code",
+      "args": {
+        "raw_stack": "Caused by: com.fasterxml.jackson.core.JsonParseException: Unexpected character ('i' (code 105)): was expecting double-quote to start field name\n at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 1, column: 3]\n\tat com.fasterxml.jackson.core.JsonParser._constructError(JsonParser.java:2477) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.base.ParserMinimalBase._reportError(ParserMinimalBase.java:750) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.base.ParserMinimalBase._reportUnexpectedChar(ParserMinimalBase.java:674) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.json.UTF8StreamJsonParser._handleOddName(UTF8StreamJsonParser.java:2144) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.json.UTF8StreamJsonParser._parseName(UTF8StreamJsonParser.java:1794) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.core.json.UTF8StreamJsonParser.nextToken(UTF8StreamJsonParser.java:798) ~[jackson-core-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:177) ~[jackson-databind-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:323) ~[jackson-databind-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.databind.ObjectReader._bindAndClose(ObjectReader.java:2105) ~[jackson-databind-2.15.2.jar:2.15.2]\n\tat com.fasterxml.jackson.databind.ObjectReader.readValue(ObjectReader.java:1481) ~[jackson-databind-2.15.2.jar:2.15.2]\n\tat org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter.readJavaType(AbstractJackson2HttpMessageConverter.java:395) ~[spring-web-6.0.11.jar:6.0.11]\n\t... 43 common frames omitted",
+        "source_info": {
+          "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "class_name": "DishController",
+          "method": "startOrStop",
+          "line_no": 114,
+          "context_snippet": "     * @param status\n     * @param id\n     * @return\n     */\n    @PostMapping(\"/status/{status1}\")\n    public Result<String> startOrStop(@PathVariable Integer status, Long id) {",
+          "full_source": "package com.sky.controller.admin;\n\nimport java.util.List;\nimport java.util.Set;\n\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.data.redis.core.RedisTemplate;\nimport org.springframework.web.bind.annotation.DeleteMapping;\nimport org.springframework.web.bind.annotation.GetMapping;\nimport org.springframework.web.bind.annotation.PathVariable;\nimport org.springframework.web.bind.annotation.PostMapping;\nimport org.springframework.web.bind.annotation.PutMapping;\nimport org.springframework.web.bind.annotation.RequestBody;\nimport org.springframework.web.bind.annotation.RequestMapping;\nimport org.springframework.web.bind.annotation.RequestParam;\nimport org.springframework.web.bind.annotation.RestController;\n\nimport com.sky.dto.DishDTO;\nimport com.sky.dto.DishPageQueryDTO;\nimport com.sky.entity.Dish;\nimport com.sky.result.PageResult;\nimport com.sky.result.Result;\nimport com.sky.service.DishService;\nimport com.sky.vo.DishVO;\n\nimport lombok.extern.slf4j.Slf4j;\n\n@RestController\n@RequestMapping(\"/admin/dish\")\n@Slf4j\npublic class DishController {\n\n    @Autowired\n    private DishService dishService;\n\n    @Autowired\n    private RedisTemplate<String, Object> redisTemplate;\n\n    /**\n     * 新增菜品\n     *\n     * @param dishDTO\n     * @return\n     */\n    @PostMapping\n    public Result<String> save(@RequestBody DishDTO dishDTO) {\n        log.info(\"新增菜品：{}\", dishDTO);\n        dishService.saveWithFlavor(dishDTO);\n        String key = \"dish_\" + dishDTO.getCategoryId();\n        clearRedis(key);\n        return Result.success();\n    }\n\n    /**\n     * 分页查询菜品\n     *\n     * @param dishPageQueryDTO\n     * @return\n     */\n    @GetMapping(\"/page\") // query\n    public Result<PageResult<DishVO>> page(DishPageQueryDTO dishPageQueryDTO) {\n        log.info(\"分页查询菜品：{}\", dishPageQueryDTO);\n        PageResult<DishVO> querySet = dishService.queryPage(dishPageQueryDTO);\n        return Result.success(querySet);\n    }\n\n    /**\n     * 删除菜品\n     *\n     * @param ids\n     * @return\n     */\n    @DeleteMapping\n    public Result<String> delete(@RequestParam List<Long> ids) {\n        log.info(\"删除菜品：{}\", ids);\n        dishService.deleteBatch(ids);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }\n\n    /**\n     * 根据id查询菜品\n     *\n     * @param id\n     * @return\n     */\n    @GetMapping(\"/{id}\")\n    public Result<DishVO> getById(@PathVariable Long id) {\n        log.info(\"根据id查询菜品：{}\", id);\n        DishVO dishVO = dishService.getByIdWithFlavor(id);\n        return Result.success(dishVO);\n    }\n\n    /**\n     * 更新菜品\n     *\n     * @param dishDTO\n     * @return\n     */\n    @PutMapping\n    public Result<String> update(@RequestBody DishDTO dishDTO) {\n        log.info(\"更新菜品：{}\", dishDTO);\n        dishService.updateWithFlavor(dishDTO);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }\n\n    /**\n     * 启用或停用菜品\n     *\n     * @param status\n     * @param id\n     * @return\n     */\n    @PostMapping(\"/status/{status1}\")\n    public Result<String> startOrStop(@PathVariable Integer status, Long id) {\n        // 1. 启用 0. 停用\n        log.info(\"启用或停用菜品：{}\", id);\n        dishService.startOrStop(status, id);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }\n\n    /**\n     * 根据分类id查询菜品\n     *\n     * @param categoryId\n     * @return\n     */\n    @GetMapping(\"/list\")\n    public Result<List<Dish>> list(Long categoryId) {\n        String key = \"dish_\" + categoryId;\n        List<Dish> dishList = dishService.list(categoryId);\n        return Result.success(dishList);\n    }\n\n    private void clearRedis(String keys) {\n        Set<String> cacheKeys = redisTemplate.keys(keys);\n        redisTemplate.delete(cacheKeys);\n    }\n}"
+        }
+      },
+      "result": "{\"patch_text\": \"--- a/sky-server/src/main/java/com/sky/controller/admin/DishController.java\\n+++ b/sky-server/src/main/java/com/sky/controller/admin/DishController.java\\n@@ -115,2 +115,2 @@\\n     @PostMapping(\\\"/status/{status1}\\\")\\n-    public Result<String> startOrStop(@PathVariable Integer status, Long id) {\\n+    public Result<String> startOrStop(@PathVariable(\\\"status1\\\") Integer status, @RequestParam Long id) {\", \"prompt\": \"## 任务\\n根据以下 Java 异常堆栈和源码，生成一个最小化补丁以修复该异常。\\n\\n## 约束\\n- 修改最少（最多 40 行"
+    },
+    {
+      "tool": "validate_patch",
+      "args": {
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n+++ b/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n@@ -113 +113 @@\n-    @PostMapping(\"/status/{status1}\")\n+    @PostMapping(\"/status/{status}\")",
+        "source_info": {
+          "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "class_name": "DishController",
+          "method": "startOrStop",
+          "line_no": 113
+        }
+      },
+      "result": "{\"valid\": false, \"errors\": [\"Hunk in sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\controller\\\\admin\\\\DishController.java has no context lines. Context lines are required to correctly locate the change position.\"], \"changed_lines\": 2, \"files\": [\"sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\controller\\\\admin\\\\DishController.java\"]}"
+    },
+    {
+      "tool": "validate_patch",
+      "args": {
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n+++ b/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n@@ -111,3 +111,3 @@\n     */\n-    @PostMapping(\"/status/{status1}\")\n+    @PostMapping(\"/status/{status}\")\n     public Result<String> startOrStop(@PathVariable Integer status, Long id) {",
+        "source_info": {
+          "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "class_name": "DishController",
+          "method": "startOrStop",
+          "line_no": 112
+        }
+      },
+      "result": "{\"valid\": false, \"errors\": [\"Hunk 1 in sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\controller\\\\admin\\\\DishController.java context mismatch: \\\"*/\\\" not found near line 111\"], \"changed_lines\": 2, \"files\": [\"sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\controller\\\\admin\\\\DishController.java\"]}"
+    },
+    {
+      "tool": "validate_patch",
+      "args": {
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n+++ b/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n@@ -114,3 +114,3 @@\n     */\n-    @PostMapping(\"/status/{status1}\")\n+    @PostMapping(\"/status/{status}\")\n     public Result<String> startOrStop(@PathVariable Integer status, Long id) {",
+        "source_info": {
+          "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "class_name": "DishController",
+          "method": "startOrStop",
+          "line_no": 115
+        }
+      },
+      "result": "{\"valid\": false, \"errors\": [\"Hunk 1 in sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\controller\\\\admin\\\\DishController.java context mismatch: \\\"*/\\\" not found near line 114\"], \"changed_lines\": 2, \"files\": [\"sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\controller\\\\admin\\\\DishController.java\"]}"
+    },
+    {
+      "tool": "read_code",
+      "args": {
+        "path": "sky-server/src/main/java/com/sky/controller/admin/DishController.java"
+      },
+      "result": "{\"content\": \"package com.sky.controller.admin;\\n\\nimport java.util.List;\\nimport java.util.Set;\\n\\nimport org.springframework.beans.factory.annotation.Autowired;\\nimport org.springframework.data.redis.core.RedisTemplate;\\nimport org.springframework.web.bind.annotation.DeleteMapping;\\nimport org.springframework.web.bind.annotation.GetMapping;\\nimport org.springframework.web.bind.annotation.PathVariable;\\nimport org.springframework.web.bind.annotation.PostMapping;\\nimport org.springframework.web.b"
+    },
+    {
+      "tool": "validate_patch",
+      "args": {
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n+++ b/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n@@ -113,4 +113,4 @@\n      * @return\n      */\n-    @PostMapping(\"/status/{status1}\")\n+    @PostMapping(\"/status/{status}\")\n     public Result<String> startOrStop(@PathVariable Integer status, Long id) {",
+        "source_info": {
+          "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "class_name": "DishController",
+          "method": "startOrStop",
+          "line_no": 115
+        }
+      },
+      "result": "{\"valid\": true, \"errors\": [], \"changed_lines\": 2, \"files\": [\"sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\controller\\\\admin\\\\DishController.java\"]}"
+    },
+    {
+      "tool": "generate_test",
+      "args": {
+        "source_info": {
+          "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "class_name": "DishController",
+          "method": "startOrStop",
+          "line_no": 115,
+          "full_source": "package com.sky.controller.admin;\n\nimport java.util.List;\nimport java.util.Set;\n\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.data.redis.core.RedisTemplate;\nimport org.springframework.web.bind.annotation.DeleteMapping;\nimport org.springframework.web.bind.annotation.GetMapping;\nimport org.springframework.web.bind.annotation.PathVariable;\nimport org.springframework.web.bind.annotation.PostMapping;\nimport org.springframework.web.bind.annotation.PutMapping;\nimport org.springframework.web.bind.annotation.RequestBody;\nimport org.springframework.web.bind.annotation.RequestMapping;\nimport org.springframework.web.bind.annotation.RequestParam;\nimport org.springframework.web.bind.annotation.RestController;\n\nimport com.sky.dto.DishDTO;\nimport com.sky.dto.DishPageQueryDTO;\nimport com.sky.entity.Dish;\nimport com.sky.result.PageResult;\nimport com.sky.result.Result;\nimport com.sky.service.DishService;\nimport com.sky.vo.DishVO;\n\nimport lombok.extern.slf4j.Slf4j;\n\n@RestController\n@RequestMapping(\"/admin/dish\")\n@Slf4j\npublic class DishController {\n\n    @Autowired\n    private DishService dishService;\n\n    @Autowired\n    private RedisTemplate<String, Object> redisTemplate;\n\n    @PostMapping(\"/status/{status}\")\n    public Result<String> startOrStop(@PathVariable Integer status, Long id) {\n        // 1. 启用 0. 停用\n        log.info(\"启用或停用菜品：{}\", id);\n        dishService.startOrStop(status, id);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }\n\n    private void clearRedis(String keys) {\n        Set<String> cacheKeys = redisTemplate.keys(keys);\n        redisTemplate.delete(cacheKeys);\n    }\n}"
+        },
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n+++ b/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n@@ -113,4 +113,4 @@\n      * @return\n      */\n-    @PostMapping(\"/status/{status1}\")\n+    @PostMapping(\"/status/{status}\")\n     public Result<String> startOrStop(@PathVariable Integer status, Long id) {",
+        "raw_stack": "Caused by: com.fasterxml.jackson.core.JsonParseException: Unexpected character ('i' (code 105)): was expecting double-quote to start field name\n at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 1, column: 3]"
+      },
+      "result": "{\"test_code\": \"package com.sky.controller.admin;\\n\\nimport static org.junit.jupiter.api.Assertions.*;\\nimport static org.mockito.ArgumentMatchers.any;\\nimport static org.mockito.ArgumentMatchers.anyCollection;\\nimport static org.mockito.Mockito.*;\\n\\nimport java.util.Collections;\\nimport java.util.Set;\\n\\nimport org.junit.jupiter.api.DisplayName;\\nimport org.junit.jupiter.api.Test;\\nimport org.junit.jupiter.api.extension.ExtendWith;\\nimport org.mockito.InjectMocks;\\nimport org.mockito.Mock;\\nimp"
+    },
+    {
+      "tool": "final_patch",
+      "args": {
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n+++ b/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n@@ -113,4 +113,4 @@\n      * @return\n      */\n-    @PostMapping(\"/status/{status1}\")\n+    @PostMapping(\"/status/{status}\")\n     public Result<String> startOrStop(@PathVariable Integer status, Long id) {",
+        "source_info": {
+          "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "repo_relative_path": "sky-server/src/main/java/com/sky/controller/admin/DishController.java",
+          "class_name": "DishController",
+          "method": "startOrStop",
+          "line_no": 115
+        },
+        "test_code": "package com.sky.controller.admin;\n\nimport static org.junit.jupiter.api.Assertions.*;\nimport static org.mockito.ArgumentMatchers.any;\nimport static org.mockito.ArgumentMatchers.anyCollection;\nimport static org.mockito.Mockito.*;\n\nimport java.util.Collections;\nimport java.util.Set;\n\nimport org.junit.jupiter.api.DisplayName;\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.extension.ExtendWith;\nimport org.mockito.InjectMocks;\nimport org.mockito.Mock;\nimport org.mockito.junit.jupiter.MockitoExtension;\n\nimport com.sky.result.Result;\nimport com.sky.service.DishService;\n\nimport org.springframework.data.redis.core.RedisTemplate;\nimport org.springframework.data.redis.core.ValueOperations;\n\n@ExtendWith(MockitoExtension.class)\nclass DishControllerTest {\n\n    @InjectMocks\n    private DishController dishController;\n\n    @Mock\n    private DishService dishService;\n\n    @Mock\n    private RedisTemplate<String, Object> redisTemplate;\n\n    @Mock\n    private ValueOperations<String, Object> valueOperations;\n\n    @Test\n    @DisplayName(\"正向测试：修复后的 startOrStop 方法应能正常处理启停操作\")\n    void testStartOrStop_SuccessfulOperation() {\n        // Arrange\n        Integer status = 1;\n        Long id = 100L;\n        Set<String> cacheKeys = Collections.singleton(\"dish_100\");\n        \n        when(redisTemplate.keys(\"dish_*\")).thenReturn(cacheKeys);\n        when(redisTemplate.delete(any(Set.class))).thenReturn(1L);\n\n        // Act\n        Result<String> result = dishController.startOrStop(status, id);\n\n        // Assert\n        assertNotNull(result);\n        assertEquals(1, result.getCode());\n        \n        // Verify service and cache clearing\n        verify(dishService).startOrStop(status, id);\n        verify(redisTemplate).keys(\"dish_*\");\n        verify(redisTemplate).delete(cacheKeys);\n    }\n\n    @Test\n    @DisplayName(\"边界测试：修复前的异常输入（路径变量错误）现在应能正确处理\")\n    void testStartOrStop_OriginalFaultyInput_NoException() {\n        // Arrange: 模拟原修复前错误路径变量/status/{status1}导致的请求参数问题\n        // 现在修复后，方法应能正常处理正常的 status 和 id\n        Integer status = 0;\n        Long id = 200L;\n        Set<String> cacheKeys = Collections.singleton(\"dish_200\");\n        \n        when(redisTemplate.keys(\"dish_*\")).thenReturn(cacheKeys);\n        when(redisTemplate.delete(any(Set.class))).thenReturn(1L);\n\n        // Act & Assert: 验证方法不再抛出异常\n        assertDoesNotThrow(() -> {\n            Result<String> result = dishController.startOrStop(status, id);\n            assertNotNull(result);\n            assertEquals(1, result.getCode());\n        });\n\n        // Verify\n        verify(dishService).startOrStop(status, id);\n        verify(redisTemplate).delete(cacheKeys);\n    }\n\n    @Test\n    @DisplayName(\"验证修复后的空值/null 处理：status 不应为 null\")\n    void testStartOrStop_NullStatus_ShouldHandleProperly() {\n        // Arrange\n        Integer status = null;\n        Long id = 300L;\n        Set<String> cacheKeys = Collections.singleton(\"dish_300\");\n        \n        when(redisTemplate.keys(\"dish_*\")).thenReturn(cacheKeys);\n        when(redisTemplate.delete(any(Set.class))).thenReturn(1L);\n\n        // Act & Assert: 方法应能处理 status 为 null 的情况（取决于业务逻辑）\n        assertDoesNotThrow(() -> {\n            Result<String> result = dishController.startOrStop(status, id);\n            assertNotNull(result);\n            assertEquals(1, result.getCode());\n        });\n\n        // Verify\n        verify(dishService).startOrStop(status, id);\n        verify(redisTemplate).delete(cacheKeys);\n    }\n\n    @Test\n    @DisplayName(\"验证修复后 id 为 null 时方法能正常调用服务层\")\n    void testStartOrStop_NullId_ShouldCallService() {\n        // Arrange\n        Integer status = 1;\n        Long id = null;\n        Set<String> cacheKeys = Collections.emptySet();\n        \n        when(redisTemplate.keys(\"dish_*\")).thenReturn(cacheKeys);\n        when(redisTemplate.delete(any(Set.class))).thenReturn(0L);\n\n        // Act\n        Result<String> result = dishController.startOrStop(status, id);\n\n        // Assert\n        assertNotNull(result);\n        assertEquals(1, result.getCode());\n        \n        // Verify\n        verify(dishService).startOrStop(status, id);\n        verify(redisTemplate).delete(cacheKeys);\n    }\n\n    @Test\n    @DisplayName(\"验证修复后 Redis 操作正确执行\")\n    void testStartOrStop_RedisOperationsExecuted() {\n        // Arrange\n        Integer status = 1;\n        Long id = 400L;\n        Set<String> cacheKeys = Collections.singleton(\"dish_400\");\n        \n        when(redisTemplate.keys(\"dish_*\")).thenReturn(cacheKeys);\n        when(redisTemplate.delete(any(Set.class))).thenReturn(1L);\n\n        // Act\n        dishController.startOrStop(status, id);\n\n        // Assert: 验证 Redis 操作顺序和参数\n        var inOrder = inOrder(redisTemplate);\n        inOrder.verify(redisTemplate).keys(\"dish_*\");\n        inOrder.verify(redisTemplate).delete(cacheKeys);\n    }\n\n    @Test\n    @DisplayName(\"验证修复后当没有缓存需要清理时方法仍能正常工作\")\n    void testStartOrStop_NoCacheToClear() {\n        // Arrange\n        Integer status = 0;\n        Long id = 500L;\n        Set<String> cacheKeys = Collections.emptySet();\n        \n        when(redisTemplate.keys(\"dish_*\")).thenReturn(cacheKeys);\n        when(redisTemplate.delete(any(Set.class))).thenReturn(0L);\n\n        // Act\n        Result<String> result = dishController.startOrStop(status, id);\n\n        // Assert\n        assertNotNull(result);\n        assertEquals(1, result.getCode());\n        \n        // Verify\n        verify(dishService).startOrStop(status, id);\n        verify(redisTemplate).delete(cacheKeys);\n    }\n}"
+      },
+      "result": "success"
+    }
+  ],
+  "detection_method": "agent"
+}

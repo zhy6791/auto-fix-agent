@@ -1,0 +1,483 @@
+{
+  "status": "completed",
+  "dry_run": false,
+  "raw_stack": "java.lang.NullPointerException: Cannot invoke \"com.sky.entity.Orders.getId()\" because \"orders\" is null\n\tat com.sky.service.impl.OrderServiceImpl.details(OrderServiceImpl.java:255) ~[classes/:na]\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]\n\tat org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343) ~[spring-aop-6.0.11.jar:6.0.11]\n\tat org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:704) ~[spring-aop-6.0.11.jar:6.0.11]\n\tat com.sky.service.impl.OrderServiceImpl$$SpringCGLIB$$0.details(<generated>) ~[classes/:na]\n\tat com.sky.controller.admin.OrderController.details(OrderController.java:59) ~[classes/:na]\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]\n\tat org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1011) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.11.jar:6.0]\n\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.11.jar:6.0]\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:166) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:894) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]",
+  "parsed_stack": [
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "com.sky.service.impl.OrderServiceImpl",
+      "method": "details",
+      "line_no": 255,
+      "source_file": "OrderServiceImpl.java",
+      "raw_line": "\tat com.sky.service.impl.OrderServiceImpl.details(OrderServiceImpl.java:255) ~[classes/:na]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.aop.support.AopUtils",
+      "method": "invokeJoinpointUsingReflection",
+      "line_no": 343,
+      "source_file": "AopUtils.java",
+      "raw_line": "\tat org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343) ~[spring-aop-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor",
+      "method": "intercept",
+      "line_no": 704,
+      "source_file": "CglibAopProxy.java",
+      "raw_line": "\tat org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:704) ~[spring-aop-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "com.sky.service.impl.OrderServiceImpl$$SpringCGLIB$$0",
+      "method": "details",
+      "line_no": null,
+      "source_file": "<generated>",
+      "raw_line": "\tat com.sky.service.impl.OrderServiceImpl$$SpringCGLIB$$0.details(<generated>) ~[classes/:na]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "com.sky.controller.admin.OrderController",
+      "method": "details",
+      "line_no": 59,
+      "source_file": "OrderController.java",
+      "raw_line": "\tat com.sky.controller.admin.OrderController.details(OrderController.java:59) ~[classes/:na]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.method.support.InvocableHandlerMethod",
+      "method": "doInvoke",
+      "line_no": 205,
+      "source_file": "InvocableHandlerMethod.java",
+      "raw_line": "\tat org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.method.support.InvocableHandlerMethod",
+      "method": "invokeForRequest",
+      "line_no": 150,
+      "source_file": "InvocableHandlerMethod.java",
+      "raw_line": "\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod",
+      "method": "invokeAndHandle",
+      "line_no": 118,
+      "source_file": "ServletInvocableHandlerMethod.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter",
+      "method": "invokeHandlerMethod",
+      "line_no": 884,
+      "source_file": "RequestMappingHandlerAdapter.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter",
+      "method": "handleInternal",
+      "line_no": 797,
+      "source_file": "RequestMappingHandlerAdapter.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter",
+      "method": "handle",
+      "line_no": 87,
+      "source_file": "AbstractHandlerMethodAdapter.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.DispatcherServlet",
+      "method": "doDispatch",
+      "line_no": 1081,
+      "source_file": "DispatcherServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.DispatcherServlet",
+      "method": "doService",
+      "line_no": 974,
+      "source_file": "DispatcherServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.FrameworkServlet",
+      "method": "processRequest",
+      "line_no": 1011,
+      "source_file": "FrameworkServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1011) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.FrameworkServlet",
+      "method": "doGet",
+      "line_no": 903,
+      "source_file": "FrameworkServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "jakarta.servlet.http.HttpServlet",
+      "method": "service",
+      "line_no": 564,
+      "source_file": "HttpServlet.java",
+      "raw_line": "\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.11.jar:6.0]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.servlet.FrameworkServlet",
+      "method": "service",
+      "line_no": 885,
+      "source_file": "FrameworkServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "jakarta.servlet.http.HttpServlet",
+      "method": "service",
+      "line_no": 658,
+      "source_file": "HttpServlet.java",
+      "raw_line": "\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.11.jar:6.0]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 205,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 149,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.tomcat.websocket.server.WsFilter",
+      "method": "doFilter",
+      "line_no": 51,
+      "source_file": "WsFilter.java",
+      "raw_line": "\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 174,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 149,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.filter.CharacterEncodingFilter",
+      "method": "doFilterInternal",
+      "line_no": 201,
+      "source_file": "CharacterEncodingFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.springframework.web.filter.OncePerRequestFilter",
+      "method": "doFilter",
+      "line_no": 116,
+      "source_file": "OncePerRequestFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 174,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 149,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.StandardWrapperValve",
+      "method": "invoke",
+      "line_no": 166,
+      "source_file": "StandardWrapperValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:166) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.StandardContextValve",
+      "method": "invoke",
+      "line_no": 90,
+      "source_file": "StandardContextValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.authenticator.AuthenticatorBase",
+      "method": "invoke",
+      "line_no": 482,
+      "source_file": "AuthenticatorBase.java",
+      "raw_line": "\tat org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.StandardHostValve",
+      "method": "invoke",
+      "line_no": 115,
+      "source_file": "StandardHostValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.valves.ErrorReportValve",
+      "method": "invoke",
+      "line_no": 93,
+      "source_file": "ErrorReportValve.java",
+      "raw_line": "\tat org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.core.StandardEngineValve",
+      "method": "invoke",
+      "line_no": 74,
+      "source_file": "StandardEngineValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.catalina.connector.CoyoteAdapter",
+      "method": "service",
+      "line_no": 341,
+      "source_file": "CoyoteAdapter.java",
+      "raw_line": "\tat org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.coyote.http11.Http11Processor",
+      "method": "service",
+      "line_no": 391,
+      "source_file": "Http11Processor.java",
+      "raw_line": "\tat org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.coyote.AbstractProcessorLight",
+      "method": "process",
+      "line_no": 63,
+      "source_file": "AbstractProcessorLight.java",
+      "raw_line": "\tat org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.coyote.AbstractProtocol$ConnectionHandler",
+      "method": "process",
+      "line_no": 894,
+      "source_file": "AbstractProtocol.java",
+      "raw_line": "\tat org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:894) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.tomcat.util.net.NioEndpoint$SocketProcessor",
+      "method": "doRun",
+      "line_no": 1740,
+      "source_file": "NioEndpoint.java",
+      "raw_line": "\tat org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.tomcat.util.net.SocketProcessorBase",
+      "method": "run",
+      "line_no": 52,
+      "source_file": "SocketProcessorBase.java",
+      "raw_line": "\tat org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.tomcat.util.threads.ThreadPoolExecutor",
+      "method": "runWorker",
+      "line_no": 1191,
+      "source_file": "ThreadPoolExecutor.java",
+      "raw_line": "\tat org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker",
+      "method": "run",
+      "line_no": 659,
+      "source_file": "ThreadPoolExecutor.java",
+      "raw_line": "\tat org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "java.lang.NullPointerException",
+      "class_name": "org.apache.tomcat.util.threads.TaskThread$WrappingRunnable",
+      "method": "run",
+      "line_no": 61,
+      "source_file": "TaskThread.java",
+      "raw_line": "\tat org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    }
+  ],
+  "located_files": [
+    {
+      "class_name": "com.sky.service.impl.OrderServiceImpl",
+      "method": "details",
+      "line_no": 255,
+      "source_file": "OrderServiceImpl.java",
+      "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\service\\impl\\OrderServiceImpl.java"
+    }
+  ],
+  "prompt": "",
+  "patch_text": "--- a/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\n+++ b/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\n@@ -253,6 +253,11 @@ public class OrderServiceImpl implements OrderService {\n \n         // 根据id查询订单\n         Orders orders = orderMapper.getById(id);\n+        \n+        // 订单不存在则抛出业务异常\n+        if (orders == null) {\n+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);\n+        }\n \n         // 查询该订单对应的菜品/套餐明细\n         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());",
+  "branch_name": "fix/auto-20260528-143547",
+  "apply_result": {
+    "applied": true,
+    "files": [
+      "sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java"
+    ],
+    "errors": [],
+    "dry_run": false,
+    "committed": true
+  },
+  "build_result": null,
+  "ci_result": {
+    "compile_result": {
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "test_result": null,
+    "retries_used": 1,
+    "patch_history": [
+      {
+        "stage": "tests",
+        "attempt": 1,
+        "error": "Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts\n14:36:08.336 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''\n14:36:08.338 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''\n14:36:08.345 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 4 ms\n14:36:08.408 [main] WARN org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver -- Resolved [org.springframework.web.bind.MissingPathVariableException: Required URI template variable 'status' for method parameter type Integer is not present]\n14:36:08.438 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''\n14:36:08.438 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''\n14:36:08.439 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms\n14:36:08.440 [main] WARN org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver -- Resolved [org.springframework.web.bind.MissingPathVariableException: Required URI template variable 'status' for method parameter type Integer is not present]\n14:36:08.451 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''\n14:36:08.452 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''\n14:36:08.452 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms\n14:36:08.453 [main] WARN org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver -- Resolved [org.springframework.web.bind.MissingPathVariableException: Required URI template variable 'status' for method parameter type Integer is not present]\n14:36:"
+      }
+    ],
+    "stages_passed": [
+      "compile"
+    ],
+    "stages_failed": [
+      "tests"
+    ]
+  },
+  "test_gen_result": {
+    "generated": true,
+    "test_path": "sky-server/src/test/java/com/sky/service/impl/OrderServiceImplTest.java",
+    "committed": false,
+    "error": null
+  },
+  "pr_result": {
+    "pr_created": true,
+    "pr_url": "https://gitee.com/zhao-haoyuan4353/sky-take-out/pulls/19",
+    "pr_number": 19,
+    "error": null
+  },
+  "error": null,
+  "agent_iterations": 5,
+  "agent_thoughts": [
+    "## Thought\n分析异常：堆栈第一帧 `com.sky.service.impl.OrderServiceImpl.details(OrderServiceImpl.java:255)` 是应用层代码，属于**场景A**。异常原因是 `orders` 对象为 null 时调用了 `getId()` 方法。需要先定位源文件，查看第255行附近的代码。\n\nAction: 使用 `locate_from_stack` 定位 `OrderServiceImpl.java` 的源代码。",
+    "定位到问题根因：`details` 方法中 `orderMapper.getById(id)` 可能返回 `null`（订单不存在），然后第 255 行直接调用 `orders.getId()` 导致 NPE。修复方案：添加 null 检查，订单不存在时抛出 `OrderBusinessException`。",
+    "补丁生成成功。现在需要校验补丁的安全性。",
+    "补丁校验通过，现在生成 JUnit 5 单元测试。",
+    "测试代码生成成功，现在提交最终补丁和测试代码。"
+  ],
+  "agent_tool_calls": [
+    {
+      "tool": "locate_from_stack",
+      "args": {
+        "class_name": "com.sky.service.impl.OrderServiceImpl",
+        "method": "details",
+        "line_no": 255
+      },
+      "result": "{\"source_path\": \"D:\\\\workspace-repo\\\\sky-take-out\\\\sky-server\\\\src/main/java\\\\com\\\\sky\\\\service\\\\impl\\\\OrderServiceImpl.java\", \"repo_relative_path\": \"sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\service\\\\impl\\\\OrderServiceImpl.java\", \"class_name\": \"com.sky.service.impl.OrderServiceImpl\", \"method\": \"details\", \"line_no\": 255, \"context_snippet\": \"        Orders orders = orderMapper.getById(id);\\n\\n        // 查询该订单对应的菜品/套餐明细\\n        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(order"
+    },
+    {
+      "tool": "edit_code",
+      "args": {
+        "raw_stack": "java.lang.NullPointerException: Cannot invoke \"com.sky.entity.Orders.getId()\" because \"orders\" is null\n\tat com.sky.service.impl.OrderServiceImpl.details(OrderServiceImpl.java:255) ~[classes/:na]\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]\n\tat org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343) ~[spring-aop-6.0.11.jar:6.0.11]\n\tat org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:704) ~[spring-aop-6.0.11.jar:6.0.11]\n\tat com.sky.service.impl.OrderServiceImpl$$SpringCGLIB$$0.details(<generated>) ~[classes/:na]\n\tat com.sky.controller.admin.OrderController.details(OrderController.java:59) ~[classes/:na]",
+        "source_info": {
+          "class_name": "com.sky.service.impl.OrderServiceImpl",
+          "method": "details",
+          "line_no": 255,
+          "source_file": "OrderServiceImpl.java",
+          "context_snippet": "        Orders orders = orderMapper.getById(id);\n\n        // 查询该订单对应的菜品/套餐明细\n        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());\n\n        // 将该订单及其详情封装到OrderVO并返回\n        OrderVO orderVO = new OrderVO();",
+          "full_source": "package com.sky.service.impl;\n\nimport java.math.BigDecimal;\nimport java.time.LocalDateTime;\nimport java.util.ArrayList;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Optional;\nimport java.util.stream.Collectors;\n\nimport org.springframework.beans.BeanUtils;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.stereotype.Service;\nimport org.springframework.transaction.annotation.Transactional;\nimport org.springframework.util.CollectionUtils;\n\nimport com.alibaba.fastjson.JSON;\nimport com.github.pagehelper.Page;\nimport com.github.pagehelper.PageHelper;\nimport com.sky.constant.MessageConstant;\nimport com.sky.context.BaseContext;\nimport com.sky.dto.OrdersCancelDTO;\nimport com.sky.dto.OrdersConfirmDTO;\nimport com.sky.dto.OrdersPageQueryDTO;\nimport com.sky.dto.OrdersPaymentDTO;\nimport com.sky.dto.OrdersRejectionDTO;\nimport com.sky.dto.OrdersSubmitDTO;\nimport com.sky.entity.AddressBook;\nimport com.sky.entity.OrderDetail;\nimport com.sky.entity.Orders;\nimport com.sky.entity.ShoppingCart;\n// import com.sky.entity.User;\nimport com.sky.exception.AddressBookBusinessException;\nimport com.sky.exception.OrderBusinessException;\nimport com.sky.exception.ShoppingCartBusinessException;\nimport com.sky.service.OrderService;\nimport com.sky.utils.WeChatPayUtil;\nimport com.sky.vo.OrderPaymentVO;\nimport com.sky.vo.OrderStatisticsVO;\nimport com.sky.vo.OrderSubmitVO;\nimport com.sky.vo.OrderVO;\nimport com.sky.websocket.WebSocketServer;\n\nimport lombok.extern.slf4j.Slf4j;\n\nimport com.sky.mapper.AddressBookMapper;\nimport com.sky.mapper.OrderDetailMapper;\nimport com.sky.mapper.OrderMapper;\nimport com.sky.mapper.ShoppingCartMapper;\n// import com.sky.mapper.UserMapper;\nimport com.sky.result.PageResult;\n\n@Service\n@Slf4j\npublic class OrderServiceImpl implements OrderService {\n\n    @Autowired\n    private OrderMapper orderMapper;\n\n    @Autowired\n    private OrderDetailMapper orderDetailMapper;\n\n    @Autowired\n    private AddressBookMapper addressBookMapper;\n\n    @Autowired\n    private ShoppingCartMapper shoppingCartMapper;\n\n    @Autowired\n    private WeChatPayUtil weChatPayUtil;\n\n    // @Autowired\n    // private UserMapper userMapper;\n\n    @Autowired\n    private WebSocketServer webSocketServer;\n\n    /**\n     * 用户下单\n     * \n     * @param ordersSubmitDTO\n     * @return\n     */\n    @Override\n    @Transactional\n    public OrderSubmitVO submitOrder(OrdersSubmitDTO ordersSubmitDTO) {\n        // 业务异常处理，地址为空、购物车为空\n        AddressBook addressBook = addressBookMapper.getById(ordersSubmitDTO.getAddressBookId());\n        if (addressBook == null) {\n            // 抛出异常\n            throw new AddressBookBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);\n        }\n        Long userId = BaseContext.getCurrentId();\n        ShoppingCart shoppingCart = new ShoppingCart();\n        shoppingCart.setUserId(userId);\n        List<ShoppingCart> cartList = shoppingCartMapper.list(shoppingCart);\n        if (cartList == null || cartList.isEmpty()) {\n            // 抛出异常\n            throw new ShoppingCartBusinessException(MessageConstant.SHOPPING_CART_IS_NULL);\n        }\n\n        // 订单表插入一条数据\n        Orders orders = new Orders();\n        BeanUtils.copyProperties(ordersSubmitDTO, orders);\n        orders.setOrderTime(LocalDateTime.now());\n        orders.setPayStatus(Orders.UN_PAID);\n        orders.setStatus(Orders.PENDING_PAYMENT);\n        orders.setNumber(String.valueOf(System.currentTimeMillis()));\n        orders.setPhone(addressBook.getPhone());\n        orders.setConsignee(addressBook.getConsignee());\n        orders.setUserId(userId);\n\n        orderMapper.insert(orders);\n\n        // 订单详情表插入多条数据\n        List<OrderDetail> orderDetailList = new ArrayList<>();\n        cartList.forEach(cart -> {\n            OrderDetail orderDetail = new OrderDetail();\n            BeanUtils.copyProperties(cart, orderDetail);\n            orderDetail.setOrderId(orders.getId());\n            orderDetailList.add(orderDetail);\n        });\n        orderDetailMapper.insertBatch(orderDetailList);\n\n        // 清空购物车\n        shoppingCartMapper.deleteByUserId(userId);\n\n        // 返回 VO\n        OrderSubmitVO orderSubmitVO = OrderSubmitVO.builder()\n                .id(orders.getId())\n                .orderTime(orders.getOrderTime())\n                .orderNumber(orders.getNumber())\n                .orderAmount(orders.getAmount())\n                .build();\n\n        return orderSubmitVO;\n    }\n\n    /**\n     * 订单支付\n     *\n     * @param ordersPaymentDTO\n     * @return\n     */\n    public OrderPaymentVO payment(OrdersPaymentDTO ordersPaymentDTO) throws Exception {\n        // 当前登录用户id\n        // Long userId = BaseContext.getCurrentId();\n        // User user = userMapper.getById(userId);\n\n        // 直接调用paySuccess方法，模拟支付成功\n        paySuccess(ordersPaymentDTO.getOrderNumber());\n\n        // 调用微信支付接口，生成预支付交易单\n        // JSONObject jsonObject = weChatPayUtil.pay(\n        // ordersPaymentDTO.getOrderNumber(), // 商户订单号\n        // new BigDecimal(0.01), // 支付金额，单位 元\n        // \"苍穹外卖订单\", // 商品描述\n        // user.getOpenid() // 微信用户的openid\n        // );\n\n        // if (jsonObject.getString(\"code\") != null &&\n        // jsonObject.getString(\"code\").equals(\"ORDERPAID\")) {\n        // throw new OrderBusinessException(\"该订单已支付\");\n        // }\n\n        // OrderPaymentVO vo = jsonObject.toJavaObject(OrderPaymentVO.class);\n        // vo.setPackageStr(jsonObject.getString(\"package\"));\n\n        // return vo;\n        return null;\n    }\n\n    /**\n     * 支付成功，修改订单状态\n     *\n     * @param outTradeNo\n     */\n    public void paySuccess(String outTradeNo) {\n\n        // 根据订单号查询订单\n        Orders ordersDB = orderMapper.getByNumber(outTradeNo);\n\n        // 根据订单id更新订单的状态、支付方式、支付状态、结账时间\n        Orders orders = Orders.builder()\n                .id(ordersDB.getId())\n                .status(Orders.TO_BE_CONFIRMED)\n                .payStatus(Orders.PAID)\n                .checkoutTime(LocalDateTime.now())\n                .build();\n\n        orderMapper.update(orders);\n\n        // 通过websocket通知商家\n        Map<String, Object> map = new HashMap<>();\n        map.put(\"type\", 1); // 1:来单通知\n        map.put(\"orderId\", ordersDB.getId());\n        map.put(\"content\", \"订单号: \" + outTradeNo);\n        String msg = JSON.toJSONString(map);\n        webSocketServer.sendToAllClient(msg);\n    }\n\n    /**\n     * 查询历史订单\n     *\n     * @param page\n     * @param pageSize\n     * @param status\n     * @return\n     */\n    @Override\n    public PageResult<OrderVO> pageQueryByUser(int page, int pageSize, Integer status) {\n        // 设置分页\n        PageHelper.startPage(page, pageSize);\n\n        OrdersPageQueryDTO ordersPageQueryDTO = new OrdersPageQueryDTO();\n        ordersPageQueryDTO.setUserId(BaseContext.getCurrentId());\n        ordersPageQueryDTO.setStatus(status);\n\n        // 分页条件查询\n        Page<Orders> pageOrders = orderMapper.pageQuery(ordersPageQueryDTO);\n\n        List<OrderVO> list = new ArrayList<>();\n\n        // 查询出订单明细，并封装入OrderVO进行响应\n        if (pageOrders != null && pageOrders.getTotal() > 0) {\n            for (Orders orders : pageOrders) {\n                Long orderId = orders.getId();// 订单id\n\n                // 查询订单明细\n                List<OrderDetail> orderDetails = orderDetailMapper.getByOrderId(orderId);\n\n                OrderVO orderVO = new OrderVO();\n                BeanUtils.copyProperties(orders, orderVO);\n                orderVO.setOrderDetailList(orderDetails);\n\n                list.add(orderVO);\n            }\n        }\n        long total = Optional.ofNullable(pageOrders).map(Page::getTotal).orElse(0L);\n        return new PageResult<>(total, list);\n    }\n\n    /**\n     * 查询订单详情\n     *\n     * @param id\n     * @return\n     */\n    public OrderVO details(Long id) {\n        // 根据id查询订单\n        Orders orders = orderMapper.getById(id);\n\n        // 查询该订单对应的菜品/套餐明细\n        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());\n\n        // 将该订单及其详情封装到OrderVO并返回\n        OrderVO orderVO = new OrderVO();\n        BeanUtils.copyProperties(orders, orderVO);\n        orderVO.setOrderDetailList(orderDetailList);\n\n        return orderVO;\n    }\n\n    /**\n     * 用户取消订单\n     *\n     * @param id\n     */\n    public void userCancelById(Long id) throws Exception {\n        // 根据id查询订单\n        Orders ordersDB = orderMapper.getById(id);\n\n        // 校验订单是否存在\n        if (ordersDB == null) {\n            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);\n        }\n\n        // 订单状态 1待付款 2待接单 3已接单 4派送中 5已完成 6已取消\n        if (ordersDB.getStatus() > 2) {\n            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);\n        }\n\n        Orders orders = new Orders();\n        orders.setId(ordersDB.getId());\n\n        // 订单处于待接单状态下取消，需要进行退款\n        if (ordersDB.getStatus().equals(Orders.TO_BE_CONFIRMED)) {\n            // 调用微信支付退款接口\n            weChatPayUtil.refund(\n                    ordersDB.getNumber(), // 商户订单号\n                    ordersDB.getNumber(), // 商户退款单号\n                    new BigDecimal(0.01), // 退款金额，单位 元\n                    new BigDecimal(0.01));// 原订单金额\n\n            // 支付状态修改为 退款\n            orders.setPayStatus(Orders.REFUND);\n        }\n\n        // 更新订单状态、取消原因、取消时间\n        orders.setStatus(Orders.CANCELLED);\n        orders.setCancelReason(\"用户取消\");\n        orders.setCancelTime(LocalDateTime.now());\n        orderMapper.update(orders);\n    }\n\n    /**\n     * 再来一单\n     *\n     * @param id\n     */\n    public void repetition(Long id) {\n        // 查询当前用户id\n        Long userId = BaseContext.getCurrentId();\n\n        // 根据订单id查询当前订单详情\n        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(id);\n\n        // 将订单详情对象转换为购物车对象\n        List<ShoppingCart> shoppingCartList = orderDetailList.stream().map(x -> {\n            ShoppingCart shoppingCart = new ShoppingCart();\n\n            // 将原订单详情里面的菜品信息重新复制到购物车对象中\n            BeanUtils.copyProperties(x, shoppingCart, \"id\");\n            shoppingCart.setUserId(userId);\n            shoppingCart.setCreateTime(LocalDateTime.now());\n\n            return shoppingCart;\n        }).collect(Collectors.toList());\n\n        // 将购物车对象批量添加到数据库\n        shoppingCartMapper.insertBatch(shoppingCartList);\n    }\n\n    /**\n     * 订单搜索\n     *\n     * @param ordersPageQueryDTO\n     * @return\n     */\n    public PageResult<OrderVO> conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO) {\n        PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());\n\n        Page<Orders> page = orderMapper.pageQuery(ordersPageQueryDTO);\n\n        // 部分订单状态，需要额外返回订单菜品信息，将Orders转化为OrderVO\n        List<OrderVO> orderVOList = getOrderVOList(page);\n\n        return new PageResult<>(page.getTotal(), orderVOList);\n    }\n\n    private List<OrderVO> getOrderVOList(Page<Orders> page) {\n        // 需要返回订单菜品信息，自定义OrderVO响应结果\n        List<OrderVO> orderVOList = new ArrayList<>();\n\n        List<Orders> ordersList = page.getResult();\n        if (!CollectionUtils.isEmpty(ordersList)) {\n            for (Orders orders : ordersList) {\n                // 将共同字段复制到OrderVO\n                OrderVO orderVO = new OrderVO();\n                BeanUtils.copyProperties(orders, orderVO);\n                String orderDishes = getOrderDishesStr(orders);\n\n                // 将订单菜品信息封装到orderVO中，并添加到orderVOList\n                orderVO.setOrderDishes(orderDishes);\n                orderVOList.add(orderVO);\n            }\n        }\n        return orderVOList;\n    }\n\n    /**\n     * 根据订单id获取菜品信息字符串\n     *\n     * @param orders\n     * @return\n     */\n    private String getOrderDishesStr(Orders orders) {\n        // 查询订单菜品详情信息（订单中的菜品和数量）\n        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());\n\n        // Bug 2: 数组越界 - 当orderDetailList为空时，访问get(0)会抛出IndexOutOfBoundsException\n        String firstDishName = orderDetailList.get(0).getName();\n        \n        // 将每一条订单菜品信息拼接为字符串（格式：宫保鸡丁*3；）\n        List<String> orderDishList = orderDetailList.stream().map(x -> {\n            String orderDish = x.getName() + \"*\" + x.getNumber() + \";\";\n            return orderDish;\n        }).collect(Collectors.toList());\n\n        // 将该订单对应的所有菜品信息拼接在一起\n        return String.join(\"\", orderDishList);\n    }\n\n    /**\n     * 各个状态的订单数量统计\n     *\n     * @return\n     */\n    public OrderStatisticsVO statistics() {\n        // 根据状态，分别查询出待接单、待派送、派送中的订单数量\n        Integer toBeConfirmed = orderMapper.countStatus(Orders.TO_BE_CONFIRMED);\n        Integer confirmed = orderMapper.countStatus(Orders.CONFIRMED);\n        Integer deliveryInProgress = orderMapper.countStatus(Orders.DELIVERY_IN_PROGRESS);\n\n        // 将查询出的数据封装到orderStatisticsVO中响应\n        OrderStatisticsVO orderStatisticsVO = new OrderStatisticsVO();\n        orderStatisticsVO.setToBeConfirmed(toBeConfirmed);\n        orderStatisticsVO.setConfirmed(confirmed);\n        orderStatisticsVO.setDeliveryInProgress(deliveryInProgress);\n        return orderStatisticsVO;\n    }\n\n    /**\n     * 接单\n     *\n     * @param ordersConfirmDTO\n     */\n    public void confirm(OrdersConfirmDTO ordersConfirmDTO) {\n        Orders orders = Orders.builder()\n                .id(ordersConfirmDTO.getId())\n                .status(Orders.CONFIRMED)\n                .build();\n\n        orderMapper.update(orders);\n    }\n\n    /**\n     * 拒单\n     *\n     * @param ordersRejectionDTO\n     */\n    public void rejection(OrdersRejectionDTO ordersRejectionDTO) throws Exception {\n        // 根据id查询订单\n        Orders ordersDB = orderMapper.getById(ordersRejectionDTO.getId());\n\n        // 订单只有存在且状态为2（待接单）才可以拒单\n        if (ordersDB == null || !ordersDB.getStatus().equals(Orders.TO_BE_CONFIRMED)) {\n            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);\n        }\n\n        // 支付状态\n        Integer payStatus = ordersDB.getPayStatus();\n        if (payStatus == Orders.PAID) {\n            // 用户已支付，需要退款\n            String refund = weChatPayUtil.refund(\n                    ordersDB.getNumber(),\n                    ordersDB.getNumber(),\n                    new BigDecimal(0.01),\n                    new BigDecimal(0.01));\n            log.info(\"申请退款：{}\", refund);\n        }\n\n        // 拒单需要退款，根据订单id更新订单状态、拒单原因、取消时间\n        Orders orders = new Orders();\n        orders.setId(ordersDB.getId());\n        orders.setStatus(Orders.CANCELLED);\n        orders.setRejectionReason(ordersRejectionDTO.getRejectionReason());\n        orders.setCancelTime(LocalDateTime.now());\n\n        orderMapper.update(orders);\n    }\n\n    /**\n     * 取消订单\n     *\n     * @param ordersCancelDTO\n     */\n    public void cancel(OrdersCancelDTO ordersCancelDTO) throws Exception {\n        // 根据id查询订单\n        Orders ordersDB = orderMapper.getById(ordersCancelDTO.getId());\n\n        // 支付状态\n        Integer payStatus = ordersDB.getPayStatus();\n        if (payStatus == 1) {\n            // 用户已支付，需要退款\n            String refund = weChatPayUtil.refund(\n                    ordersDB.getNumber(),\n                    ordersDB.getNumber(),\n                    new BigDecimal(0.01),\n                    new BigDecimal(0.01));\n            log.info(\"申请退款：{}\", refund);\n        }\n\n        // 管理端取消订单需要退款，根据订单id更新订单状态、取消原因、取消时间\n        Orders orders = new Orders();\n        orders.setId(ordersCancelDTO.getId());\n        orders.setStatus(Orders.CANCELLED);\n        orders.setCancelReason(ordersCancelDTO.getCancelReason());\n        orders.setCancelTime(LocalDateTime.now());\n        orderMapper.update(orders);\n    }\n\n    /**\n     * 派送订单\n     *\n     * @param id\n     */\n    public void delivery(Long id) {\n        // 根据id查询订单\n        Orders ordersDB = orderMapper.getById(id);\n\n        // 校验订单是否存在，并且状态为3\n        if (ordersDB == null || !ordersDB.getStatus().equals(Orders.CONFIRMED)) {\n            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);\n        }\n\n        Orders orders = new Orders();\n        orders.setId(ordersDB.getId());\n        // 更新订单状态,状态转为派送中\n        orders.setStatus(Orders.DELIVERY_IN_PROGRESS);\n\n        orderMapper.update(orders);\n    }\n\n    /**\n     * 完成订单\n     *\n     * @param id\n     */\n    public void complete(Long id) {\n        // 根据id查询订单\n        Orders ordersDB = orderMapper.getById(id);\n\n        // 校验订单是否存在，并且状态为4\n        if (ordersDB == null || !ordersDB.getStatus().equals(Orders.DELIVERY_IN_PROGRESS)) {\n            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);\n        }\n\n        Orders orders = new Orders();\n        orders.setId(ordersDB.getId());\n        // 更新订单状态,状态转为完成\n        orders.setStatus(Orders.COMPLETED);\n        orders.setDeliveryTime(LocalDateTime.now());\n\n        orderMapper.update(orders);\n    }\n\n    /**\n     * 用户催单\n     *\n     * @param id\n     */\n    public void reminder(Long id) {\n        // 查询订单是否存在\n        Orders orders = orderMapper.getById(id);\n        if (orders == null) {\n            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);\n        }\n\n        // 基于WebSocket实现催单\n        Map<String, Object> map = new HashMap<>();\n        map.put(\"type\", 2);// 2代表用户催单\n        map.put(\"orderId\", id);\n        map.put(\"content\", \"订单号：\" + orders.getNumber());\n        webSocketServer.sendToAllClient(JSON.toJSONString(map));\n    }\n\n}",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\service\\impl\\OrderServiceImpl.java"
+        }
+      },
+      "result": "{\"patch_text\": \"--- a/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\\n+++ b/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\\n@@ -253,6 +253,11 @@ public class OrderServiceImpl implements OrderService {\\n \\n         // 根据id查询订单\\n         Orders orders = orderMapper.getById(id);\\n+        \\n+        // 订单不存在则抛出业务异常\\n+        if (orders == null) {\\n+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);\\n+        }\\n \\n         // 查询该"
+    },
+    {
+      "tool": "validate_patch",
+      "args": {
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\n+++ b/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\n@@ -253,6 +253,11 @@ public class OrderServiceImpl implements OrderService {\n \n         // 根据id查询订单\n         Orders orders = orderMapper.getById(id);\n+        \n+        // 订单不存在则抛出业务异常\n+        if (orders == null) {\n+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);\n+        }\n \n         // 查询该订单对应的菜品/套餐明细\n         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());",
+        "source_info": {
+          "class_name": "com.sky.service.impl.OrderServiceImpl",
+          "method": "details",
+          "line_no": 255,
+          "source_file": "OrderServiceImpl.java",
+          "context_snippet": "        Orders orders = orderMapper.getById(id);\n\n        // 查询该订单对应的菜品/套餐明细\n        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());\n\n        // 将该订单及其详情封装到OrderVO并返回\n        OrderVO orderVO = new OrderVO();",
+          "full_source": "package com.sky.service.impl;\n\nimport java.math.BigDecimal;\nimport java.time.LocalDateTime;\nimport java.util.ArrayList;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Optional;\nimport java.util.stream.Collectors;\n\nimport org.springframework.beans.BeanUtils;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.stereotype.Service;\nimport org.springframework.transaction.annotation.Transactional;\nimport org.springframework.util.CollectionUtils;\n\nimport com.alibaba.fastjson.JSON;\nimport com.github.pagehelper.Page;\nimport com.github.pagehelper.PageHelper;\nimport com.sky.constant.MessageConstant;\nimport com.sky.context.BaseContext;\nimport com.sky.dto.OrdersCancelDTO;\nimport com.sky.dto.OrdersConfirmDTO;\nimport com.sky.dto.OrdersPageQueryDTO;\nimport com.sky.dto.OrdersPaymentDTO;\nimport com.sky.dto.OrdersRejectionDTO;\nimport com.sky.dto.OrdersSubmitDTO;\nimport com.sky.entity.AddressBook;\nimport com.sky.entity.OrderDetail;\nimport com.sky.entity.Orders;\nimport com.sky.entity.ShoppingCart;\n// import com.sky.entity.User;\nimport com.sky.exception.AddressBookBusinessException;\nimport com.sky.exception.OrderBusinessException;\nimport com.sky.exception.ShoppingCartBusinessException;\nimport com.sky.service.OrderService;\nimport com.sky.utils.WeChatPayUtil;\nimport com.sky.vo.OrderPaymentVO;\nimport com.sky.vo.OrderStatisticsVO;\nimport com.sky.vo.OrderSubmitVO;\nimport com.sky.vo.OrderVO;\nimport com.sky.websocket.WebSocketServer;\n\nimport lombok.extern.slf4j.Slf4j;\n\nimport com.sky.mapper.AddressBookMapper;\nimport com.sky.mapper.OrderDetailMapper;\nimport com.sky.mapper.OrderMapper;\nimport com.sky.mapper.ShoppingCartMapper;\n// import com.sky.mapper.UserMapper;\nimport com.sky.result.PageResult;\n\n@Service\n@Slf4j\npublic class OrderServiceImpl implements OrderService {\n\n    @Autowired\n    private OrderMapper orderMapper;\n\n    @Autowired\n    private OrderDetailMapper orderDetailMapper;\n\n    @Autowired\n    private AddressBookMapper addressBookMapper;\n\n    @Autowired\n    private ShoppingCartMapper shoppingCartMapper;\n\n    @Autowired\n    private WeChatPayUtil weChatPayUtil;\n\n    // @Autowired\n    // private UserMapper userMapper;\n\n    @Autowired\n    private WebSocketServer webSocketServer;\n\n    /**\n     * 用户下单\n     * \n     * @param ordersSubmitDTO\n     * @return\n     */\n    @Override\n    @Transactional\n    public OrderSubmitVO submitOrder(OrdersSubmitDTO ordersSubmitDTO) {\n        // 业务异常处理，地址为空、购物车为空\n        AddressBook addressBook = addressBookMapper.getById(ordersSubmitDTO.getAddressBookId());\n        if (addressBook == null) {\n            // 抛出异常\n            throw new AddressBookBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);\n        }\n        Long userId = BaseContext.getCurrentId();\n        ShoppingCart shoppingCart = new ShoppingCart();\n        shoppingCart.setUserId(userId);\n        List<ShoppingCart> cartList = shoppingCartMapper.list(shoppingCart);\n        if (cartList == null || cartList.isEmpty()) {\n            // 抛出异常\n            throw new ShoppingCartBusinessException(MessageConstant.SHOPPING_CART_IS_NULL);\n        }\n\n        // 订单表插入一条数据\n        Orders orders = new Orders();\n        BeanUtils.copyProperties(ordersSubmitDTO, orders);\n        orders.setOrderTime(LocalDateTime.now());\n        orders.setPayStatus(Orders.UN_PAID);\n        orders.setStatus(Orders.PENDING_PAYMENT);\n        orders.setNumber(String.valueOf(System.currentTimeMillis()));\n        orders.setPhone(addressBook.getPhone());\n        orders.setConsignee(addressBook.getConsignee());\n        orders.setUserId(userId);\n\n        orderMapper.insert(orders);\n\n        // 订单详情表插入多条数据\n        List<OrderDetail> orderDetailList = new ArrayList<>();\n        cartList.forEach(cart -> {\n            OrderDetail orderDetail = new OrderDetail();\n            BeanUtils.copyProperties(cart, orderDetail);\n            orderDetail.setOrderId(orders.getId());\n            orderDetailList.add(orderDetail);\n        });\n        orderDetailMapper.insertBatch(orderDetailList);\n\n        // 清空购物车\n        shoppingCartMapper.deleteByUserId(userId);\n\n        // 返回 VO\n        OrderSubmitVO orderSubmitVO = OrderSubmitVO.builder()\n                .id(orders.getId())\n                .orderTime(orders.getOrderTime())\n                .orderNumber(orders.getNumber())\n                .orderAmount(orders.getAmount())\n                .build();\n\n        return orderSubmitVO;\n    }\n\n    /**\n     * 订单支付\n     *\n     * @param ordersPaymentDTO\n     * @return\n     */\n    public OrderPaymentVO payment(OrdersPaymentDTO ordersPaymentDTO) throws Exception {\n        // 当前登录用户id\n        // Long userId = BaseContext.getCurrentId();\n        // User user = userMapper.getById(userId);\n\n        // 直接调用paySuccess方法，模拟支付成功\n        paySuccess(ordersPaymentDTO.getOrderNumber());\n\n        // 调用微信支付接口，生成预支付交易单\n        // JSONObject jsonObject = weChatPayUtil.pay(\n        // ordersPaymentDTO.getOrderNumber(), // 商户订单号\n        // new BigDecimal(0.01), // 支付金额，单位 元\n        // \"苍穹外卖订单\", // 商品描述\n        // user.getOpenid() // 微信用户的openid\n        // );\n\n        // if (jsonObject.getString(\"code\") != null &&\n        // jsonObject.getString(\"code\").equals(\"ORDERPAID\")) {\n        // throw new OrderBusinessException(\"该订单已支付\");\n        // }\n\n        // OrderPaymentVO vo = jsonObject.toJavaObject(OrderPaymentVO.class);\n        // vo.setPackageStr(jsonObject.getString(\"package\"));\n\n        // return vo;\n        return null;\n    }\n\n    /**\n     * 支付成功，修改订单状态\n     *\n     * @param outTradeNo\n     */\n    public void paySuccess(String outTradeNo) {\n\n        // 根据订单号查询订单\n        Orders ordersDB = orderMapper.getByNumber(outTradeNo);\n\n        // 根据订单id更新订单的状态、支付方式、支付状态、结账时间\n        Orders orders = Orders.builder()\n                .id(ordersDB.getId())\n                .status(Orders.TO_BE_CONFIRMED)\n                .payStatus(Orders.PAID)\n                .checkoutTime(LocalDateTime.now())\n                .build();\n\n        orderMapper.update(orders);\n\n        // 通过websocket通知商家\n        Map<String, Object> map = new HashMap<>();\n        map.put(\"type\", 1); // 1:来单通知\n        map.put(\"orderId\", ordersDB.getId());\n        map.put(\"content\", \"订单号: \" + outTradeNo);\n        String msg = JSON.toJSONString(map);\n        webSocketServer.sendToAllClient(msg);\n    }\n\n    /**\n     * 查询历史订单\n     *\n     * @param page\n     * @param pageSize\n     * @param status\n     * @return\n     */\n    @Override\n    public PageResult<OrderVO> pageQueryByUser(int page, int pageSize, Integer status) {\n        // 设置分页\n        PageHelper.startPage(page, pageSize);\n\n        OrdersPageQueryDTO ordersPageQueryDTO = new OrdersPageQueryDTO();\n        ordersPageQueryDTO.setUserId(BaseContext.getCurrentId());\n        ordersPageQueryDTO.setStatus(status);\n\n        // 分页条件查询\n        Page<Orders> pageOrders = orderMapper.pageQuery(ordersPageQueryDTO);\n\n        List<OrderVO> list = new ArrayList<>();\n\n        // 查询出订单明细，并封装入OrderVO进行响应\n        if (pageOrders != null && pageOrders.getTotal() > 0) {\n            for (Orders orders : pageOrders) {\n                Long orderId = orders.getId();// 订单id\n\n                // 查询订单明细\n                List<OrderDetail> orderDetails = orderDetailMapper.getByOrderId(orderId);\n\n                OrderVO orderVO = new OrderVO();\n                BeanUtils.copyProperties(orders, orderVO);\n                orderVO.setOrderDetailList(orderDetails);\n\n                list.add(orderVO);\n            }\n        }\n        long total = Optional.ofNullable(pageOrders).map(Page::getTotal).orElse(0L);\n        return new PageResult<>(total, list);\n    }\n\n    /**\n     * 查询订单详情\n     *\n     * @param id\n     * @return\n     */\n    public OrderVO details(Long id) {\n        // 根据id查询订单\n        Orders orders = orderMapper.getById(id);\n\n        // 查询该订单对应的菜品/套餐明细\n        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());\n\n        // 将该订单及其详情封装到OrderVO并返回\n        OrderVO orderVO = new OrderVO();\n        BeanUtils.copyProperties(orders, orderVO);\n        orderVO.setOrderDetailList(orderDetailList);\n\n        return orderVO;\n    }\n\n    /**\n     * 用户取消订单\n     *\n     * @param id\n     */\n    public void userCancelById(Long id) throws Exception {\n        // 根据id查询订单\n        Orders ordersDB = orderMapper.getById(id);\n\n        // 校验订单是否存在\n        if (ordersDB == null) {\n            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);\n        }\n\n        // 订单状态 1待付款 2待接单 3已接单 4派送中 5已完成 6已取消\n        if (ordersDB.getStatus() > 2) {\n            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);\n        }\n\n        Orders orders = new Orders();\n        orders.setId(ordersDB.getId());\n\n        // 订单处于待接单状态下取消，需要进行退款\n        if (ordersDB.getStatus().equals(Orders.TO_BE_CONFIRMED)) {\n            // 调用微信支付退款接口\n            weChatPayUtil.refund(\n                    ordersDB.getNumber(), // 商户订单号\n                    ordersDB.getNumber(), // 商户退款单号\n                    new BigDecimal(0.01), // 退款金额，单位 元\n                    new BigDecimal(0.01));// 原订单金额\n\n            // 支付状态修改为 退款\n            orders.setPayStatus(Orders.REFUND);\n        }\n\n        // 更新订单状态、取消原因、取消时间\n        orders.setStatus(Orders.CANCELLED);\n        orders.setCancelReason(\"用户取消\");\n        orders.setCancelTime(LocalDateTime.now());\n        orderMapper.update(orders);\n    }\n\n    /**\n     * 再来一单\n     *\n     * @param id\n     */\n    public void repetition(Long id) {\n        // 查询当前用户id\n        Long userId = BaseContext.getCurrentId();\n\n        // 根据订单id查询当前订单详情\n        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(id);\n\n        // 将订单详情对象转换为购物车对象\n        List<ShoppingCart> shoppingCartList = orderDetailList.stream().map(x -> {\n            ShoppingCart shoppingCart = new ShoppingCart();\n\n            // 将原订单详情里面的菜品信息重新复制到购物车对象中\n            BeanUtils.copyProperties(x, shoppingCart, \"id\");\n            shoppingCart.setUserId(userId);\n            shoppingCart.setCreateTime(LocalDateTime.now());\n\n            return shoppingCart;\n        }).collect(Collectors.toList());\n\n        // 将购物车对象批量添加到数据库\n        shoppingCartMapper.insertBatch(shoppingCartList);\n    }\n\n    /**\n     * 订单搜索\n     *\n     * @param ordersPageQueryDTO\n     * @return\n     */\n    public PageResult<OrderVO> conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO) {\n        PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());\n\n        Page<Orders> page = orderMapper.pageQuery(ordersPageQueryDTO);\n\n        // 部分订单状态，需要额外返回订单菜品信息，将Orders转化为OrderVO\n        List<OrderVO> orderVOList = getOrderVOList(page);\n\n        return new PageResult<>(page.getTotal(), orderVOList);\n    }\n\n    private List<OrderVO> getOrderVOList(Page<Orders> page) {\n        // 需要返回订单菜品信息，自定义OrderVO响应结果\n        List<OrderVO> orderVOList = new ArrayList<>();\n\n        List<Orders> ordersList = page.getResult();\n        if (!CollectionUtils.isEmpty(ordersList)) {\n            for (Orders orders : ordersList) {\n                // 将共同字段复制到OrderVO\n                OrderVO orderVO = new OrderVO();\n                BeanUtils.copyProperties(orders, orderVO);\n                String orderDishes = getOrderDishesStr(orders);\n\n                // 将订单菜品信息封装到orderVO中，并添加到orderVOList\n                orderVO.setOrderDishes(orderDishes);\n                orderVOList.add(orderVO);\n            }\n        }\n        return orderVOList;\n    }\n\n    /**\n     * 根据订单id获取菜品信息字符串\n     *\n     * @param orders\n     * @return\n     */\n    private String getOrderDishesStr(Orders orders) {\n        // 查询订单菜品详情信息（订单中的菜品和数量）\n        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());\n\n        // Bug 2: 数组越界 - 当orderDetailList为空时，访问get(0)会抛出IndexOutOfBoundsException\n        String firstDishName = orderDetailList.get(0).getName();\n        \n        // 将每一条订单菜品信息拼接为字符串（格式：宫保鸡丁*3；）\n        List<String> orderDishList = orderDetailList.stream().map(x -> {\n            String orderDish = x.getName() + \"*\" + x.getNumber() + \";\";\n            return orderDish;\n        }).collect(Collectors.toList());\n\n        // 将该订单对应的所有菜品信息拼接在一起\n        return String.join(\"\", orderDishList);\n    }\n\n    /**\n     * 各个状态的订单数量统计\n     *\n     * @return\n     */\n    public OrderStatisticsVO statistics() {\n        // 根据状态，分别查询出待接单、待派送、派送中的订单数量\n        Integer toBeConfirmed = orderMapper.countStatus(Orders.TO_BE_CONFIRMED);\n        Integer confirmed = orderMapper.countStatus(Orders.CONFIRMED);\n        Integer deliveryInProgress = orderMapper.countStatus(Orders.DELIVERY_IN_PROGRESS);\n\n        // 将查询出的数据封装到orderStatisticsVO中响应\n        OrderStatisticsVO orderStatisticsVO = new OrderStatisticsVO();\n        orderStatisticsVO.setToBeConfirmed(toBeConfirmed);\n        orderStatisticsVO.setConfirmed(confirmed);\n        orderStatisticsVO.setDeliveryInProgress(deliveryInProgress);\n        return orderStatisticsVO;\n    }\n\n    /**\n     * 接单\n     *\n     * @param ordersConfirmDTO\n     */\n    public void confirm(OrdersConfirmDTO ordersConfirmDTO) {\n        Orders orders = Orders.builder()\n                .id(ordersConfirmDTO.getId())\n                .status(Orders.CONFIRMED)\n                .build();\n\n        orderMapper.update(orders);\n    }\n\n    /**\n     * 拒单\n     *\n     * @param ordersRejectionDTO\n     */\n    public void rejection(OrdersRejectionDTO ordersRejectionDTO) throws Exception {\n        // 根据id查询订单\n        Orders ordersDB = orderMapper.getById(ordersRejectionDTO.getId());\n\n        // 订单只有存在且状态为2（待接单）才可以拒单\n        if (ordersDB == null || !ordersDB.getStatus().equals(Orders.TO_BE_CONFIRMED)) {\n            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);\n        }\n\n        // 支付状态\n        Integer payStatus = ordersDB.getPayStatus();\n        if (payStatus == Orders.PAID) {\n            // 用户已支付，需要退款\n            String refund = weChatPayUtil.refund(\n                    ordersDB.getNumber(),\n                    ordersDB.getNumber(),\n                    new BigDecimal(0.01),\n                    new BigDecimal(0.01));\n            log.info(\"申请退款：{}\", refund);\n        }\n\n        // 拒单需要退款，根据订单id更新订单状态、拒单原因、取消时间\n        Orders orders = new Orders();\n        orders.setId(ordersDB.getId());\n        orders.setStatus(Orders.CANCELLED);\n        orders.setRejectionReason(ordersRejectionDTO.getRejectionReason());\n        orders.setCancelTime(LocalDateTime.now());\n\n        orderMapper.update(orders);\n    }\n\n    /**\n     * 取消订单\n     *\n     * @param ordersCancelDTO\n     */\n    public void cancel(OrdersCancelDTO ordersCancelDTO) throws Exception {\n        // 根据id查询订单\n        Orders ordersDB = orderMapper.getById(ordersCancelDTO.getId());\n\n        // 支付状态\n        Integer payStatus = ordersDB.getPayStatus();\n        if (payStatus == 1) {\n            // 用户已支付，需要退款\n            String refund = weChatPayUtil.refund(\n                    ordersDB.getNumber(),\n                    ordersDB.getNumber(),\n                    new BigDecimal(0.01),\n                    new BigDecimal(0.01));\n            log.info(\"申请退款：{}\", refund);\n        }\n\n        // 管理端取消订单需要退款，根据订单id更新订单状态、取消原因、取消时间\n        Orders orders = new Orders();\n        orders.setId(ordersCancelDTO.getId());\n        orders.setStatus(Orders.CANCELLED);\n        orders.setCancelReason(ordersCancelDTO.getCancelReason());\n        orders.setCancelTime(LocalDateTime.now());\n        orderMapper.update(orders);\n    }\n\n    /**\n     * 派送订单\n     *\n     * @param id\n     */\n    public void delivery(Long id) {\n        // 根据id查询订单\n        Orders ordersDB = orderMapper.getById(id);\n\n        // 校验订单是否存在，并且状态为3\n        if (ordersDB == null || !ordersDB.getStatus().equals(Orders.CONFIRMED)) {\n            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);\n        }\n\n        Orders orders = new Orders();\n        orders.setId(ordersDB.getId());\n        // 更新订单状态,状态转为派送中\n        orders.setStatus(Orders.DELIVERY_IN_PROGRESS);\n\n        orderMapper.update(orders);\n    }\n\n    /**\n     * 完成订单\n     *\n     * @param id\n     */\n    public void complete(Long id) {\n        // 根据id查询订单\n        Orders ordersDB = orderMapper.getById(id);\n\n        // 校验订单是否存在，并且状态为4\n        if (ordersDB == null || !ordersDB.getStatus().equals(Orders.DELIVERY_IN_PROGRESS)) {\n            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);\n        }\n\n        Orders orders = new Orders();\n        orders.setId(ordersDB.getId());\n        // 更新订单状态,状态转为完成\n        orders.setStatus(Orders.COMPLETED);\n        orders.setDeliveryTime(LocalDateTime.now());\n\n        orderMapper.update(orders);\n    }\n\n    /**\n     * 用户催单\n     *\n     * @param id\n     */\n    public void reminder(Long id) {\n        // 查询订单是否存在\n        Orders orders = orderMapper.getById(id);\n        if (orders == null) {\n            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);\n        }\n\n        // 基于WebSocket实现催单\n        Map<String, Object> map = new HashMap<>();\n        map.put(\"type\", 2);// 2代表用户催单\n        map.put(\"orderId\", id);\n        map.put(\"content\", \"订单号：\" + orders.getNumber());\n        webSocketServer.sendToAllClient(JSON.toJSONString(map));\n    }\n\n}",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\service\\impl\\OrderServiceImpl.java"
+        }
+      },
+      "result": "{\"valid\": true, \"errors\": [], \"changed_lines\": 5, \"files\": [\"sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\service\\\\impl\\\\OrderServiceImpl.java\"]}"
+    },
+    {
+      "tool": "generate_test",
+      "args": {
+        "source_info": {
+          "class_name": "com.sky.service.impl.OrderServiceImpl",
+          "method": "details",
+          "line_no": 255,
+          "source_file": "OrderServiceImpl.java",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\service\\impl\\OrderServiceImpl.java",
+          "full_source": "..."
+        },
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\n+++ b/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\n@@ -253,6 +253,11 @@ public class OrderServiceImpl implements OrderService {\n \n         // 根据id查询订单\n         Orders orders = orderMapper.getById(id);\n+        \n+        // 订单不存在则抛出业务异常\n+        if (orders == null) {\n+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);\n+        }\n \n         // 查询该订单对应的菜品/套餐明细\n         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());",
+        "raw_stack": "java.lang.NullPointerException: Cannot invoke \"com.sky.entity.Orders.getId()\" because \"orders\" is null\n\tat com.sky.service.impl.OrderServiceImpl.details(OrderServiceImpl.java:255) ~[classes/:na]"
+      },
+      "result": "{\"test_code\": \"package com.sky.service.impl;\\n\\nimport static org.junit.jupiter.api.Assertions.*;\\nimport static org.mockito.Mockito.*;\\n\\nimport java.util.Arrays;\\nimport java.util.List;\\n\\nimport org.junit.jupiter.api.DisplayName;\\nimport org.junit.jupiter.api.Test;\\nimport org.junit.jupiter.api.extension.ExtendWith;\\nimport org.mockito.InjectMocks;\\nimport org.mockito.Mock;\\nimport org.mockito.junit.jupiter.MockitoExtension;\\n\\nimport com.sky.constant.MessageConstant;\\nimport com.sky.entity.O"
+    },
+    {
+      "tool": "final_patch",
+      "args": {
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\n+++ b/sky-server/src/main/java/com/sky/service/impl/OrderServiceImpl.java\n@@ -253,6 +253,11 @@ public class OrderServiceImpl implements OrderService {\n \n         // 根据id查询订单\n         Orders orders = orderMapper.getById(id);\n+        \n+        // 订单不存在则抛出业务异常\n+        if (orders == null) {\n+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);\n+        }\n \n         // 查询该订单对应的菜品/套餐明细\n         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());",
+        "source_info": {
+          "class_name": "com.sky.service.impl.OrderServiceImpl",
+          "method": "details",
+          "line_no": 255,
+          "source_file": "OrderServiceImpl.java",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\service\\impl\\OrderServiceImpl.java"
+        },
+        "test_code": "package com.sky.service.impl;\n\nimport static org.junit.jupiter.api.Assertions.*;\nimport static org.mockito.Mockito.*;\n\nimport java.util.Arrays;\nimport java.util.List;\n\nimport org.junit.jupiter.api.DisplayName;\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.extension.ExtendWith;\nimport org.mockito.InjectMocks;\nimport org.mockito.Mock;\nimport org.mockito.junit.jupiter.MockitoExtension;\n\nimport com.sky.constant.MessageConstant;\nimport com.sky.entity.OrderDetail;\nimport com.sky.entity.Orders;\nimport com.sky.exception.OrderBusinessException;\nimport com.sky.mapper.OrderDetailMapper;\nimport com.sky.mapper.OrderMapper;\nimport com.sky.service.OrderService;\nimport com.sky.vo.OrderVO;\n\n@ExtendWith(MockitoExtension.class)\nclass OrderServiceImplTest {\n\n    @InjectMocks\n    private OrderServiceImpl orderService;\n\n    @Mock\n    private OrderMapper orderMapper;\n\n    @Mock\n    private OrderDetailMapper orderDetailMapper;\n\n    @Test\n    @DisplayName(\"正向测试：修复后当订单存在时应返回正确的订单详情\")\n    void testDetails_WhenOrderExists_ShouldReturnOrderDetails() {\n        // Arrange\n        Long orderId = 1L;\n        Orders mockOrder = new Orders();\n        mockOrder.setId(orderId);\n        List<OrderDetail> mockOrderDetails = Arrays.asList(new OrderDetail(), new OrderDetail());\n\n        when(orderMapper.getById(orderId)).thenReturn(mockOrder);\n        when(orderDetailMapper.getByOrderId(orderId)).thenReturn(mockOrderDetails);\n\n        // Act\n        OrderVO result = orderService.details(orderId);\n\n        // Assert\n        assertNotNull(result);\n        assertEquals(orderId, result.getId());\n        assertEquals(2, result.getOrderDetailList().size());\n\n        // Verify\n        verify(orderMapper).getById(orderId);\n        verify(orderDetailMapper).getByOrderId(orderId);\n    }\n\n    @Test\n    @DisplayName(\"边界测试：修复后当订单不存在时应抛出OrderBusinessException而非NullPointerException\")\n    void testDetails_WhenOrderDoesNotExist_ShouldThrowOrderBusinessException() {\n        // Arrange\n        Long orderId = 999L;\n        when(orderMapper.getById(orderId)).thenReturn(null);\n\n        // Act & Assert\n        OrderBusinessException exception = assertThrows(OrderBusinessException.class,\n                () -> orderService.details(orderId));\n\n        assertEquals(MessageConstant.ORDER_NOT_FOUND, exception.getMessage());\n\n        // Verify\n        verify(orderMapper).getById(orderId);\n        verify(orderDetailMapper, never()).getByOrderId(any());\n    }\n\n    @Test\n    @DisplayName(\"修复验证：修复前当订单查询结果为null时会抛出NullPointerException\")\n    void testDetails_WhenOrderIsNull_ShouldNotThrowNullPointerException() {\n        // This test verifies that the fix prevents the NullPointerException\n        // mentioned in the original exception stack trace.\n        \n        // Arrange\n        Long orderId = 100L;\n        when(orderMapper.getById(orderId)).thenReturn(null);\n\n        // Act & Assert\n        // Before fix: This would throw NullPointerException\n        //   because orders.getId() was called on null orders.\n        // After fix: Should throw OrderBusinessException instead.\n        assertDoesNotThrow(() -> {\n            try {\n                orderService.details(orderId);\n            } catch (OrderBusinessException e) {\n                // Expected - this is the fixed behavior\n                assertEquals(MessageConstant.ORDER_NOT_FOUND, e.getMessage());\n            }\n        });\n    }\n}"
+      },
+      "result": "success"
+    }
+  ],
+  "detection_method": "agent"
+}

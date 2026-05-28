@@ -1,0 +1,499 @@
+{
+  "status": "completed",
+  "dry_run": false,
+  "raw_stack": "org.springframework.web.bind.MissingPathVariableException: Required URI template variable 'status' for method parameter type Integer is not present\n\tat org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.handleMissingValue(PathVariableMethodArgumentResolver.java:101) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.handleMissingValue(AbstractNamedValueMethodArgumentResolver.java:226) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:114) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:179) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:146) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1011) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.11.jar:6.0]\n\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.11.jar:6.0]\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:166) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:894) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.11.jar:10.1.11]\n\tat java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]",
+  "parsed_stack": [
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver",
+      "method": "handleMissingValue",
+      "line_no": 101,
+      "source_file": "PathVariableMethodArgumentResolver.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.handleMissingValue(PathVariableMethodArgumentResolver.java:101) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver",
+      "method": "handleMissingValue",
+      "line_no": 226,
+      "source_file": "AbstractNamedValueMethodArgumentResolver.java",
+      "raw_line": "\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.handleMissingValue(AbstractNamedValueMethodArgumentResolver.java:226) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver",
+      "method": "resolveArgument",
+      "line_no": 114,
+      "source_file": "AbstractNamedValueMethodArgumentResolver.java",
+      "raw_line": "\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:114) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.method.support.HandlerMethodArgumentResolverComposite",
+      "method": "resolveArgument",
+      "line_no": 122,
+      "source_file": "HandlerMethodArgumentResolverComposite.java",
+      "raw_line": "\tat org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.method.support.InvocableHandlerMethod",
+      "method": "getMethodArgumentValues",
+      "line_no": 179,
+      "source_file": "InvocableHandlerMethod.java",
+      "raw_line": "\tat org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:179) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.method.support.InvocableHandlerMethod",
+      "method": "invokeForRequest",
+      "line_no": 146,
+      "source_file": "InvocableHandlerMethod.java",
+      "raw_line": "\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:146) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod",
+      "method": "invokeAndHandle",
+      "line_no": 118,
+      "source_file": "ServletInvocableHandlerMethod.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter",
+      "method": "invokeHandlerMethod",
+      "line_no": 884,
+      "source_file": "RequestMappingHandlerAdapter.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter",
+      "method": "handleInternal",
+      "line_no": 797,
+      "source_file": "RequestMappingHandlerAdapter.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter",
+      "method": "handle",
+      "line_no": 87,
+      "source_file": "AbstractHandlerMethodAdapter.java",
+      "raw_line": "\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.DispatcherServlet",
+      "method": "doDispatch",
+      "line_no": 1081,
+      "source_file": "DispatcherServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.DispatcherServlet",
+      "method": "doService",
+      "line_no": 974,
+      "source_file": "DispatcherServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.FrameworkServlet",
+      "method": "processRequest",
+      "line_no": 1011,
+      "source_file": "FrameworkServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1011) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.FrameworkServlet",
+      "method": "doPost",
+      "line_no": 914,
+      "source_file": "FrameworkServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "jakarta.servlet.http.HttpServlet",
+      "method": "service",
+      "line_no": 590,
+      "source_file": "HttpServlet.java",
+      "raw_line": "\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.11.jar:6.0]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.servlet.FrameworkServlet",
+      "method": "service",
+      "line_no": 885,
+      "source_file": "FrameworkServlet.java",
+      "raw_line": "\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "jakarta.servlet.http.HttpServlet",
+      "method": "service",
+      "line_no": 658,
+      "source_file": "HttpServlet.java",
+      "raw_line": "\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.11.jar:6.0]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 205,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 149,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.tomcat.websocket.server.WsFilter",
+      "method": "doFilter",
+      "line_no": 51,
+      "source_file": "WsFilter.java",
+      "raw_line": "\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 174,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 149,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.filter.CharacterEncodingFilter",
+      "method": "doFilterInternal",
+      "line_no": 201,
+      "source_file": "CharacterEncodingFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.springframework.web.filter.OncePerRequestFilter",
+      "method": "doFilter",
+      "line_no": 116,
+      "source_file": "OncePerRequestFilter.java",
+      "raw_line": "\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.11.jar:6.0.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "internalDoFilter",
+      "line_no": 174,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.ApplicationFilterChain",
+      "method": "doFilter",
+      "line_no": 149,
+      "source_file": "ApplicationFilterChain.java",
+      "raw_line": "\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.StandardWrapperValve",
+      "method": "invoke",
+      "line_no": 166,
+      "source_file": "StandardWrapperValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:166) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.StandardContextValve",
+      "method": "invoke",
+      "line_no": 90,
+      "source_file": "StandardContextValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.authenticator.AuthenticatorBase",
+      "method": "invoke",
+      "line_no": 482,
+      "source_file": "AuthenticatorBase.java",
+      "raw_line": "\tat org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.StandardHostValve",
+      "method": "invoke",
+      "line_no": 115,
+      "source_file": "StandardHostValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.valves.ErrorReportValve",
+      "method": "invoke",
+      "line_no": 93,
+      "source_file": "ErrorReportValve.java",
+      "raw_line": "\tat org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.core.StandardEngineValve",
+      "method": "invoke",
+      "line_no": 74,
+      "source_file": "StandardEngineValve.java",
+      "raw_line": "\tat org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.catalina.connector.CoyoteAdapter",
+      "method": "service",
+      "line_no": 341,
+      "source_file": "CoyoteAdapter.java",
+      "raw_line": "\tat org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.coyote.http11.Http11Processor",
+      "method": "service",
+      "line_no": 391,
+      "source_file": "Http11Processor.java",
+      "raw_line": "\tat org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.coyote.AbstractProcessorLight",
+      "method": "process",
+      "line_no": 63,
+      "source_file": "AbstractProcessorLight.java",
+      "raw_line": "\tat org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.coyote.AbstractProtocol$ConnectionHandler",
+      "method": "process",
+      "line_no": 894,
+      "source_file": "AbstractProtocol.java",
+      "raw_line": "\tat org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:894) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.tomcat.util.net.NioEndpoint$SocketProcessor",
+      "method": "doRun",
+      "line_no": 1740,
+      "source_file": "NioEndpoint.java",
+      "raw_line": "\tat org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.tomcat.util.net.SocketProcessorBase",
+      "method": "run",
+      "line_no": 52,
+      "source_file": "SocketProcessorBase.java",
+      "raw_line": "\tat org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.tomcat.util.threads.ThreadPoolExecutor",
+      "method": "runWorker",
+      "line_no": 1191,
+      "source_file": "ThreadPoolExecutor.java",
+      "raw_line": "\tat org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker",
+      "method": "run",
+      "line_no": 659,
+      "source_file": "ThreadPoolExecutor.java",
+      "raw_line": "\tat org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    },
+    {
+      "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+      "class_name": "org.apache.tomcat.util.threads.TaskThread$WrappingRunnable",
+      "method": "run",
+      "line_no": 61,
+      "source_file": "TaskThread.java",
+      "raw_line": "\tat org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.11.jar:10.1.11]"
+    }
+  ],
+  "located_files": [
+    {
+      "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+      "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+      "class_name": "DishController",
+      "method": "startOrStop",
+      "line_no": 117,
+      "context_snippet": "    @PostMapping(\"/status/{status1}\")\n    public Result<String> startOrStop(@PathVariable Integer status, Long id) {\n        // 1. 启用 0. 停用\n        log.info(\"启用或停用菜品：{}\", id);\n        dishService.startOrStop(status, id);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }"
+    }
+  ],
+  "prompt": "",
+  "patch_text": "--- a/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n+++ b/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n@@ -113,7 +113,7 @@\n      * @param id\n      * @return\n      */\n     @PostMapping(\"/status/{status1}\")\n-    public Result<String> startOrStop(@PathVariable Integer status, Long id) {\n+    public Result<String> startOrStop(@PathVariable(\"status1\") Integer status, Long id) {\n         // 1. 启用 0. 停用\n         log.info(\"启用或停用菜品：{}\", id);\n         dishService.startOrStop(status, id);",
+  "branch_name": "fix/auto-20260526-222443",
+  "apply_result": {
+    "applied": true,
+    "files": [
+      "sky-server/src/main/java/com/sky/controller/admin/DishController.java"
+    ],
+    "errors": [],
+    "dry_run": false,
+    "committed": true
+  },
+  "build_result": null,
+  "ci_result": {
+    "compile_result": {
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "test_result": null,
+    "retries_used": 1,
+    "patch_history": [
+      {
+        "stage": "tests",
+        "attempt": 1,
+        "error": "[ERROR] COMPILATION ERROR : \n[ERROR] /D:/workspace-repo/sky-take-out/sky-server/src/test/java/com/sky/handler/GlobalExceptionHandlerTest.java:[24,55] 对于exceptionHandler(java.lang.NumberFormatException), 找不到合适的方法\n    方法 com.sky.handler.GlobalExceptionHandler.exceptionHandler(com.sky.exception.BaseException)不适用\n      (参数不匹配; java.lang.NumberFormatException无法转换为com.sky.exception.BaseException)\n    方法 com.sky.handler.GlobalExceptionHandler.exceptionHandler(java.sql.SQLIntegrityConstraintViolationException)不适用\n      (参数不匹配; java.lang.NumberFormatException无法转换为java.sql.SQLIntegrityConstraintViolationException)\n    方法 com.sky.handler.GlobalExceptionHandler.exceptionHandler(org.springframework.web.bind.MissingPathVariableException)不适用\n      (参数不匹配; java.lang.NumberFormatException无法转换为org.springframework.web.bind.MissingPathVariableException)\n    方法 com.sky.handler.GlobalExceptionHandler.exceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException)不适用\n      (参数不匹配; java.lang.NumberFormatException无法转换为org.springframework.http.converter.HttpMessageNotReadableException)\n    方法 com.sky.handler.GlobalExceptionHandler.exceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException)不适用\n      (参数不匹配; java.lang.NumberFormatException无法转换为org.springframework.web.method.annotation.MethodArgumentTypeMismatchException)\n[ERROR] /D:/workspace-repo/sky-take-out/sky-server/src/test/java/com/sky/handler/GlobalExceptionHandlerTest.java:[40,59] 对于exceptionHandler(java.lang.NumberFormatException), 找不到合适的方法\n    方法 com.sky.handler.GlobalExceptionHandler.exceptionHandler(com.sky.exception.BaseException)不适用\n      (参数不匹配; java.lang.NumberFormatException无法转换为com.sky.exception.BaseException)\n    方法 com.sky.handler.GlobalExceptionHandler.exceptionHandler(java.sql.SQLIntegrityConstraintViolationException)不适用\n      (参数不匹配; java.lang.NumberFormatException无法转换为java.sql.SQLIntegrityConstraintViolationException)\n    方法 com.sky.handler.GlobalExceptionHandler"
+      }
+    ],
+    "stages_passed": [
+      "compile"
+    ],
+    "stages_failed": [
+      "tests"
+    ]
+  },
+  "test_gen_result": {
+    "generated": true,
+    "test_path": "sky-server/src/test/java/com/sky/controller/admin/DishControllerTest.java",
+    "committed": false,
+    "error": null
+  },
+  "pr_result": {
+    "pr_created": true,
+    "pr_url": "https://gitee.com/zhao-haoyuan4353/sky-take-out/pulls/15",
+    "pr_number": 15,
+    "error": null
+  },
+  "error": null,
+  "agent_iterations": 5,
+  "agent_thoughts": [
+    "堆栈全部是 Spring 框架代码（Spring MVC、Tomcat、Servlet），没有任何应用代码帧。这是场景B，需要使用 infer_source 来定位应用层代码。异常信息显示 URI 模板变量 'status' 缺失，可能是控制器的 @RequestMapping 注解与 @PathVariable 不匹配。",
+    "找到了 BUG 根因。在 `DishController.java` 的 `startOrStop` 方法中：\n- URL 模板是 `/status/{status1}`（变量名是 `status1`）\n- 但方法参数是 `@PathVariable Integer status`（绑定的变量名是 `status`）\n\n变量名不匹配：`{status1}` vs `status`，导致 Spring 找不到名为 `status` 的路径变量。`status1` 明显是笔误，应改为 `status`。\n\n先用 edit_code 生成修复补丁：",
+    "补丁生成成功。问题根因是 URL 模板 `{status1}` 与 `@PathVariable Integer status` 变量名不匹配。补丁通过在 `@PathVariable` 中显式指定 `\"status1\"` 来解决。现在需要校验补丁安全性。",
+    "补丁校验通过，无错误。现在生成 JUnit 5 单元测试来验证修复。",
+    "补丁校验通过，单元测试也生成成功。现在提交最终补丁和测试代码。\n\n## 分析总结\n\n**BUG 根因**：`DishController.java` 的 `startOrStop` 方法中，URL 模板变量名 `{status1}` 与 `@PathVariable` 注解绑定的参数名 `status` 不匹配，导致 Spring MVC 无法从 URL 路径中提取名为 `status` 的变量，抛出 `MissingPathVariableException`。\n\n**修复方案**：在 `@PathVariable` 注解中显式指定路径变量名称 `@PathVariable(\"status1\")`，使其与 URL 模板 `{status1}` 一致。"
+  ],
+  "agent_tool_calls": [
+    {
+      "tool": "infer_source",
+      "args": {
+        "raw_stack": "org.springframework.web.bind.MissingPathVariableException: Required URI template variable 'status' for method parameter type Integer is not present\n\tat org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.handleMissingValue(PathVariableMethodArgumentResolver.java:101) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.handleMissingValue(AbstractNamedValueMethodArgumentResolver.java:226) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:114) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:179) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:146) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.11.jar:6.0.11]",
+        "parsed_stack": [
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver",
+            "method": "handleMissingValue",
+            "line_no": 101,
+            "source_file": "PathVariableMethodArgumentResolver.java"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver",
+            "method": "handleMissingValue",
+            "line_no": 226,
+            "source_file": "AbstractNamedValueMethodArgumentResolver.java"
+          },
+          {
+            "exception_type": "org.springframework.web.bind.MissingPathVariableException",
+            "class_name": "org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver",
+            "method": "resolveArgument",
+            "line_no": 114,
+            "source_file": "AbstractNamedValueMethodArgumentResolver.java"
+          }
+        ]
+      },
+      "result": "{\"source_path\": \"D:\\\\workspace-repo\\\\sky-take-out\\\\sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\controller\\\\admin\\\\DishController.java\", \"repo_relative_path\": \"sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\controller\\\\admin\\\\DishController.java\", \"class_name\": \"DishController\", \"method\": \"\", \"line_no\": 31, \"context_snippet\": \"@RestController\\n@RequestMapping(\\\"/admin/dish\\\")\\n@Slf4j\\npublic class DishController {\\n\\n    @Autowired\\n    private DishService dishService;\\n\", \"full_source\": \"package com.sky.cont"
+    },
+    {
+      "tool": "edit_code",
+      "args": {
+        "raw_stack": "org.springframework.web.bind.MissingPathVariableException: Required URI template variable 'status' for method parameter type Integer is not present\n\tat org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.handleMissingValue(PathVariableMethodArgumentResolver.java:101) ~[spring-webmvc-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.handleMissingValue(AbstractNamedValueMethodArgumentResolver.java:226) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:114) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:179) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:146) ~[spring-web-6.0.11.jar:6.0.11]\n\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.11.jar:6.0.11]",
+        "source_info": {
+          "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "class_name": "DishController",
+          "method": "startOrStop",
+          "line_no": 131,
+          "context_snippet": "    @PostMapping(\"/status/{status1}\")\n    public Result<String> startOrStop(@PathVariable Integer status, Long id) {\n        // 1. 启用 0. 停用\n        log.info(\"启用或停用菜品：{}\", id);\n        dishService.startOrStop(status, id);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }",
+          "full_source": "package com.sky.controller.admin;\n\nimport java.util.List;\nimport java.util.Set;\n\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.data.redis.core.RedisTemplate;\nimport org.springframework.web.bind.annotation.DeleteMapping;\nimport org.springframework.web.bind.annotation.GetMapping;\nimport org.springframework.web.bind.annotation.PathVariable;\nimport org.springframework.web.bind.annotation.PostMapping;\nimport org.springframework.web.bind.annotation.PutMapping;\nimport org.springframework.web.bind.annotation.RequestBody;\nimport org.springframework.web.bind.annotation.RequestMapping;\nimport org.springframework.web.bind.annotation.RequestParam;\nimport org.springframework.web.bind.annotation.RestController;\n\nimport com.sky.dto.DishDTO;\nimport com.sky.dto.DishPageQueryDTO;\nimport com.sky.entity.Dish;\nimport com.sky.result.PageResult;\nimport com.sky.result.Result;\nimport com.sky.service.DishService;\nimport com.sky.vo.DishVO;\n\nimport lombok.extern.slf4j.Slf4j;\n\n@RestController\n@RequestMapping(\"/admin/dish\")\n@Slf4j\npublic class DishController {\n\n    @Autowired\n    private DishService dishService;\n\n    @Autowired\n    private RedisTemplate<String, Object> redisTemplate;\n\n    /**\n     * 新增菜品\n     *\n     * @param dishDTO\n     * @return\n     */\n    @PostMapping\n    public Result<String> save(@RequestBody DishDTO dishDTO) {\n        log.info(\"新增菜品：{}\", dishDTO);\n        dishService.saveWithFlavor(dishDTO);\n        String key = \"dish_\" + dishDTO.getCategoryId();\n        clearRedis(key);\n        return Result.success();\n    }\n\n    /**\n     * 分页查询菜品\n     *\n     * @param dishPageQueryDTO\n     * @return\n     */\n    @GetMapping(\"/page\") // query\n    public Result<PageResult<DishVO>> page(DishPageQueryDTO dishPageQueryDTO) {\n        log.info(\"分页查询菜品：{}\", dishPageQueryDTO);\n        PageResult<DishVO> querySet = dishService.queryPage(dishPageQueryDTO);\n        return Result.success(querySet);\n    }\n\n    /**\n     * 删除菜品\n     *\n     * @param ids\n     * @return\n     */\n    @DeleteMapping\n    public Result<String> delete(@RequestParam List<Long> ids) {\n        log.info(\"删除菜品：{}\", ids);\n        dishService.deleteBatch(ids);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }\n\n    /**\n     * 根据id查询菜品\n     *\n     * @param id\n     * @return\n     */\n    @GetMapping(\"/{id}\")\n    public Result<DishVO> getById(@PathVariable Long id) {\n        log.info(\"根据id查询菜品：{}\", id);\n        DishVO dishVO = dishService.getByIdWithFlavor(id);\n        return Result.success(dishVO);\n    }\n\n    /**\n     * 更新菜品\n     *\n     * @param dishDTO\n     * @return\n     */\n    @PutMapping\n    public Result<String> update(@RequestBody DishDTO dishDTO) {\n        log.info(\"更新菜品：{}\", dishDTO);\n        dishService.updateWithFlavor(dishDTO);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }\n\n    /**\n     * 启用或停用菜品\n     *\n     * @param status\n     * @param id\n     * @return\n     */\n    @PostMapping(\"/status/{status1}\")\n    public Result<String> startOrStop(@PathVariable Integer status, Long id) {\n        // 1. 启用 0. 停用\n        log.info(\"启用或停用菜品：{}\", id);\n        dishService.startOrStop(status, id);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }\n\n    /**\n     * 根据分类id查询菜品\n     *\n     * @param categoryId\n     * @return\n     */\n    @GetMapping(\"/list\")\n    public Result<List<Dish>> list(Long categoryId) {\n        String key = \"dish_\" + categoryId;\n        List<Dish> dishList = dishService.list(categoryId);\n        return Result.success(dishList);\n    }\n\n    private void clearRedis(String keys) {\n        Set<String> cacheKeys = redisTemplate.keys(keys);\n        redisTemplate.delete(cacheKeys);\n    }\n}"
+        }
+      },
+      "result": "{\"patch_text\": \"--- a/sky-server/src/main/java/com/sky/controller/admin/DishController.java\\n+++ b/sky-server/src/main/java/com/sky/controller/admin/DishController.java\\n@@ -113,7 +113,7 @@\\n      * @param id\\n      * @return\\n      */\\n     @PostMapping(\\\"/status/{status1}\\\")\\n-    public Result<String> startOrStop(@PathVariable Integer status, Long id) {\\n+    public Result<String> startOrStop(@PathVariable(\\\"status1\\\") Integer status, Long id) {\\n         // 1. 启用 0. 停用\\n         log.info(\\\"启"
+    },
+    {
+      "tool": "validate_patch",
+      "args": {
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n+++ b/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n@@ -113,7 +113,7 @@\n      * @param id\n      * @return\n      */\n     @PostMapping(\"/status/{status1}\")\n-    public Result<String> startOrStop(@PathVariable Integer status, Long id) {\n+    public Result<String> startOrStop(@PathVariable(\"status1\") Integer status, Long id) {\n         // 1. 启用 0. 停用\n         log.info(\"启用或停用菜品：{}\", id);\n         dishService.startOrStop(status, id);",
+        "source_info": {
+          "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "class_name": "DishController",
+          "method": "startOrStop",
+          "line_no": 131,
+          "context_snippet": "    @PostMapping(\"/status/{status1}\")\n    public Result<String> startOrStop(@PathVariable Integer status, Long id) {\n        // 1. 启用 0. 停用\n        log.info(\"启用或停用菜品：{}\", id);\n        dishService.startOrStop(status, id);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }",
+          "full_source": "package com.sky.controller.admin;\n\nimport java.util.List;\nimport java.util.Set;\n\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.data.redis.core.RedisTemplate;\nimport org.springframework.web.bind.annotation.DeleteMapping;\nimport org.springframework.web.bind.annotation.GetMapping;\nimport org.springframework.web.bind.annotation.PathVariable;\nimport org.springframework.web.bind.annotation.PostMapping;\nimport org.springframework.web.bind.annotation.PutMapping;\nimport org.springframework.web.bind.annotation.RequestBody;\nimport org.springframework.web.bind.annotation.RequestMapping;\nimport org.springframework.web.bind.annotation.RequestParam;\nimport org.springframework.web.bind.annotation.RestController;\n\nimport com.sky.dto.DishDTO;\nimport com.sky.dto.DishPageQueryDTO;\nimport com.sky.entity.Dish;\nimport com.sky.result.PageResult;\nimport com.sky.result.Result;\nimport com.sky.service.DishService;\nimport com.sky.vo.DishVO;\n\nimport lombok.extern.slf4j.Slf4j;\n\n@RestController\n@RequestMapping(\"/admin/dish\")\n@Slf4j\npublic class DishController {\n\n    @Autowired\n    private DishService dishService;\n\n    @Autowired\n    private RedisTemplate<String, Object> redisTemplate;\n\n    /**\n     * 新增菜品\n     *\n     * @param dishDTO\n     * @return\n     */\n    @PostMapping\n    public Result<String> save(@RequestBody DishDTO dishDTO) {\n        log.info(\"新增菜品：{}\", dishDTO);\n        dishService.saveWithFlavor(dishDTO);\n        String key = \"dish_\" + dishDTO.getCategoryId();\n        clearRedis(key);\n        return Result.success();\n    }\n\n    /**\n     * 分页查询菜品\n     *\n     * @param dishPageQueryDTO\n     * @return\n     */\n    @GetMapping(\"/page\") // query\n    public Result<PageResult<DishVO>> page(DishPageQueryDTO dishPageQueryDTO) {\n        log.info(\"分页查询菜品：{}\", dishPageQueryDTO);\n        PageResult<DishVO> querySet = dishService.queryPage(dishPageQueryDTO);\n        return Result.success(querySet);\n    }\n\n    /**\n     * 删除菜品\n     *\n     * @param ids\n     * @return\n     */\n    @DeleteMapping\n    public Result<String> delete(@RequestParam List<Long> ids) {\n        log.info(\"删除菜品：{}\", ids);\n        dishService.deleteBatch(ids);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }\n\n    /**\n     * 根据id查询菜品\n     *\n     * @param id\n     * @return\n     */\n    @GetMapping(\"/{id}\")\n    public Result<DishVO> getById(@PathVariable Long id) {\n        log.info(\"根据id查询菜品：{}\", id);\n        DishVO dishVO = dishService.getByIdWithFlavor(id);\n        return Result.success(dishVO);\n    }\n\n    /**\n     * 更新菜品\n     *\n     * @param dishDTO\n     * @return\n     */\n    @PutMapping\n    public Result<String> update(@RequestBody DishDTO dishDTO) {\n        log.info(\"更新菜品：{}\", dishDTO);\n        dishService.updateWithFlavor(dishDTO);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }\n\n    /**\n     * 启用或停用菜品\n     *\n     * @param status\n     * @param id\n     * @return\n     */\n    @PostMapping(\"/status/{status1}\")\n    public Result<String> startOrStop(@PathVariable Integer status, Long id) {\n        // 1. 启用 0. 停用\n        log.info(\"启用或停用菜品：{}\", id);\n        dishService.startOrStop(status, id);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }\n\n    /**\n     * 根据分类id查询菜品\n     *\n     * @param categoryId\n     * @return\n     */\n    @GetMapping(\"/list\")\n    public Result<List<Dish>> list(Long categoryId) {\n        String key = \"dish_\" + categoryId;\n        List<Dish> dishList = dishService.list(categoryId);\n        return Result.success(dishList);\n    }\n\n    private void clearRedis(String keys) {\n        Set<String> cacheKeys = redisTemplate.keys(keys);\n        redisTemplate.delete(cacheKeys);\n    }\n}"
+        }
+      },
+      "result": "{\"valid\": true, \"errors\": [], \"changed_lines\": 2, \"files\": [\"sky-server\\\\src\\\\main\\\\java\\\\com\\\\sky\\\\controller\\\\admin\\\\DishController.java\"]}"
+    },
+    {
+      "tool": "generate_test",
+      "args": {
+        "source_info": {
+          "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "class_name": "DishController",
+          "method": "startOrStop",
+          "line_no": 131,
+          "context_snippet": "    @PostMapping(\"/status/{status1}\")\n    public Result<String> startOrStop(@PathVariable Integer status, Long id) {\n        // 1. 启用 0. 停用\n        log.info(\"启用或停用菜品：{}\", id);\n        dishService.startOrStop(status, id);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }",
+          "full_source": "package com.sky.controller.admin;\n\nimport java.util.List;\nimport java.util.Set;\n\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.data.redis.core.RedisTemplate;\nimport org.springframework.web.bind.annotation.DeleteMapping;\nimport org.springframework.web.bind.annotation.GetMapping;\nimport org.springframework.web.bind.annotation.PathVariable;\nimport org.springframework.web.bind.annotation.PostMapping;\nimport org.springframework.web.bind.annotation.PutMapping;\nimport org.springframework.web.bind.annotation.RequestBody;\nimport org.springframework.web.bind.annotation.RequestMapping;\nimport org.springframework.web.bind.annotation.RequestParam;\nimport org.springframework.web.bind.annotation.RestController;\n\nimport com.sky.dto.DishDTO;\nimport com.sky.dto.DishPageQueryDTO;\nimport com.sky.entity.Dish;\nimport com.sky.result.PageResult;\nimport com.sky.result.Result;\nimport com.sky.service.DishService;\nimport com.sky.vo.DishVO;\n\nimport lombok.extern.slf4j.Slf4j;\n\n@RestController\n@RequestMapping(\"/admin/dish\")\n@Slf4j\npublic class DishController {\n\n    @Autowired\n    private DishService dishService;\n\n    @Autowired\n    private RedisTemplate<String, Object> redisTemplate;\n\n    /**\n     * 新增菜品\n     *\n     * @param dishDTO\n     * @return\n     */\n    @PostMapping\n    public Result<String> save(@RequestBody DishDTO dishDTO) {\n        log.info(\"新增菜品：{}\", dishDTO);\n        dishService.saveWithFlavor(dishDTO);\n        String key = \"dish_\" + dishDTO.getCategoryId();\n        clearRedis(key);\n        return Result.success();\n    }\n\n    /**\n     * 分页查询菜品\n     *\n     * @param dishPageQueryDTO\n     * @return\n     */\n    @GetMapping(\"/page\") // query\n    public Result<PageResult<DishVO>> page(DishPageQueryDTO dishPageQueryDTO) {\n        log.info(\"分页查询菜品：{}\", dishPageQueryDTO);\n        PageResult<DishVO> querySet = dishService.queryPage(dishPageQueryDTO);\n        return Result.success(querySet);\n    }\n\n    /**\n     * 删除菜品\n     *\n     * @param ids\n     * @return\n     */\n    @DeleteMapping\n    public Result<String> delete(@RequestParam List<Long> ids) {\n        log.info(\"删除菜品：{}\", ids);\n        dishService.deleteBatch(ids);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }\n\n    /**\n     * 根据id查询菜品\n     *\n     * @param id\n     * @return\n     */\n    @GetMapping(\"/{id}\")\n    public Result<DishVO> getById(@PathVariable Long id) {\n        log.info(\"根据id查询菜品：{}\", id);\n        DishVO dishVO = dishService.getByIdWithFlavor(id);\n        return Result.success(dishVO);\n    }\n\n    /**\n     * 更新菜品\n     *\n     * @param dishDTO\n     * @return\n     */\n    @PutMapping\n    public Result<String> update(@RequestBody DishDTO dishDTO) {\n        log.info(\"更新菜品：{}\", dishDTO);\n        dishService.updateWithFlavor(dishDTO);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }\n\n    /**\n     * 启用或停用菜品\n     *\n     * @param status\n     * @param id\n     * @return\n     */\n    @PostMapping(\"/status/{status1}\")\n    public Result<String> startOrStop(@PathVariable(\"status1\") Integer status, Long id) {\n        // 1. 启用 0. 停用\n        log.info(\"启用或停用菜品：{}\", id);\n        dishService.startOrStop(status, id);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }\n\n    /**\n     * 根据分类id查询菜品\n     *\n     * @param categoryId\n     * @return\n     */\n    @GetMapping(\"/list\")\n    public Result<List<Dish>> list(Long categoryId) {\n        String key = \"dish_\" + categoryId;\n        List<Dish> dishList = dishService.list(categoryId);\n        return Result.success(dishList);\n    }\n\n    private void clearRedis(String keys) {\n        Set<String> cacheKeys = redisTemplate.keys(keys);\n        redisTemplate.delete(cacheKeys);\n    }\n}"
+        },
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n+++ b/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n@@ -113,7 +113,7 @@\n      * @param id\n      * @return\n      */\n     @PostMapping(\"/status/{status1}\")\n-    public Result<String> startOrStop(@PathVariable Integer status, Long id) {\n+    public Result<String> startOrStop(@PathVariable(\"status1\") Integer status, Long id) {\n         // 1. 启用 0. 停用\n         log.info(\"启用或停用菜品：{}\", id);\n         dishService.startOrStop(status, id);",
+        "raw_stack": "org.springframework.web.bind.MissingPathVariableException: Required URI template variable 'status' for method parameter type Integer is not present\n\tat org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.handleMissingValue(PathVariableMethodArgumentResolver.java:101) ~[spring-webmvc-6.0.11.jar:6.0.11]"
+      },
+      "result": "{\"test_code\": \"package com.sky.controller.admin;\\n\\nimport static org.junit.jupiter.api.Assertions.*;\\nimport static org.mockito.ArgumentMatchers.any;\\nimport static org.mockito.ArgumentMatchers.anySet;\\nimport static org.mockito.ArgumentMatchers.anyString;\\nimport static org.mockito.Mockito.*;\\n\\nimport java.util.Collections;\\nimport java.util.Set;\\n\\nimport org.junit.jupiter.api.DisplayName;\\nimport org.junit.jupiter.api.Test;\\nimport org.junit.jupiter.api.extension.ExtendWith;\\nimport org.moc"
+    },
+    {
+      "tool": "final_patch",
+      "args": {
+        "patch_text": "--- a/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n+++ b/sky-server/src/main/java/com/sky/controller/admin/DishController.java\n@@ -113,7 +113,7 @@\n      * @param id\n      * @return\n      */\n     @PostMapping(\"/status/{status1}\")\n-    public Result<String> startOrStop(@PathVariable Integer status, Long id) {\n+    public Result<String> startOrStop(@PathVariable(\"status1\") Integer status, Long id) {\n         // 1. 启用 0. 停用\n         log.info(\"启用或停用菜品：{}\", id);\n         dishService.startOrStop(status, id);",
+        "source_info": {
+          "source_path": "D:\\workspace-repo\\sky-take-out\\sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "repo_relative_path": "sky-server\\src\\main\\java\\com\\sky\\controller\\admin\\DishController.java",
+          "class_name": "DishController",
+          "method": "startOrStop",
+          "line_no": 117,
+          "context_snippet": "    @PostMapping(\"/status/{status1}\")\n    public Result<String> startOrStop(@PathVariable Integer status, Long id) {\n        // 1. 启用 0. 停用\n        log.info(\"启用或停用菜品：{}\", id);\n        dishService.startOrStop(status, id);\n        clearRedis(\"dish_*\");\n        return Result.success();\n    }"
+        },
+        "test_code": "package com.sky.controller.admin;\n\nimport static org.junit.jupiter.api.Assertions.*;\nimport static org.mockito.ArgumentMatchers.any;\nimport static org.mockito.ArgumentMatchers.anySet;\nimport static org.mockito.ArgumentMatchers.anyString;\nimport static org.mockito.Mockito.*;\n\nimport java.util.Collections;\nimport java.util.Set;\n\nimport org.junit.jupiter.api.DisplayName;\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.extension.ExtendWith;\nimport org.mockito.InjectMocks;\nimport org.mockito.Mock;\nimport org.mockito.junit.jupiter.MockitoExtension;\n\nimport com.sky.result.Result;\nimport com.sky.service.DishService;\n\nimport org.springframework.data.redis.core.RedisTemplate;\nimport org.springframework.data.redis.core.SetOperations;\n\n@ExtendWith(MockitoExtension.class)\nclass DishControllerTest {\n\n    @InjectMocks\n    private DishController dishController;\n\n    @Mock\n    private DishService dishService;\n\n    @Mock\n    private RedisTemplate<String, Object> redisTemplate;\n\n    @Test\n    @DisplayName(\"正向测试：修复后startOrStop方法在正确路径变量下能正常工作\")\n    void testStartOrStop_WithCorrectPathVariable_ShouldWorkNormally() {\n        // Arrange\n        Integer status = 1;\n        Long id = 1L;\n        \n        // Mock the RedisTemplate keys() method\n        Set<String> cacheKeys = Collections.singleton(\"dish_1\");\n        when(redisTemplate.keys(anyString())).thenReturn(cacheKeys);\n        when(redisTemplate.delete(any(Set.class))).thenReturn(1L);\n        \n        // Act\n        Result<String> result = dishController.startOrStop(status, id);\n        \n        // Assert\n        assertNotNull(result);\n        assertEquals(1, result.getCode());\n        \n        // Verify service was called with correct parameters\n        verify(dishService).startOrStop(status, id);\n        verify(redisTemplate).keys(anyString());\n        verify(redisTemplate).delete(any(Set.class));\n    }\n\n    @Test\n    @DisplayName(\"边界测试：修复后，原来导致MissingPathVariableException的请求现在不再抛出异常\")\n    void testStartOrStop_OriginalMissingPathVariableException_ShouldNotThrow() {\n        // Arrange\n        Integer status = 0; // testing status=0 (disable)\n        Long id = 2L;\n        \n        Set<String> cacheKeys = Collections.singleton(\"dish_2\");\n        when(redisTemplate.keys(anyString())).thenReturn(cacheKeys);\n        when(redisTemplate.delete(any(Set.class))).thenReturn(1L);\n        \n        // Act & Assert - Should not throw MissingPathVariableException\n        assertDoesNotThrow(() -> {\n            Result<String> result = dishController.startOrStop(status, id);\n            assertNotNull(result);\n            assertEquals(1, result.getCode());\n        });\n        \n        verify(dishService).startOrStop(status, id);\n    }\n\n    @Test\n    @DisplayName(\"空值测试：当id参数为null时，方法应能正常处理而不抛出异常\")\n    void testStartOrStop_WithNullId_ShouldNotThrowException() {\n        // Arrange\n        Integer status = 1;\n        Long id = null; // testing null id\n        \n        Set<String> cacheKeys = Collections.singleton(\"dish_*\");\n        when(redisTemplate.keys(anyString())).thenReturn(cacheKeys);\n        when(redisTemplate.delete(any(Set.class))).thenReturn(1L);\n        \n        // Act & Assert\n        assertDoesNotThrow(() -> {\n            Result<String> result = dishController.startOrStop(status, id);\n            assertNotNull(result);\n            assertEquals(1, result.getCode());\n        });\n        \n        verify(dishService).startOrStop(status, id);\n    }\n\n    @Test\n    @DisplayName(\"Redis缓存清除测试：修复后应正确清除Redis缓存\")\n    void testStartOrStop_ShouldClearRedisCache() {\n        // Arrange\n        Integer status = 1;\n        Long id = 1L;\n        \n        Set<String> cacheKeys = Collections.singleton(\"dish_1\");\n        when(redisTemplate.keys(\"dish_*\")).thenReturn(cacheKeys);\n        when(redisTemplate.delete(any(Set.class))).thenReturn(1L);\n        \n        // Act\n        Result<String> result = dishController.startOrStop(status, id);\n        \n        // Assert\n        assertEquals(1, result.getCode());\n        \n        // Verify Redis operations\n        verify(redisTemplate).keys(\"dish_*\");\n        verify(redisTemplate).delete(cacheKeys);\n    }\n}"
+      },
+      "result": "success"
+    }
+  ],
+  "detection_method": "agent"
+}

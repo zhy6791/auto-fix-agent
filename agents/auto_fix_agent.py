@@ -213,23 +213,33 @@ class AutoFixAgent:
                 # 验证补丁是否真的被应用了
                 patch_actually_applied = False
                 if apply_result.get('applied') and apply_result.get('files'):
-                    # 检查文件是否真的被修改了
+                    import subprocess
                     for file_path in apply_result['files']:
                         full_path = os.path.join(repo_path, file_path)
-                        if os.path.exists(full_path):
-                            # 检查文件是否有未提交的更改
-                            import subprocess
-                            try:
+                        if not os.path.exists(full_path):
+                            continue
+                        try:
+                            # 检查文件是否被 git 跟踪
+                            ret = subprocess.run(
+                                ['git', '-C', repo_path, 'ls-files', '--error-unmatch', file_path],
+                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                            )
+                            if ret.returncode == 0:
+                                # 已跟踪文件：用 git diff HEAD 比较工作区与最新提交
                                 ret = subprocess.run(
-                                    ['git', '-C', repo_path, 'diff', '--quiet', file_path],
+                                    ['git', '-C', repo_path, 'diff', 'HEAD', '--quiet', file_path],
                                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
                                 )
                                 if ret.returncode != 0:
-                                    # 文件有更改
                                     patch_actually_applied = True
                                     break
-                            except Exception:
-                                pass
+                            else:
+                                # 未跟踪文件（新文件）：检查文件存在且有内容
+                                if os.path.getsize(full_path) > 0:
+                                    patch_actually_applied = True
+                                    break
+                        except Exception:
+                            pass
 
                 if not patch_actually_applied:
                     logger.warning('  ⚠️ 补丁未能成功应用到文件')
